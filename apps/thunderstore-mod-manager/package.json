@@ -1,0 +1,81 @@
+{
+  "name": "thunderstore-mod-manager",
+  "version": "0.0.1",
+  "description": "Mod manager for managing mods",
+  "main": "./dist/browser/index.js",
+  "author": "oksamies",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20.17.0"
+  },
+  "overwolf": {
+    "packages": [
+      "gep",
+      "overlay"
+    ]
+  },
+  "build": {
+    "nodeGypRebuild": false,
+    "appId": "com.thunderstore.modManager",
+    "asar": true,
+    "overwolf": {
+      "disableAdOptimization": false
+    },
+    "productName": "thunderstoreModManager",
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "*.ts",
+      "*.html",
+      "*.exe"
+    ],
+    "copyright": "Copyright Thunderstore",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "publisherName": "Thunderstore",
+      "legalTrademarks": "Copyright Thunderstore"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "scripts": {
+    "build:renderer": "webpack --config ./webpack.renderer.config.mjs",
+    "build:main": "webpack --config ./webpack.main.config.mjs",
+    "build": "yarn webpack --mode=development && yarn build:main && yarn build:renderer",
+    "build:dev": "yarn webpack --watch --mode=development",
+    "build:start": "yarn run build && ow-electron . ",
+    "start": "ow-electron .",
+    "build:ow-electron": "ow-electron-builder --c.extraMetadata.name=GameEventsTester --publish=never"
+  },
+  "dependencies": {
+    "@overwolf/ow-electron": "^31.4.0",
+    "@overwolf/ow-electron-builder": "^25.0.6",
+    "@overwolf/ow-electron-packages-types": "^0.0.13",
+    "@thunderstore/cyberstorm": "^0.1.0",
+    "@thunderstore/cyberstorm-theme": "^0.1.0",
+    "@types/node": "^20.16.0",
+    "css-loader": "^6.7.1",
+    "electron": "^33.2.0",
+    "html-webpack-plugin": "^5.6.3",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "repository": "https://github.com/thunderstore-io/thunderstore-ui/tree/master/apps/thunderstore-mod-manager"
+}
