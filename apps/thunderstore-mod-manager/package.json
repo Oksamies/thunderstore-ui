@@ -61,14 +61,13 @@
     "build:ow-electron": "ow-electron-builder --c.extraMetadata.name=GameEventsTester --publish=never"
   },
   "dependencies": {
-    "@overwolf/ow-electron": "^31.4.0",
+    "@overwolf/ow-electron": "31.4.0",
     "@overwolf/ow-electron-builder": "^25.0.6",
     "@overwolf/ow-electron-packages-types": "^0.0.13",
     "@thunderstore/cyberstorm": "^0.1.0",
     "@thunderstore/cyberstorm-theme": "^0.1.0",
     "@types/node": "^20.16.0",
     "css-loader": "^6.7.1",
-    "electron": "^33.2.0",
     "html-webpack-plugin": "^5.6.3",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.5.1",
@@ -77,5 +76,7 @@
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"
   },
-  "repository": "https://github.com/thunderstore-io/thunderstore-ui/tree/master/apps/thunderstore-mod-manager"
+  "devDependencies": {
+    "electron": "33.2.0"
+  }
 }

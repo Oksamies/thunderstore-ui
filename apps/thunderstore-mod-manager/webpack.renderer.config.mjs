@@ -19,7 +19,7 @@ export const rendererConfig = {
 rendererConfig.plugins.push(
   new HtmlWebpackPlugin({
     template: "./src/renderer/index.html",
-    filename: join(__dirname, "./src/renderer/index.html"),
+    filename: join(__dirname, "./dist/renderer/index.html"),
     chunks: ["renderer"],
     inject: false,
     publicPath: "/tsmm/",
