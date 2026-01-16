@@ -11,7 +11,7 @@
     "build": "preconstruct build && yarn workspace @thunderstore/cyberstorm-theme build && yarn workspace @thunderstore/cyberstorm build && yarn workspace @thunderstore/ts-uploader build",
     "plop": "plop",
     "validate:exports": "node tools/scripts/validate_package_exports.mjs",
-    "security:lockfile": "lockfile-lint --type yarn --path yarn.lock --validate-https --allowed-hosts yarn npm registry.yarnpkg.com npm.fontawesome.com --validate-package-names --allowed-package-name-aliases string-width-cjs:string-width strip-ansi-cjs:strip-ansi wrap-ansi-cjs:wrap-ansi",
+    "security:lockfile": "node tools/scripts/validate_lockfile_security.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "coverage": "vitest run --coverage",

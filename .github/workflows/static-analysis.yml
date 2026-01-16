@@ -64,6 +64,17 @@ jobs:
 
   lockfile-security:
     name: Lockfile Security Check
+    if: (
+          github.event_name != 'pull_request' && (
+            github.event_name != 'push' ||
+            github.actor != 'dependabot[bot]'
+          )
+        ) || (
+          github.event_name == 'pull_request' && (
+            github.event.base.repo.id != github.event.head.repo.id ||
+            github.actor == 'dependabot[bot]'
+          )
+        )
     needs: get-node-version
     runs-on: ubuntu-latest
     steps:
@@ -74,7 +85,7 @@ jobs:
         with:
           node-version: ${{ needs.get-node-version.outputs.node-version }}
       - name: Run lockfile-lint
-        run: npx lockfile-lint@latest --type yarn --path yarn.lock --validate-https --allowed-hosts yarn npm registry.yarnpkg.com npm.fontawesome.com --validate-package-names --allowed-package-name-aliases string-width-cjs:string-width strip-ansi-cjs:strip-ansi wrap-ansi-cjs:wrap-ansi
+        run: npx lockfile-lint@4.14.0 --type yarn --path yarn.lock --validate-https --allowed-hosts yarn npm registry.yarnpkg.com npm.fontawesome.com --validate-package-names --allowed-package-name-aliases string-width-cjs:string-width strip-ansi-cjs:strip-ansi wrap-ansi-cjs:wrap-ansi
 
   codeql:
     name: CodeQL
