@@ -181,3 +181,29 @@ files to your commit and re-run the commit command.
 Pre-commit can be disabled for a single commit with `--no-verify` option, but
 note that CI also runs pre-commit and will fail if any problems are encountered
 at this stage.
+
+## Security
+
+### Dependency Security Auditing
+
+This project includes automated security checks for the dependency lockfile:
+
+- **Lockfile validation**: Run `yarn security:lockfile` to validate the `yarn.lock` file for:
+  - HTTPS-only package URLs
+  - Package name integrity (prevents typosquatting)
+  - Trusted registry sources
+  
+- **CI Integration**: The lockfile security check runs automatically on every push and pull request via GitHub Actions
+
+- **Security Audit Report**: See [SECURITY_AUDIT_REPORT.md](./SECURITY_AUDIT_REPORT.md) for the latest comprehensive security audit of dependencies
+
+### Running Security Checks Locally
+
+```bash
+# Validate yarn.lock security
+yarn security:lockfile
+```
+
+### Reporting Security Issues
+
+If you discover a security vulnerability, please email the maintainers privately rather than opening a public issue.
