@@ -1,0 +1,200 @@
+@layer mod-manager-components {
+  .profiles-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-height: 100vh;
+    padding: 16px;
+    color: white;
+    background-color: #111827; /* gray-900 */
+  }
+
+  .profiles-page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .profiles-page__header-left {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .profiles-page__back-btn {
+    border: none;
+    color: #9ca3af; /* gray-400 */
+    font-size: 16px;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .profiles-page__back-btn:hover {
+    color: white;
+  }
+
+  .profiles-page__title {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.5rem; /* 2xl */
+  }
+
+  .profiles-page__actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .profiles-page__btn-primary {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    background-color: #059669; /* green-600 */
+    cursor: pointer;
+  }
+
+  .profiles-page__btn-primary:hover {
+    background-color: #047857; /* green-700 */
+  }
+
+  .profiles-page__create-row {
+    display: flex;
+    margin-bottom: 24px;
+  }
+
+  .profiles-page__input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #374151; /* gray-700 */
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    color: white;
+    background-color: #1f2937; /* gray-800 */
+    outline: none;
+  }
+
+  .profiles-page__create-btn {
+    padding: 8px 16px;
+    border: none;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    color: white;
+    background-color: #2563eb; /* blue-600 */
+    cursor: pointer;
+  }
+
+  .profiles-page__create-btn:hover {
+    background-color: #1d4ed8; /* blue-700 */
+  }
+
+  .profiles-page__list {
+    display: grid;
+    gap: 16px;
+  }
+
+  .profiles-page__card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border: 1px solid #374151; /* gray-700 */
+    border-radius: 4px;
+    background-color: #1f2937; /* gray-800 */
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .profiles-page__card:hover {
+    background-color: #374151; /* gray-700 */
+  }
+
+  .profiles-page__card-name {
+    font-weight: 700;
+  }
+
+  .profiles-page__card-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  /* Rename inputs */
+  .profiles-page__rename-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .profiles-page__rename-input {
+    padding: 4px;
+    border: 1px solid #4b5563; /* gray-600 */
+    border-radius: 4px;
+    color: white;
+    background-color: #374151; /* gray-700 */
+  }
+
+  .profiles-page__btn-save {
+    border: none;
+    color: #10b981; /* green-500 */
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .profiles-page__btn-save:hover {
+    color: #34d399; /* green-400 */
+  }
+
+  .profiles-page__btn-cancel {
+    border: none;
+    color: #9ca3af; /* gray-400 */
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .profiles-page__btn-cancel:hover {
+    color: #d1d5db; /* gray-300 */
+  }
+
+  /* Hidden actions shown on group hover */
+  .profiles-page__action-btn {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0;
+    transition:
+      opacity 0.2s,
+      background-color 0.2s;
+  }
+
+  .profiles-page__action-btn--rename {
+    color: #60a5fa; /* blue-400 */
+  }
+
+  .profiles-page__action-btn--code {
+    color: #c084fc; /* purple-400 */
+  }
+
+  .profiles-page__action-btn--file {
+    color: #c084fc; /* purple-400 */
+  }
+
+  .profiles-page__action-btn--delete {
+    color: #ef4444; /* red-500 */
+  }
+
+  .profiles-page__action-btn:hover {
+    background-color: #111827; /* gray-900 */
+  }
+
+  .profiles-page__card:hover .profiles-page__action-btn {
+    opacity: 1;
+  }
+
+  .profiles-page__select-hint {
+    color: #60a5fa; /* blue-400 */
+    font-size: 0.875rem; /* text-sm */
+  }
+}

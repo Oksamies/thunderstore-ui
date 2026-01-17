@@ -1,0 +1,10 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "ls_store",
+      "type": "shell",
+      "command": "dir apps\\mod-manager\\src\\store\\"
+    }
+  ]
+}

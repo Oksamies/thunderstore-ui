@@ -1,0 +1,27 @@
+@layer mod-manager-colors {
+  .theme-light {
+    /* Invert Surface Colors */
+    --body-bg-color: #fff;
+    --color-surface-1: #f8f9fa;
+    --color-surface-2: #e9ecef;
+    --color-surface-3: #dee2e6;
+
+    /* Invert Text Colors */
+    --color-text-primary: #212529;
+    --color-text-secondary: #495057;
+    --color-text-tertiary: #868e96;
+
+    /* Override UI Backgrounds */
+    --color-ui-background-1: #fff;
+    --color-ui-background-2: #f8f9fa;
+    --color-ui-border-1: #ced4da;
+    --color-ui-element-1: #e9ecef;
+
+    /* Reset some transparent colors if needed */
+    --color-surface-a3: rgb(0 0 0 / 0.05);
+
+    /* Accent Adjustments? */
+
+    /* Leave accents alone for now as they might look okay on white */
+  }
+}

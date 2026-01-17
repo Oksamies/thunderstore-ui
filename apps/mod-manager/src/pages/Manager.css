@@ -1,0 +1,183 @@
+@layer mod-manager-components {
+  .manager-page {
+    display: flex;
+    height: 100vh;
+    color: #f3f4f6; /* gray-100 */
+    font-family:
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+    background-color: #111827; /* gray-900 */
+  }
+
+  .manager-page__sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 256px; /* w-64 */
+    border-right: 1px solid #1f2937; /* gray-800 */
+    background-color: #111827; /* gray-900 */
+  }
+
+  .manager-page__header {
+    padding: 16px;
+    border-bottom: 1px solid #1f2937; /* gray-800 */
+  }
+
+  .manager-page__label {
+    margin-bottom: 4px;
+    color: #6b7280; /* gray-500 */
+    font-size: 0.75rem; /* text-xs */
+    letter-spacing: 0.1em; /* tracking-widest */
+    text-transform: uppercase;
+  }
+
+  .manager-page__game-title {
+    margin: 0;
+    overflow: hidden;
+    font-weight: 700;
+    font-size: 1.125rem; /* text-lg */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .manager-page__profile-name {
+    overflow: hidden;
+    color: #6b7280; /* gray-500 */
+    font-size: 0.75rem; /* text-xs */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .manager-page__launch-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid #1f2937; /* gray-800 */
+  }
+
+  .manager-page__btn-modded {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: white;
+    font-weight: 500;
+    font-size: 0.875rem; /* text-sm */
+    background-color: #2563eb; /* blue-600 */
+    box-shadow: 0 10px 15px -3px rgb(30 58 138 / 0.2); /* shadow-blue-900/20 */
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .manager-page__btn-modded:hover {
+    background-color: #1d4ed8; /* blue-700 */
+  }
+
+  .manager-page__icon-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+  }
+
+  .manager-page__play-icon {
+    width: 20px;
+    height: 20px;
+    color: #60a5fa; /* blue-400 */
+    transition: color 0.2s;
+  }
+
+  .manager-page__btn-modded:hover .manager-page__play-icon {
+    color: #93c5fd; /* blue-300 */
+  }
+
+  .manager-page__btn-vanilla {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 8px 16px;
+    border: 1px solid #4b5563; /* gray-600 */
+    border-radius: 6px;
+    color: #d1d5db; /* gray-300 */
+    font-weight: 500;
+    font-size: 0.875rem; /* text-sm */
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .manager-page__btn-vanilla:hover {
+    background-color: #1f2937; /* gray-800 */
+  }
+
+  .manager-page__nav {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 8px;
+    overflow-y: auto;
+  }
+
+  .manager-page__nav-link {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.875rem; /* text-sm */
+    text-decoration: none;
+    transition:
+      color 0.2s,
+      background-color 0.2s;
+  }
+
+  .manager-page__nav-link--active {
+    color: white;
+    background-color: #374151; /* gray-700 */
+  }
+
+  .manager-page__nav-link--inactive {
+    color: #9ca3af; /* gray-400 */
+  }
+
+  .manager-page__nav-link--inactive:hover {
+    color: white;
+    background-color: rgb(55 65 81 / 0.5); /* gray-700/50 */
+  }
+
+  .manager-page__footer {
+    padding: 16px;
+    border-top: 1px solid #1f2937; /* gray-800 */
+    color: #4b5563; /* gray-600 */
+    font-size: 0.75rem; /* text-xs */
+    text-align: center;
+  }
+
+  .manager-page__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: #111827; /* gray-900 */
+  }
+
+  .manager-page__outlet-container {
+    position: relative;
+    flex: 1;
+  }
+}

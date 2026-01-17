@@ -1,0 +1,21 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 139.596 139.596" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="cube-dramatic">
+<path id="left" d="M69.7981 0L130.245 34.8991V104.697L69.7981 139.596L9.35117 104.697V34.8991L69.7981 0Z" fill="url(#paint0_linear_0_550)"/>
+<path id="right" fill-rule="evenodd" clip-rule="evenodd" d="M130.244 34.9947V104.697L69.7983 139.596L69.7977 139.596V69.7976L130.078 34.8985L130.244 34.9947Z" fill="url(#paint1_linear_0_550)"/>
+<path id="top" fill-rule="evenodd" clip-rule="evenodd" d="M9.35111 34.8994V34.8996L69.7981 69.7986L130.245 34.8996V34.8994L69.7981 0.000353574L9.35111 34.8994Z" fill="url(#paint2_linear_0_550)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_550" x1="66.5006" y1="64.8518" x2="11.5414" y2="104.422" gradientUnits="userSpaceOnUse">
+<stop stop-color="#473EB7"/>
+<stop offset="1" stop-color="#201F41"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_550" x1="130.253" y1="104.972" x2="69.88" y2="69.9429" gradientUnits="userSpaceOnUse">
+<stop stop-color="#3A338A"/>
+<stop offset="1" stop-color="#231F41"/>
+</linearGradient>
+<linearGradient id="paint2_linear_0_550" x1="69.7981" y1="0.000353574" x2="69.7981" y2="69.7985" gradientUnits="userSpaceOnUse">
+<stop stop-color="#362A85"/>
+<stop offset="1" stop-color="#5E44C5"/>
+</linearGradient>
+</defs>
+</svg>

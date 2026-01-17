@@ -1,0 +1,6 @@
+@layer mod-manager-components {
+  /* Container styles if needed beyond utility classes */
+  .island {
+    background-color: #111121;
+  }
+}

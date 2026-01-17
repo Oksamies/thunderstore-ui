@@ -1,0 +1,339 @@
+@layer mod-manager-components {
+  :root {
+    --sidebar-width-expanded: 240px;
+    --sidebar-width-collapsed: 68px;
+    --sidebar-transition-speed: 0.2s;
+    --sidebar-bg: #101028;
+    --sidebar-text-primary: #f5f5f6;
+    --sidebar-text-secondary: #cbd0ec;
+    --sidebar-text-tertiary: #a7aed2;
+    --sidebar-item-active-bg: #3c3c86;
+    --sidebar-item-hover-bg: rgb(60 60 134 / 0.4);
+    --sidebar-border-radius: 8px;
+  }
+
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 16px;
+    width: var(--sidebar-width-expanded);
+    height: 100%;
+    padding: 16px 8px;
+    background-color: var(--sidebar-bg);
+    transition: width var(--sidebar-transition-speed) ease;
+  }
+
+  .sidebar--collapsed {
+    align-items: center;
+    width: var(--sidebar-width-collapsed);
+    padding: 16px 4px;
+  }
+
+  /* Logo */
+  .sidebar__logo {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0 0 32px 20px;
+  }
+
+  .sidebar--collapsed .sidebar__logo {
+    justify-content: center;
+    padding: 0 0 32px;
+  }
+
+  .sidebar__logo-img {
+    width: auto;
+    height: 20px;
+  }
+
+  /* Game Selector */
+  .sidebar__game-select {
+    display: flex;
+    flex-shrink: 0;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    height: 44px;
+    padding: 0 12px 0 0;
+    border-radius: var(--sidebar-border-radius);
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.1s;
+  }
+
+  .sidebar__game-select:hover {
+    /* Hover handled by .sidebar__game-select-btn */
+  }
+
+  .sidebar--collapsed .sidebar__game-select {
+    justify-content: center;
+    width: 60px;
+    padding: 0;
+    background: transparent; /* Collapsed state handles its own bg? Or should keep primary? Usually collapsed buttons retain color or become icon-only ghosts. Assuming keep color for now. */
+  }
+
+  .sidebar__game-icon-container {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 12px;
+    border-radius: var(--sidebar-border-radius);
+    overflow: hidden;
+    background-color: #2b2d42; /* Fallback for missing image */
+  }
+
+  .sidebar__game-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .sidebar__game-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .sidebar--collapsed .sidebar__game-info {
+    display: none;
+  }
+
+  .sidebar__game-title {
+    overflow: hidden;
+    color: var(--sidebar-text-primary);
+    font-weight: 700;
+    font-size: 14px;
+    font-family: Inter, sans-serif;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar__game-subtitle {
+    color: var(--sidebar-text-tertiary);
+    font-size: 10px;
+    font-family: Inter, sans-serif;
+  }
+
+  /* Navigation */
+  .sidebar__nav {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    overflow-y: auto;
+  }
+
+  .sidebar--collapsed .sidebar__nav {
+    align-items: center;
+  }
+
+  .sidebar__item {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    gap: 24px;
+    align-items: center;
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: none;
+    border-radius: var(--sidebar-border-radius);
+    color: var(--sidebar-text-secondary);
+    text-decoration: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.1s;
+  }
+
+  .sidebar__item:hover {
+    color: var(--sidebar-text-primary);
+    background-color: var(--sidebar-item-hover-bg);
+  }
+
+  .sidebar__item--active {
+    color: var(--sidebar-text-primary);
+    background-color: var(--sidebar-item-active-bg);
+  }
+
+  .sidebar__item-icon-wrapper {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+  }
+
+  .sidebar__item-icon {
+    color: var(--sidebar-text-tertiary);
+    font-size: 20px;
+  }
+
+  .sidebar__item--active .sidebar__item-icon {
+    color: var(--sidebar-text-secondary);
+  }
+
+  .sidebar__item:hover .sidebar__item-icon {
+    color: var(--sidebar-text-secondary);
+  }
+
+  /* Game Select Button Override - Ensured to be above regular item styles */
+  .sidebar__game-select-btn,
+  .sidebar__item.sidebar__game-select-btn {
+    color: var(--button-primary-text-color--default);
+    background-color: var(--button-primary-bg-color--default);
+    transition: all 0.2s ease;
+  }
+
+  .sidebar__game-select-btn:hover,
+  .sidebar__item.sidebar__game-select-btn:hover {
+    color: var(--button-primary-text-color--hover) !important;
+    background-color: var(--button-primary-bg-color--hover);
+  }
+
+  /* Override icon color for primary button */
+  .sidebar__item.sidebar__game-select-btn .sidebar__item-icon {
+    color: var(--button-primary-text-color--default); /* or inherit */
+  }
+
+  .sidebar__item.sidebar__game-select-btn:hover .sidebar__item-icon {
+    color: var(--button-primary-text-color--hover);
+  }
+
+  .sidebar__game-select-btn:active,
+  .sidebar__item.sidebar__game-select-btn:active {
+    color: var(--button-primary-text-color--active);
+    background-color: var(--button-primary-bg-color--active);
+  }
+
+  .sidebar--collapsed .sidebar__item {
+    gap: 0;
+    justify-content: center;
+    width: 44px;
+    padding-inline: 12px;
+  }
+
+  .sidebar__item-label {
+    flex: 1;
+    overflow: hidden;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: Inter, sans-serif;
+    white-space: nowrap;
+    text-align: left;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar--collapsed .sidebar__item-label {
+    display: none;
+  }
+
+  .sidebar__badge {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    padding: 4px 8px;
+    border-radius: 9999px;
+    background-color: rgb(67 67 132 / 0.32);
+  }
+
+  .sidebar__badge-text {
+    color: var(--sidebar-text-tertiary);
+    font-weight: 700;
+    font-size: 12px;
+    font-family: Inter, sans-serif;
+  }
+
+  .sidebar--collapsed .sidebar__badge {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    height: auto;
+    padding: 2px 4px;
+    border: 1px solid var(--sidebar-item-active-bg);
+    background-color: var(--sidebar-bg);
+  }
+
+  .sidebar__dot {
+    position: absolute;
+    top: 8px;
+    left: 29px;
+    width: 7px;
+    height: 7px;
+  }
+
+  .sidebar--collapsed .sidebar__dot {
+    top: 10px;
+    left: 50%;
+    margin-left: 6px;
+  }
+
+  .sidebar__dot-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .sidebar__progress-track {
+    position: absolute;
+    right: 3px;
+    bottom: 4px;
+    left: 4px;
+    height: 3px;
+    border-radius: 48px;
+    overflow: hidden;
+    background-color: var(--sidebar-item-active-bg);
+  }
+
+  .sidebar__progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #23ffab;
+  }
+
+  /* App Actions */
+  .sidebar__app-actions {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 4px;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  .sidebar--collapsed .sidebar__app-actions {
+    align-items: center;
+  }
+
+  /* Version */
+  .sidebar__version {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    width: 100%;
+    padding: 0 16px;
+  }
+
+  .sidebar__version-text {
+    color: var(--sidebar-text-tertiary);
+    font-size: 10px;
+    font-family: Inter, sans-serif;
+  }
+}

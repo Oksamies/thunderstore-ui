@@ -1,0 +1,183 @@
+@layer mod-manager-components {
+  .package-details-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    color: white;
+    background-color: #111827; /* gray-900 */
+  }
+
+  .package-details-view__header {
+    padding: 24px;
+    border-bottom: 1px solid #374151; /* gray-700 */
+    background-color: #1f2937; /* gray-800 */
+  }
+
+  .package-details-view__header-meta {
+    display: flex;
+    gap: 16px;
+  }
+
+  .package-details-view__header-link {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-weight: 700;
+  }
+
+  .package-details-view__content-area {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .package-details-view__main {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  .package-details-view__tabs {
+    display: flex;
+    gap: 16px; /* Adjust as needed */
+    margin-bottom: 24px;
+    border-bottom: 1px solid #374151; /* gray-700 */
+  }
+
+  .package-details-view__tab {
+    padding: 8px 16px;
+    border-bottom: 2px solid transparent;
+    color: #9ca3af; /* gray-400 */
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .package-details-view__tab:hover {
+    color: white;
+  }
+
+  .package-details-view__tab--active {
+    border-bottom-color: #3b82f6; /* blue-500 */
+    color: white;
+  }
+
+  .package-details-view__tab-content {
+    margin-top: 24px;
+  }
+
+  /* Sidebar */
+  .package-details-view__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 320px; /* w-80 (20rem = 320px) */
+    padding: 24px;
+    border-left: 1px solid #374151; /* gray-700 */
+    overflow-y: auto;
+    background-color: #1f2937; /* gray-800 */
+  }
+
+  .package-details-view__install-btn-root {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .package-details-view__meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .package-details-view__meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #374151; /* gray-700 */
+    font-size: 0.875rem; /* text-sm */
+  }
+
+  .package-details-view__meta-row:last-child {
+    border-bottom: 0;
+  }
+
+  .package-details-view__meta-label {
+    color: #9ca3af; /* gray-400 */
+  }
+
+  .package-details-view__meta-value {
+    font-weight: 500;
+  }
+
+  .package-details-view__section-title {
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .package-details-view__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .package-details-view__team-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .package-details-view__team-member {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .package-details-view__avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
+
+  /* Fallback states */
+  .package-details-view__loading,
+  .package-details-view__error {
+    padding: 32px;
+    color: white;
+  }
+
+  .package-details-view__error {
+    color: #f87171; /* red-400 */
+  }
+
+  .package-details-view__readme-section {
+    color: #d1d5db; /* gray-300 */
+  }
+
+  .package-details-view__readme-placeholder {
+    padding: 16px;
+    border-radius: 4px;
+    background-color: #1f2937; /* gray-800 */
+  }
+
+  .package-details-view__readme-title {
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 1.25rem; /* xl */
+  }
+
+  .package-details-view__desc-text {
+    margin-top: 16px;
+  }
+
+  .package-details-view__versions-title {
+    margin-bottom: 16px;
+    color: #d1d5db; /* gray-300 */
+    font-weight: 700;
+    font-size: 1.25rem; /* xl */
+  }
+
+  .package-details-view__tab-not-implemented {
+    color: #d1d5db; /* gray-300 */
+  }
+}

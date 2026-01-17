@@ -1,0 +1,119 @@
+.dashboard-mod-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.dashboard-mod-list__header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  height: 36px;
+  margin-bottom: 8px;
+  padding: 0 16px;
+  border-radius: 8px;
+  color: var(--color-text-secondary, #cbd0ec);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  background-color: rgb(59 63 125 / 0.24); /* var(--color/surface/a4) */
+}
+
+.dashboard-mod-list__col-name {
+  flex: 1;
+}
+
+.dashboard-mod-list__col-version {
+  width: 80px;
+  padding-right: 16px;
+  text-align: right;
+}
+
+.dashboard-mod-list__col-toggle {
+  width: 60px;
+  text-align: right;
+}
+
+.dashboard-mod-list__content {
+  position: relative;
+  flex: 1;
+}
+
+.dashboard-mod-list__scroll {
+  /* Scrollbar custom styles can go here if needed */
+}
+
+/* Row Styles */
+.dashboard-mod-row-container {
+  padding-bottom: 2px;
+
+  /* padding-right: 4px; Adjust for scrollbar if needed */
+}
+
+.dashboard-mod-row {
+  display: flex;
+  align-items: center;
+  height: 40px; /* Item height minus padding/margin */
+  padding: 0 8px;
+  border-radius: 8px;
+  background-color: rgb(57 57 106 / 0.15); /* var(--color/ui/surface-1) */
+  transition: background-color 0.2s;
+}
+
+.dashboard-mod-row:hover {
+  background-color: rgb(57 57 106 / 0.3);
+}
+
+.dashboard-mod-row__icon-container {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #070721; /* surface/1 */
+}
+
+.dashboard-mod-row__icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.dashboard-mod-row__icon-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #666;
+}
+
+.dashboard-mod-row__name {
+  flex: 1;
+  margin-right: 12px;
+  overflow: hidden;
+  color: #f5f5f6; /* text/primary */
+  font-weight: 700;
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dashboard-mod-row__version {
+  flex-shrink: 0;
+  width: 80px;
+  padding-right: 16px;
+  color: #cbd0ec; /* text/secondary */
+  font-size: 12px;
+  text-align: right;
+}
+
+.dashboard-mod-row__toggle {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: flex-end;
+  width: 60px;
+}

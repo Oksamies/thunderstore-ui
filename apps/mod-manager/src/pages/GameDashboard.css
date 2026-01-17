@@ -1,0 +1,445 @@
+.game-dashboard {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: #f5f5f6;
+  background-color: var(--color-background);
+}
+
+/* LEFT PANEL (Launch & Status) */
+.game-dashboard__left {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 400px;
+  max-width: 400px;
+  border-right: 1px solid rgb(0 0 0 / 0.4);
+  background-color: #101028; /* --island-bg-color */
+}
+
+.game-dashboard__bg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  opacity: 0.4; /* mix-blend-luminosity opacity-25 in Figma, approximating */
+}
+
+.game-dashboard__bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
+
+.game-dashboard__logo-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+
+  /* background: linear-gradient(to bottom, #14142e 18%, rgba(20, 20, 46, 0) 100%); */
+}
+
+.game-dashboard__logo {
+  max-width: 80%;
+  height: auto;
+  max-height: 140px;
+  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.5));
+}
+
+.game-dashboard__left-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: flex-end;
+  padding: 16px;
+}
+
+/* Status Cards */
+.game-dashboard__status-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.game-dashboard__status-card {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #101028; /* --island-bg-color */
+  box-shadow:
+    0 0 1px 0 rgb(0 0 0 / 0.4),
+    0 1px 2px 0 rgb(0 0 0 / 0.9);
+}
+
+.game-dashboard__status-inner {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  background-color: rgb(67 67 132 / 0.32); /* surface/a5 */
+}
+
+.game-dashboard__status-text {
+  display: flex;
+  flex: 1;
+  gap: 16px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.game-dashboard__status-icon {
+  width: 9px;
+  text-align: center;
+}
+
+.game-dashboard__status-text--conflict {
+  color: #f3cf4f; /* accent/yellow */
+}
+
+.game-dashboard__status-text--update {
+  color: #50d99f; /* accent/green */
+}
+
+.game-dashboard__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 8px;
+  color: #f5f5f6;
+  font-weight: 700;
+  font-size: 14px;
+  background-color: #623bce; /* button/primary */
+  cursor: pointer;
+}
+
+.game-dashboard__action-btn:hover {
+  background-color: #5331b0;
+}
+
+/* Launch Button */
+.game-dashboard__launch-group {
+  display: flex;
+  width: 100%;
+  height: 64px;
+}
+
+.game-dashboard__launch-btn {
+  position: relative;
+  display: flex;
+  flex: 1;
+  gap: 16px;
+  align-items: center;
+  padding: 0 24px;
+  border: none;
+  border-radius: 8px 0 0 8px;
+  overflow: hidden;
+  color: #031912; /* cyber-green/2 */
+  font-weight: 700;
+  font-size: 20px;
+  background-color: #23ffab; /* button/accent */
+  box-shadow:
+    inset 0 0 16px 0 #40ae7f,
+    inset 0 1px 0 0 rgb(255 255 255 / 0.2),
+    inset 0 -3px 0 0 rgb(0 0 0 / 0.35);
+  cursor: pointer;
+}
+
+.game-dashboard__launch-btn:hover {
+  background-color: #1fe099;
+}
+
+.game-dashboard__launch-extra {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  border: none;
+  border-left: 1px solid rgb(0 0 0 / 0.1);
+  border-radius: 0 8px 8px 0;
+  color: #031912;
+  background-color: #23ffab;
+  box-shadow:
+    inset 0 0 16px 0 #40ae7f,
+    inset 0 1px 0 0 rgb(255 255 255 / 0.2),
+    inset 0 -3px 0 0 rgb(0 0 0 / 0.35);
+  cursor: pointer;
+}
+
+.game-dashboard__launch-extra:hover {
+  background-color: #1fe099;
+}
+
+/* RIGHT PANEL (Profile & Mods) */
+.game-dashboard__right {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background-color: #101028; /* island-bg */
+}
+
+.game-dashboard__profile-bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+  padding: 16px 24px 8px;
+}
+
+/* Profile Dropdown Content Styles */
+.game-dashboard__profile-dropdown {
+  display: flex;
+  flex-direction: column;
+  width: 320px; /* Approximate width from Figma visual */
+  border: 1px solid rgb(61 61 127 / 0.44); /* dropdown/border-color--default */
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #191b38; /* dropdown/bg-color--default */
+  box-shadow: 0 12px 24px 5px rgb(0 0 0 / 0.75);
+}
+
+.game-dashboard__profile-search-container {
+  padding: 12px 16px;
+}
+
+.game-dashboard__profile-search {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid rgb(70 70 149 / 0.66);
+  border-radius: 8px;
+  background-color: rgb(59 63 125 / 0.24);
+}
+
+.game-dashboard__profile-search-icon {
+  color: #a7aed2; /* input/icon-color--default */
+  font-size: 14px;
+}
+
+.game-dashboard__profile-search-input {
+  flex: 1;
+  border: none;
+  color: #f5f5f6;
+  font-size: 14px;
+  font-family: inherit;
+  background: transparent;
+  outline: none;
+}
+
+.game-dashboard__profile-search-input::placeholder {
+  color: #a7aed2; /* input/placeholder-color */
+}
+
+/* Divider Override if necessary, using NewDropDownDivider mostly handles it */
+
+.game-dashboard__profile-list {
+  max-height: 400px;
+  padding: 8px;
+  overflow-y: auto;
+}
+
+.game-dashboard__profile-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.game-dashboard__profile-group-header {
+  padding: 12px 16px;
+  border: none;
+  color: #23ffab; /* cyber-green/7 */
+  font-weight: 700;
+  font-size: 12px;
+  text-align: left;
+  text-transform: uppercase;
+  background: none;
+}
+
+.game-dashboard__profile-item {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  min-height: 36px;
+  padding: 12px 16px !important; /* Override cyberstorm defaults if needed */
+  border-radius: 8px;
+  color: #f5f5f6;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.game-dashboard__profile-item-name {
+  flex: 1;
+  color: #f5f5f6;
+  font-size: 14px;
+}
+
+.game-dashboard__profile-item:hover {
+  background-color: rgb(63 63 136 / 0.55);
+}
+
+.game-dashboard__profile-item--active {
+  background-color: rgb(63 63 136 / 0.55);
+}
+
+.game-dashboard__profile-item--active .game-dashboard__profile-item-name {
+  color: #f5f5f6;
+}
+
+.game-dashboard__profile-item--active .icon {
+  color: #23ffab;
+}
+
+.game-dashboard__profile-tag {
+  color: #f5f5f6 !important;
+  background-color: rgb(70 70 149 / 0.66) !important;
+}
+
+.game-dashboard__profile-icon--shared {
+  width: 16px;
+  color: #df56d1; /* accent/pink */
+  font-size: 14px;
+  text-align: center;
+}
+
+.game-dashboard__profile-icon--subscribed {
+  width: 16px;
+  color: #1ca3f5; /* accent/blue */
+  font-size: 14px;
+  text-align: center;
+}
+
+.game-dashboard__profile-select {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  color: #f5f5f6;
+  background-color: rgb(70 70 149 / 0.66); /* button/secondary */
+  cursor: pointer;
+}
+
+.game-dashboard__profile-label {
+  margin-right: 8px;
+  color: #a7aed2; /* text/tertiary */
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.game-dashboard__profile-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.game-dashboard__profile-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  color: #f5f5f6;
+  font-size: 16px;
+  background-color: transparent; /* Assuming transparent/hover style from design which shows icons directly */
+  cursor: pointer;
+}
+
+.game-dashboard__profile-action:hover {
+  background-color: rgb(255 255 255 / 0.1);
+}
+
+/* Mod List Area */
+.game-dashboard__list-wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 0 24px 16px;
+  overflow: hidden;
+}
+
+/* DROPDOWN MENU ACTIONS */
+.game-dashboard__actions-dropdown {
+  z-index: 10000 !important;
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  padding: 8px;
+  border: 1px solid rgb(61 61 127 / 0.44);
+  border-radius: 8px;
+  background-color: #191b38;
+  box-shadow: 0 12px 24px 5px rgb(0 0 0 / 0.75);
+}
+
+.game-dashboard__menu-item {
+  display: flex !important;
+  gap: 12px;
+  align-items: center;
+  min-height: 32px;
+  padding: 8px !important;
+  border-radius: 8px;
+  color: #f5f5f6;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.game-dashboard__menu-item:hover {
+  background-color: rgb(63 63 136 / 0.55);
+}
+
+.game-dashboard__menu-icon {
+  display: flex;
+  justify-content: center;
+  width: 16px;
+  color: #a7aed2;
+}
+
+.game-dashboard__menu-text {
+  flex: 1;
+  font-size: 14px;
+  font-family: Inter, sans-serif;
+}
+
+.game-dashboard__menu-arrow {
+  color: #a7aed2;
+  font-size: 12px;
+}
+
+.game-dashboard__menu-header {
+  padding: 8px;
+  color: #23ffab;
+  font-weight: 700;
+  font-size: 12px;
+  font-family: Inter, sans-serif;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.game-dashboard__menu-danger .game-dashboard__menu-icon,
+.game-dashboard__menu-danger .game-dashboard__menu-text {
+  z-index: 10000 !important;
+}

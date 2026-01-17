@@ -1,0 +1,207 @@
+@layer mod-manager-components {
+  .config-editor-view {
+    display: flex;
+    height: 100%;
+    color: #fff;
+    background-color: #111827; /* gray-900 */
+  }
+
+  /* Sidebar */
+  .config-editor-view__sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 33.333%;
+    border-right: 1px solid #374151; /* gray-700 */
+  }
+
+  .config-editor-view__sidebar-search {
+    padding: 1rem;
+    border-bottom: 1px solid #374151; /* gray-700 */
+  }
+
+  .config-editor-view__search-input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #374151; /* gray-700 */
+    border-radius: 0.25rem;
+    color: #fff;
+    background-color: #1f2937; /* gray-800 */
+  }
+
+  .config-editor-view__file-list {
+    flex: 1;
+    overflow: auto;
+  }
+
+  .config-editor-view__file-item {
+    padding: 0.75rem;
+    border-bottom: 1px solid #1f2937; /* gray-800 */
+    cursor: pointer;
+    transition: background-color 0.1s;
+  }
+
+  .config-editor-view__file-item:hover {
+    background-color: #1f2937; /* gray-800 */
+  }
+
+  .config-editor-view__file-item--active {
+    border-left: 4px solid #3b82f6; /* blue-500 */
+    background-color: rgb(30 58 138 / 0.4); /* blue-900/40 */
+  }
+
+  .config-editor-view__file-name {
+    overflow: hidden;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .config-editor-view__file-date {
+    color: #6b7280; /* gray-500 */
+    font-size: 0.75rem; /* text-xs */
+  }
+
+  /* Editor Area */
+  .config-editor-view__editor {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .config-editor-view__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid #374151; /* gray-700 */
+    background-color: #1f2937; /* gray-800 */
+  }
+
+  .config-editor-view__title {
+    overflow: hidden;
+    font-weight: 700;
+    font-size: 1.125rem; /* text-lg */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .config-editor-view__save-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .config-editor-view__save-btn--unsaved {
+    color: #fff;
+    background-color: #16a34a; /* green-600 */
+  }
+
+  .config-editor-view__save-btn--unsaved:hover {
+    background-color: #15803d; /* green-700 */
+  }
+
+  .config-editor-view__save-btn--disabled {
+    color: #9ca3af; /* gray-400 */
+    background-color: #374151; /* gray-700 */
+    cursor: default;
+  }
+
+  .config-editor-view__content {
+    flex: 1;
+    padding: 1.5rem;
+    overflow: auto;
+  }
+
+  .config-editor-view__section {
+    margin-bottom: 2rem;
+  }
+
+  .config-editor-view__section-title {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgb(30 58 138 / 0.3); /* blue-900/30 */
+    color: #60a5fa; /* blue-400 */
+    font-weight: 700;
+    font-size: 1.25rem; /* text-xl */
+  }
+
+  .config-editor-view__variables {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .config-editor-view__item {
+    padding: 1rem;
+    border: 1px solid #374151; /* gray-700 */
+    border-radius: 0.25rem;
+    background-color: #1f2937; /* gray-800 */
+  }
+
+  .config-editor-view__label-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .config-editor-view__label {
+    color: #e5e7eb; /* gray-200 */
+    font-weight: 600;
+  }
+
+  .config-editor-view__comments {
+    max-width: 28rem;
+    margin-left: 1rem;
+    color: #9ca3af; /* gray-400 */
+    font-size: 0.75rem; /* text-xs */
+    text-align: right;
+  }
+
+  .config-editor-view__input-text {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #4b5563; /* gray-600 */
+    border-radius: 0.25rem;
+    color: #fff;
+    background-color: #111827; /* gray-900 */
+    outline: none;
+  }
+
+  .config-editor-view__input-text:focus {
+    border-color: #3b82f6; /* blue-500 */
+  }
+
+  .config-editor-view__radio-group {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .config-editor-view__radio-label {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .config-editor-view__empty {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #6b7280; /* gray-500 */
+  }
+
+  .config-editor-view__empty-icon {
+    font-size: 2.25rem; /* 4xl approx */
+    opacity: 0.2;
+  }
+}

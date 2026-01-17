@@ -1,7 +1,16 @@
-import { Arrow, Content, Portal, Root, Trigger } from "@radix-ui/react-tooltip";
+import {
+  Arrow,
+  Content,
+  Portal,
+  Provider,
+  Root,
+  Trigger,
+} from "@radix-ui/react-tooltip";
 import { type ReactNode, memo } from "react";
 
 import "./Tooltip.css";
+
+export const TooltipProvider = Provider;
 
 export interface TooltipProps {
   content?: string;

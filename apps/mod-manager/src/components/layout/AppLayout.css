@@ -1,0 +1,50 @@
+@layer mod-manager-layout {
+  :root {
+    --section-bg: #101028;
+    --section-border-radius: 8px;
+    --section-gap: 8px;
+  }
+
+  /* CONTAINER */
+  .container {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .container--x {
+    flex-direction: row;
+  }
+
+  .container--y {
+    flex-direction: column;
+  }
+
+  .container--full {
+    flex: 1;
+  }
+
+  .container--stretch {
+    align-self: stretch;
+  }
+
+  /* ISLANDS */
+  .island {
+    display: flex;
+    gap: var(--section-gap);
+  }
+
+  .island-item {
+    position: relative;
+    border-radius: var(--section-border-radius);
+    overflow: hidden;
+    background-color: var(--section-bg);
+  }
+
+  /* APP SPECIFIC OVERRIDES */
+  .root-layout {
+    width: 100%;
+    height: 100vh;
+    background-color: transparent;
+  }
+}

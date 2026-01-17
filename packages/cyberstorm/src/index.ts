@@ -69,6 +69,9 @@ export {
   DropDown as NewDropDown,
   DropDownItem as NewDropDownItem,
   DropDownDivider as NewDropDownDivider,
+  DropDownSub as NewDropDownSub,
+  DropDownSubTrigger as NewDropDownSubTrigger,
+  DropDownSubContent as NewDropDownSubContent,
 } from "./newComponents/DropDown/DropDown";
 export * as EmptyState from "./newComponents/EmptyState";
 export { Heading } from "./newComponents/Heading/Heading";
@@ -113,7 +116,11 @@ export {
   type TableLabels as NewTableLabels,
 } from "./newComponents/Table/Table";
 export { Tabs } from "./newComponents/Tabs/Tabs";
-export { Tooltip, type TooltipProps } from "./newComponents/Tooltip/Tooltip";
+export {
+  Tooltip,
+  TooltipProvider,
+  type TooltipProps,
+} from "./newComponents/Tooltip/Tooltip";
 
 // Utils
 export { isNode, isRecord, isStringArray } from "./utils/type_guards";

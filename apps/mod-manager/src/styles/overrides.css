@@ -1,0 +1,23 @@
+@layer nimbus-overrides {
+  :root {
+    --nimbus-not-used-token: black;
+  }
+
+  @media (width <= 63.5rem) {
+    .hide-l {
+      display: none;
+    }
+  }
+
+  @media (width <= 40rem) {
+    .hide-m {
+      display: none;
+    }
+  }
+
+  @media (width <= 48rem) {
+    .hide-s {
+      display: none;
+    }
+  }
+}

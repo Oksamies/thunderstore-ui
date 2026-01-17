@@ -1,0 +1,21 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 139.596 139.597" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="cube-masked">
+<path id="Subtract" fill-rule="evenodd" clip-rule="evenodd" d="M130.245 34.8994L69.7981 0.000353574L9.35111 34.8994V71.5316L10.1135 71.941L9.35111 72.2446V104.698L69.7981 139.597L130.245 104.698V72.1565L129.704 71.9412L130.245 71.6508V34.8994Z" fill="url(#paint0_linear_0_585)"/>
+<path id="Subtract_2" fill-rule="evenodd" clip-rule="evenodd" d="M130.244 71.651V34.9951L130.078 34.8991L69.7977 69.7981V139.596L69.7981 139.597L130.244 104.698V72.157L129.703 71.9416L130.244 71.651Z" fill="url(#paint1_linear_0_585)"/>
+<path id="top" fill-rule="evenodd" clip-rule="evenodd" d="M9.35111 34.8994V34.8996L69.7981 69.7986L130.245 34.8996V34.8994L69.7981 0.000353574L9.35111 34.8994Z" fill="url(#paint2_linear_0_585)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_585" x1="66.5005" y1="64.8521" x2="11.5414" y2="104.423" gradientUnits="userSpaceOnUse">
+<stop stop-color="#473EB7"/>
+<stop offset="1" stop-color="#201F41"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_585" x1="130.252" y1="104.972" x2="69.8799" y2="69.9435" gradientUnits="userSpaceOnUse">
+<stop stop-color="#3A338A"/>
+<stop offset="1" stop-color="#231F41"/>
+</linearGradient>
+<linearGradient id="paint2_linear_0_585" x1="69.7981" y1="0.000353574" x2="69.7981" y2="69.7985" gradientUnits="userSpaceOnUse">
+<stop stop-color="#362A85"/>
+<stop offset="1" stop-color="#5E44C5"/>
+</linearGradient>
+</defs>
+</svg>
