@@ -1,12 +1,14 @@
 import {
   faClockRotateLeft,
+  faCodeBranch,
   faCodeMerge,
   faDownload,
+  faExclamationCircle,
+  faHardDrive,
   faThumbTack,
   faThumbsUp,
   faWarning,
 } from "@fortawesome/free-solid-svg-icons";
-import { faLips } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ago from "s-ago";
 
@@ -36,6 +38,7 @@ interface Props {
   csSize?: CardPackageSizes;
   csModifiers?: CardPackageModifiers;
   rootClasses?: string;
+  footerExtension?: React.ReactNode;
 }
 
 export function CardPackage(props: Props) {
@@ -47,10 +50,24 @@ export function CardPackage(props: Props) {
     csSize = "medium",
     csModifiers,
     rootClasses,
+    footerExtension,
   } = props;
   const updateTime = Date.parse(packageData.last_updated);
   const updateTimeDelta = Math.round((Date.now() - updateTime) / 86400000);
   const isUpdated = updateTimeDelta < 3;
+
+  // Safe access for version if it exists on the data object but not on the type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const version = (packageData as any).latest_version_number;
+  const size = packageData.size;
+
+  const formatSize = (bytes: number) => {
+    if (bytes === 0) return "0 B";
+    const k = 1000;
+    const sizes = ["B", "KB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+  };
 
   const tags = (
     <div className="card-package__tags">
@@ -75,8 +92,8 @@ export function CardPackage(props: Props) {
     <p className="card-package__description">{packageData.description}</p>
   );
 
-  const meta = (
-    <div className="card-package__meta">
+  const metaItems = (
+    <>
       <TooltipWrapper
         tooltipText={`${formatInteger(
           packageData.download_count,
@@ -90,6 +107,16 @@ export function CardPackage(props: Props) {
           {formatInteger(packageData.download_count)}
         </NewMetaItem>
       </TooltipWrapper>
+
+      {["fullWidth", "list"].includes(csVariant) && version ? (
+        <NewMetaItem csSize="12">
+          <NewIcon csMode="inline" noWrapper>
+            <FontAwesomeIcon icon={faCodeBranch} />
+          </NewIcon>
+          {version}
+        </NewMetaItem>
+      ) : null}
+
       <TooltipWrapper
         tooltipText={`${formatInteger(
           packageData.rating_count,
@@ -111,17 +138,17 @@ export function CardPackage(props: Props) {
           {formatInteger(packageData.rating_count)}
         </NewMetaItem>
       </TooltipWrapper>
-      {/* <TooltipWrapper
-      tooltipText={`Latest version: TODO ADD FIELD TO ENDPOINT`}
-    >
-      <div className="card-package__footer__metaitem">
-        <NewIcon csMode="inline" noWrapper>
-          <FontAwesomeIcon icon={faCodeBranch} />
-        </NewIcon>
-        TODO
-      </div>
-    </TooltipWrapper> */}
-      {csVariant === "fullWidth" ? (
+
+      {["fullWidth", "list"].includes(csVariant) && size ? (
+        <NewMetaItem csSize="12">
+          <NewIcon csMode="inline" noWrapper>
+            <FontAwesomeIcon icon={faHardDrive} />
+          </NewIcon>
+          {formatSize(size)}
+        </NewMetaItem>
+      ) : null}
+
+      {["fullWidth", "list"].includes(csVariant) ? (
         <TooltipWrapper
           tooltipText={`Last updated: ${ago(
             new Date(packageData.last_updated)
@@ -135,23 +162,33 @@ export function CardPackage(props: Props) {
           </NewMetaItem>
         </TooltipWrapper>
       ) : null}
+    </>
+  );
+
+  const meta = (
+    <div className="card-package__meta">
+      {metaItems}
+      {footerExtension}
     </div>
   );
 
   const cardFooter = (
     <div className="card-package__footer">
-      {csVariant === "fullWidth" ? tags : null}
+      {["list"].includes(csVariant) ? tags : null}
+      {["fullWidth"].includes(csVariant) ? footerExtension : null}
 
-      {csVariant === "card" ? (
+      {["card", "tile"].includes(csVariant) ? (
         <>
           {meta}
-          <span className="card-package__updated">
-            Last updated:
-            <RelativeTime
-              time={packageData.last_updated}
-              suppressHydrationWarning
-            />
-          </span>
+          {!["tile"].includes(csVariant) ? (
+            <span className="card-package__updated">
+              Last updated:
+              <RelativeTime
+                time={packageData.last_updated}
+                suppressHydrationWarning
+              />
+            </span>
+          ) : null}
         </>
       ) : null}
     </div>
@@ -175,8 +212,9 @@ export function CardPackage(props: Props) {
         title={`${formatToDisplayName(packageData.name)} by ${
           packageData.namespace
         }`}
+        rootClasses="card-package__header-link"
       >
-        {csVariant === "card" &&
+        {["card", "tile"].includes(csVariant) &&
         (packageData.is_pinned ||
           packageData.is_nsfw ||
           packageData.is_deprecated ||
@@ -193,7 +231,7 @@ export function CardPackage(props: Props) {
             {packageData.is_nsfw ? (
               <NewTag csSize="small" csModifiers={["dark"]} csVariant="pink">
                 <NewIcon noWrapper csMode="inline">
-                  <FontAwesomeIcon icon={faLips} />
+                  <FontAwesomeIcon icon={faExclamationCircle} />
                 </NewIcon>
                 NSFW
               </NewTag>
@@ -221,24 +259,93 @@ export function CardPackage(props: Props) {
           cardType="package"
           rootClasses="card-package__image-wrapper"
           square
-          intrinsicWidth={256}
-          intrinsicHeight={256}
+          intrinsicWidth={["fullWidth", "list"].includes(csVariant) ? 144 : 256}
+          intrinsicHeight={
+            ["fullWidth", "list"].includes(csVariant) ? 144 : 256
+          }
         />
       </NewLink>
 
       <div className="card-package__content">
         <div className="card-package__info">
-          <NewLink
-            primitiveType="cyberstormLink"
-            linkId="Package"
-            community={packageData.community_identifier}
-            namespace={packageData.namespace}
-            package={packageData.name}
-            rootClasses="card-package__title"
-            title={formatToDisplayName(packageData.name)}
-          >
-            {formatToDisplayName(packageData.name)}
-          </NewLink>
+          {["card", "featured"].includes(csVariant) ? (
+            <NewLink
+              primitiveType="cyberstormLink"
+              linkId="Package"
+              community={packageData.community_identifier}
+              namespace={packageData.namespace}
+              package={packageData.name}
+              rootClasses="card-package__title"
+              title={formatToDisplayName(packageData.name)}
+            >
+              {formatToDisplayName(packageData.name)}
+            </NewLink>
+          ) : (
+            <div className="card-package__title-row">
+              <NewLink
+                primitiveType="cyberstormLink"
+                linkId="Package"
+                community={packageData.community_identifier}
+                namespace={packageData.namespace}
+                package={packageData.name}
+                rootClasses="card-package__title"
+                title={formatToDisplayName(packageData.name)}
+              >
+                {formatToDisplayName(packageData.name)}
+              </NewLink>
+              {packageData.is_pinned ||
+              packageData.is_nsfw ||
+              packageData.is_deprecated ||
+              isUpdated ? (
+                <div className="card-package__status-tags">
+                  {packageData.is_pinned ? (
+                    <NewTag
+                      csSize="small"
+                      csModifiers={["dark"]}
+                      csVariant="blue"
+                    >
+                      <NewIcon noWrapper csMode="inline">
+                        <FontAwesomeIcon icon={faThumbTack} />
+                      </NewIcon>
+                      Pinned
+                    </NewTag>
+                  ) : null}
+                  {packageData.is_deprecated ? (
+                    <NewTag
+                      csSize="small"
+                      csModifiers={["dark"]}
+                      csVariant="yellow"
+                    >
+                      <NewIcon noWrapper csMode="inline">
+                        <FontAwesomeIcon icon={faWarning} />
+                      </NewIcon>
+                      Deprecated
+                    </NewTag>
+                  ) : null}
+                  {packageData.is_nsfw ? (
+                    <NewTag
+                      csSize="small"
+                      csModifiers={["dark"]}
+                      csVariant="pink"
+                    >
+                      <NewIcon noWrapper csMode="inline">
+                        <FontAwesomeIcon icon={faExclamationCircle} />
+                      </NewIcon>
+                      NSFW
+                    </NewTag>
+                  ) : null}
+                  {isUpdated ? (
+                    <NewTag csSize="small" csVariant="green">
+                      <NewIcon noWrapper csMode="inline">
+                        <FontAwesomeIcon icon={faCodeMerge} />
+                      </NewIcon>
+                      Updated
+                    </NewTag>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          )}
 
           <div className="card-package__author">
             <span className="card-package__prefix">by</span>
@@ -256,7 +363,7 @@ export function CardPackage(props: Props) {
           </div>
         </div>
 
-        {["card", "featured", "fullWidth"].includes(csVariant) &&
+        {["card", "featured", "fullWidth", "list"].includes(csVariant) &&
         packageData.description
           ? description
           : null}
@@ -264,9 +371,19 @@ export function CardPackage(props: Props) {
         {["card", "featured"].includes(csVariant) ? tags : null}
         {csVariant === "featured" ? meta : null}
 
-        {csVariant === "card" ? cardFooter : null}
+        {["fullWidth", "list"].includes(csVariant) ? (
+          <div className="card-package__meta-row">
+            {tags}
+            <div className="card-package__meta">{metaItems}</div>
+          </div>
+        ) : null}
+
+        {["card", "tile"].includes(csVariant) ? cardFooter : null}
       </div>
-      {csVariant === "fullWidth" ? cardFooter : null}
+      {/* Use a wrapper for footer to allow specific styling in fullWidth */}
+      {["fullWidth", "list"].includes(csVariant) ? (
+        <div className="card-package__footer-wrapper">{cardFooter}</div>
+      ) : null}
     </div>
   );
 }

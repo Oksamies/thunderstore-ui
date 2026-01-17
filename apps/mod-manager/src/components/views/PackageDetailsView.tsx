@@ -43,7 +43,7 @@ const PackageDetailsView: React.FC = () => {
   const [activeTab, setActiveTab] = useState("details");
 
   // Fetch data
-  const packageRequest = usePromise(
+  const listing = usePromise(
     (c: string | undefined, n: string | undefined, p: string | undefined) => {
       if (!c || !n || !p) return Promise.reject("Missing params");
       return dapper.getPackageListingDetails(c, n, p);
@@ -51,9 +51,9 @@ const PackageDetailsView: React.FC = () => {
     [community, namespace, pkg]
   );
 
-  const teamRequest = usePromise(
+  const team = usePromise(
     (n: string | undefined) => {
-      if (!n) return Promise.reject("Missing namespace");
+      if (!n) return Promise.resolve(null);
       return dapper.getTeamDetails(n);
     },
     [namespace]
@@ -64,6 +64,7 @@ const PackageDetailsView: React.FC = () => {
     alert("Download logic to be implemented here (same as OnlineModView)");
   };
 
+  /*
   if (packageRequest.loading) {
     return (
       <div className="package-details-view__loading">
@@ -79,9 +80,9 @@ const PackageDetailsView: React.FC = () => {
       </div>
     );
   }
+  */
 
-  const listing = packageRequest.data;
-  const team = teamRequest.data;
+  if (!listing) return <div>Package not found</div>;
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -253,7 +254,8 @@ const PackageDetailsView: React.FC = () => {
           )}
 
           {/* Team Members if available */}
-          {/* Requires extra fetch or team data */}
+          {/* Requires extra fetch or team data - TODO: implement getTeamMembers */}
+          {/*
           {team && (
             <div>
               <h4 className="package-details-view__section-title">Team</h4>
@@ -276,6 +278,7 @@ const PackageDetailsView: React.FC = () => {
               </div>
             </div>
           )}
+          */}
         </div>
       </div>
     </div>

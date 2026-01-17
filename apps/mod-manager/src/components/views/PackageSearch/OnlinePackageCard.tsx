@@ -1,39 +1,35 @@
 import {
-  faBan,
   faCheck,
   faDownload,
-  faExclamationCircle,
   faSpinner,
   faSyncAlt,
-  faThumbsUp,
-  faThumbtack,
+  faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
-import { NewIcon } from "@thunderstore/cyberstorm";
+import { CardPackage, NewButton, NewIcon } from "@thunderstore/cyberstorm";
+import { type CardPackageVariants } from "@thunderstore/cyberstorm-theme";
 import { PackageListing } from "@thunderstore/dapper/types";
 
 import ManifestV2 from "../../../model/ManifestV2";
 import VersionNumber from "../../../model/VersionNumber";
 import "./OnlinePackageCard.css";
 
-function formatNumber(num: number): string {
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + "M";
-  }
-  if (num >= 1000) {
-    return (num / 1000).toFixed(1) + "k";
-  }
-  return num.toString();
-}
-
 interface OnlinePackageCardProps {
   listing: PackageListing;
   installedMods: ManifestV2[];
-  downloadState?: any;
-  handleDownload: (listing: PackageListing, update?: boolean) => void;
-  handleToggle?: (mod: ManifestV2) => void; // Optional for now
+  downloadState?: {
+    status:
+      | "pending"
+      | "fetching-details"
+      | "installing"
+      | "finished"
+      | "failed";
+  };
+  handleDownload: (pkg: PackageListing, update: boolean) => void;
+  handleToggle?: (mod: ManifestV2) => void;
+  viewMode?: CardPackageVariants;
 }
 
 const OnlinePackageCard: React.FC<OnlinePackageCardProps> = ({
@@ -41,6 +37,8 @@ const OnlinePackageCard: React.FC<OnlinePackageCardProps> = ({
   installedMods,
   downloadState,
   handleDownload,
+  handleToggle,
+  viewMode = "card",
 }) => {
   const modId = `${listing.namespace}-${listing.name}`;
   const installed = useMemo(
@@ -48,10 +46,13 @@ const OnlinePackageCard: React.FC<OnlinePackageCardProps> = ({
     [installedMods, modId]
   );
 
+  const [isHovered, setIsHovered] = useState(false);
+
   const isDownloading =
     downloadState &&
-    (downloadState.status === "downloading" ||
-      downloadState.status === "extracting");
+    (downloadState.status === "pending" ||
+      downloadState.status === "fetching-details" ||
+      downloadState.status === "installing");
 
   let hasUpdate = false;
   if (installed) {
@@ -66,138 +67,118 @@ const OnlinePackageCard: React.FC<OnlinePackageCardProps> = ({
 
   const onInstallClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     handleDownload(listing, false);
   };
 
   const onUpdateClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     handleDownload(listing, true);
   };
 
-  return (
-    <div className="package-card">
-      <div className="package-card__top">
-        <div className="package-card__image-wrapper">
-          <img
-            src={
-              listing.icon_url ||
-              "https://thunderstore.io/static/img/default-icon.png"
-            }
-            className="package-card__image"
-            alt={listing.name}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src =
-                "https://thunderstore.io/static/img/default-icon.png";
-            }}
-          />
-        </div>
+  const onUninstallClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (installed && handleToggle) {
+      handleToggle(installed);
+    }
+  };
 
-        <div className="package-card__badges">
-          {listing.is_pinned && (
-            <div className="badge badge--pinned" title="Pinned">
-              <NewIcon noWrapper>
-                <FontAwesomeIcon icon={faThumbtack} />
-              </NewIcon>
-            </div>
-          )}
-          {listing.is_deprecated && (
-            <div className="badge badge--deprecated" title="Deprecated">
-              <NewIcon noWrapper>
-                <FontAwesomeIcon icon={faBan} />
-              </NewIcon>
-            </div>
-          )}
-          {listing.is_nsfw && (
-            <div className="badge badge--nsfw" title="NSFW">
-              <NewIcon noWrapper>
-                <FontAwesomeIcon icon={faExclamationCircle} />
-              </NewIcon>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="package-card__content">
-        <div className="package-card__header">
-          <h3 className="package-card__title" title={listing.name}>
-            {listing.name}
-          </h3>
-          <div className="package-card__author" title={listing.namespace}>
-            by {listing.namespace}
-          </div>
-        </div>
-
-        <p className="package-card__description">{listing.description}</p>
-
-        <div className="package-card__categories">
-          {(listing.categories || []).slice(0, 3).map((category) => (
-            <span key={category} className="tag">
-              {category}
-            </span>
-          ))}
-          {(listing.categories || []).length > 3 && (
-            <span className="tag">+{listing.categories.length - 3}</span>
-          )}
-        </div>
-      </div>
-
-      <div className="package-card__footer">
-        <div className="package-card__stats">
-          <div className="stat" title="Downloads">
-            <NewIcon noWrapper>
-              <FontAwesomeIcon icon={faDownload} />
+  const actions = (
+    <div
+      className="actions"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {isDownloading ? (
+        <NewButton
+          disabled
+          title="Downloading"
+          csVariant="primary"
+          csSize="small"
+        >
+          <NewIcon noWrapper csMode="inline">
+            <FontAwesomeIcon icon={faSpinner} spin />
+          </NewIcon>
+          {viewMode === "fullWidth" && <span>Downloading...</span>}
+        </NewButton>
+      ) : hasUpdate ? (
+        <NewButton
+          onClick={onUpdateClick}
+          title="Update"
+          csVariant="success"
+          csSize="small"
+        >
+          <NewIcon noWrapper csMode="inline">
+            <FontAwesomeIcon icon={faSyncAlt} />
+          </NewIcon>
+          {viewMode === "fullWidth" && <span>Update</span>}
+        </NewButton>
+      ) : installed ? (
+        viewMode === "fullWidth" && isHovered ? (
+          <NewButton
+            onClick={onUninstallClick}
+            title="Uninstall"
+            csVariant="danger"
+            csSize="small"
+          >
+            <NewIcon noWrapper csMode="inline">
+              <FontAwesomeIcon icon={faTrashAlt} />
             </NewIcon>
-            <span>{formatNumber(listing.install_count)}</span>
-          </div>
-          <div className="stat" title="Likes">
-            <NewIcon noWrapper>
-              <FontAwesomeIcon icon={faThumbsUp} />
+            <span>Uninstall</span>
+          </NewButton>
+        ) : (
+          <NewButton
+            disabled
+            title="Installed"
+            csVariant="secondary"
+            csSize="small"
+            csModifiers={["ghost"]}
+          >
+            <NewIcon noWrapper csMode="inline">
+              <FontAwesomeIcon icon={faCheck} />
             </NewIcon>
-            <span>{formatNumber(listing.rating_score)}</span>
-          </div>
-        </div>
+            {viewMode === "fullWidth" && <span>Installed</span>}
+          </NewButton>
+        )
+      ) : (
+        <NewButton
+          onClick={onInstallClick}
+          title="Install"
+          csVariant="accent"
+          csSize="small"
+        >
+          <NewIcon noWrapper csMode="inline">
+            <FontAwesomeIcon icon={faDownload} />
+          </NewIcon>
+          {viewMode === "fullWidth" && <span>Install</span>}
+        </NewButton>
+      )}
 
-        <div className="actions">
-          {isDownloading ? (
-            <button className="install-btn" disabled title="Downloading">
-              <NewIcon noWrapper>
-                <FontAwesomeIcon icon={faSpinner} spin />
-              </NewIcon>
-            </button>
-          ) : hasUpdate ? (
-            <button
-              className="install-btn update-btn"
-              onClick={onUpdateClick}
-              title="Update"
-            >
-              <NewIcon noWrapper>
-                <FontAwesomeIcon icon={faSyncAlt} />
-              </NewIcon>
-            </button>
-          ) : installed ? (
-            <button
-              className="install-btn installed-btn"
-              disabled
-              title="Installed"
-            >
-              <NewIcon noWrapper>
-                <FontAwesomeIcon icon={faCheck} />
-              </NewIcon>
-            </button>
-          ) : (
-            <button
-              className="install-btn"
-              onClick={onInstallClick}
-              title="Install"
-            >
-              <NewIcon noWrapper>
-                <FontAwesomeIcon icon={faDownload} />
-              </NewIcon>
-            </button>
-          )}
-        </div>
-      </div>
+      {viewMode === "fullWidth" && (
+        <NewButton
+          onClick={onInstallClick}
+          csVariant="secondary"
+          csModifiers={["ghost"]}
+          csSize="small"
+        >
+          <NewIcon noWrapper csMode="inline">
+            <FontAwesomeIcon icon={faDownload} />
+          </NewIcon>
+          <span>Download</span>
+        </NewButton>
+      )}
     </div>
+  );
+
+  return (
+    <CardPackage
+      packageData={listing}
+      isLiked={false}
+      csVariant={viewMode as CardPackageVariants}
+      footerExtension={actions}
+    />
   );
 };
 

@@ -1,0 +1,257 @@
+@layer nimbus-components {
+  /* =========================================================================
+     RadioGroup clone from cyberstorm-remix
+     ========================================================================= */
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: transparent;
+  }
+
+  .radio-group-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .radio-group-item {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-weight: 400;
+    font-size: var(--font-size-body-md);
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    user-select: none;
+
+    &.radio-group-item--unselected {
+      svg {
+        color: var(--color-surface-a8);
+      }
+    }
+
+    &.radio-group-item--selected {
+      color: var(--color-cyber-green-7);
+      font-weight: 700;
+
+      svg {
+        color: var(--color-cyber-green-7);
+      }
+    }
+
+    &:hover {
+      color: var(--color-text-primary);
+      background-color: var(--color-surface-a5);
+
+      &.radio-group-item--unselected {
+        svg {
+          color: var(--color-surface-a10);
+        }
+      }
+
+      &.radio-group-item--selected {
+        color: var(--color-cyber-green-8);
+
+        svg {
+          color: var(--color-cyber-green-8);
+        }
+      }
+    }
+  }
+
+  .radio-group-item__radio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    background: transparent;
+  }
+
+  /* =========================================================================
+     CheckboxList clone from cyberstorm-remix
+     ========================================================================= */
+  .checkbox-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    .checkbox-list__item,
+    .checkbox-list-item {
+      display: flex;
+      gap: var(--gap-sm);
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      color: var(--color-text-secondary);
+      font-weight: 400;
+      font-size: var(--font-size-body-md);
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+      user-select: none;
+
+      > span {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      &.checkbox-list-item--unchecked {
+        color: var(--color-text-secondary);
+
+        svg {
+          color: var(--color-surface-a8);
+        }
+
+        .checkbox-list__exclude-button svg {
+          color: transparent;
+        }
+      }
+
+      &.checkbox-list-item--checked {
+        color: var(--color-cyber-green-7);
+        font-weight: 700;
+
+        .checkbox-list-item__icon svg {
+          color: var(--color-cyber-green-7);
+        }
+      }
+
+      &.checkbox-list-item--excluded {
+        color: var(--color-accent-red-7);
+        font-weight: 700;
+        text-decoration: line-through;
+
+        .checkbox-list-item__icon svg {
+          color: var(--color-accent-red-7);
+        }
+      }
+
+      &:hover {
+        color: var(--color-text-primary);
+        background-color: var(--color-surface-a5);
+
+        &.checkbox-list-item--unchecked {
+          color: var(--color-text-primary);
+
+          svg {
+            color: var(--color-surface-a10);
+          }
+        }
+
+        &.checkbox-list-item--checked {
+          color: var(--color-cyber-green-8);
+
+          .checkbox-list-item__icon svg {
+            color: var(--color-cyber-green-8);
+          }
+        }
+
+        &.checkbox-list-item--excluded {
+          color: var(--color-accent-red-8);
+
+          .checkbox-list-item__icon svg {
+            color: var(--color-accent-red-8);
+          }
+        }
+      }
+    }
+
+    .checkbox-list__icon,
+    .checkbox-list-item__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border: none;
+      font-size: 20px;
+      background-color: transparent;
+      cursor: pointer;
+    }
+
+    /* Reverse order for flex to match Remix style (Text left, Icon right? No, Remix has Icon right BUT CheckboxList.tsx markup puts checkbox inside Actionable inside Label span... actually wait)
+       Cyberstorm-remix CheckboxList.tsx:
+       <label class="checkbox-list__label">
+          <span> <Button class="checkbox-list__icon">ICON</Button> Label </span>
+          <Button class="exclude-button">ICON</Button>
+       </label>
+
+       CSS says: justify-content: space-between;
+
+       So it's [ [Icon Label]       [ExcludeIcon] ]
+
+       My Modal uses:
+       <div class="checkbox-list-item">
+          <div class="checkbox-list-item__icon">ICON</div>
+          <span class="checkbox-list-item__label">Label</span>
+       </div>
+
+       Wait, Remix CSS for .checkbox-list__label says:
+       > span { display: inline-flex; ... align-items: center; }
+
+       So the icon is NEXT to the label text on the left.
+
+       My CSS above has just "gap: var(--gap-sm)".
+
+       Let's stick to the styling provided but mapping to my class names.
+    */
+  }
+}
+
+.package-filter-modal__container {
+  --modal-max-width: 80vw;
+
+  width: unset;
+}
+
+.package-filter-modal__content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.package-filter-modal__column {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 200px;
+}
+
+.package-filter-modal__title {
+  /* Make it look like a header */
+  margin-bottom: 4px;
+  padding: 0 8px;
+  color: var(--color-text--primary);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.package-filter-modal__list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Footer (Same as before) */
+.package-filter-modal__footer-content {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.package-filter-modal__footer-actions {
+  display: flex;
+  gap: 16px;
+}

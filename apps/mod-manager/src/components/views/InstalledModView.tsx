@@ -1,12 +1,31 @@
-import BuildIcon from "@mui/icons-material/Build";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import GridViewIcon from "@mui/icons-material/GridView";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import SearchIcon from "@mui/icons-material/Search";
-import ViewListIcon from "@mui/icons-material/ViewList";
+import { openLink } from "@/utils/utils";
+import {
+  faFilter,
+  faFolderOpen,
+  faGhost,
+  faGlobe,
+  faSearch,
+  faSort,
+  faSync,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useMemo, useState } from "react";
-import { AutoSizer } from "react-virtualized-auto-sizer";
-import * as ReactWindow from "react-window";
+
+import {
+  Image,
+  NewButton,
+  NewIcon,
+  NewSelect,
+  NewSwitch,
+  NewTable,
+  NewTableLabels,
+  NewTableSort,
+  NewTextInput,
+  SelectOption,
+  TableCompareColumnMeta,
+  TooltipWrapper,
+} from "@thunderstore/cyberstorm";
 
 import ManifestV2 from "../../model/ManifestV2";
 import Profile from "../../model/Profile";
@@ -16,115 +35,60 @@ import ProfileModList from "../../r2mm/mods/ProfileModList";
 import ModInstallerService from "../../services/ModInstallerService";
 import "./InstalledModView.css";
 
-const List = ReactWindow.FixedSizeList;
-
-interface RowData {
-  mods: ExtendedMod[];
-  toggle: (mod: ManifestV2) => void;
-  uninstall: (mod: ManifestV2) => void;
-  checkUpdates: (mod: ManifestV2) => void;
-}
-
+// Interface for table display
 interface ExtendedMod {
   id: string;
   name: string;
+  displayName: string;
   author: string;
   description: string;
-  image: string;
-  tags: string[];
+  icon: string;
   version: string;
-  enabled: boolean;
-  isLatest: boolean;
-  isDeprecated: boolean;
+  isEnabled: boolean;
   isModLoader: boolean;
+  websiteUrl: string;
   manifest: ManifestV2;
 }
 
-const Row = ({
-  index,
-  style,
-  data,
-}: {
-  index: number;
-  style: React.CSSProperties;
-  data: RowData;
-}) => {
-  const pkg = data.mods[index];
+const tableHeaders: NewTableLabels = [
+  { value: "Icon", disableSort: true },
+  { value: "Name", disableSort: false },
+  { value: "Author", disableSort: false },
+  { value: "Version", disableSort: false },
+  { value: "Enabled", disableSort: false },
+  { value: "", disableSort: true }, // Actions
+];
 
-  return (
-    <div style={style}>
-      <div className="package-list__row">
-        {/* Mod Info Column */}
-        <div className="package-list__col-mod">
-          <div className="package-list__img-container">
-            <img src={pkg.image} className="package-list__img" alt={pkg.name} />
-          </div>
-          <div className="package-list__info">
-            <div className="package-list__title" title={pkg.name}>
-              {pkg.name}
-            </div>
-            <div className="package-list__desc" title={pkg.description}>
-              {pkg.description}
-            </div>
-          </div>
-        </div>
+type FilterType = "All" | "Disabled" | "ModLoaders";
+type SortType =
+  | "alphabetical"
+  | "alphabetical-desc"
+  | "author"
+  | "author-desc"
+  | "enabled"
+  | "enabled-desc";
 
-        {/* Author Column */}
-        <div className="package-list__col-author">
-          <span className="package-list__text-link">{pkg.author}</span>
-        </div>
+const filterOptions: SelectOption<FilterType>[] = [
+  {
+    value: "All",
+    label: "All Mods",
+    leftIcon: <FontAwesomeIcon icon={faFolderOpen} />,
+  },
+  {
+    value: "Disabled",
+    label: "Disabled",
+    leftIcon: <FontAwesomeIcon icon={faFilter} />,
+  },
+];
 
-        {/* Version Column */}
-        <div className="package-list__col-version">{pkg.version}</div>
-
-        {/* Categories Column */}
-        <div className="package-list__col-categories">
-          <div className="package-list__tags">
-            {pkg.tags.length > 0 ? (
-              <>
-                {pkg.tags.slice(0, 3).map((tag) => (
-                  <span key={tag} className="package-list__pill">
-                    {tag}
-                  </span>
-                ))}
-                {pkg.tags.length > 3 && (
-                  <span className="package-list__pill">...</span>
-                )}
-              </>
-            ) : (
-              <span className="package-list__pill">Mod</span>
-            )}
-          </div>
-        </div>
-
-        {/* Enabled Column */}
-        <div className="package-list__col-enabled">
-          <label
-            className={`package-list__switch-new ${
-              pkg.isModLoader ? "disabled" : ""
-            }`}
-            title={
-              pkg.isModLoader ? "Mod Loaders cannot be disabled" : undefined
-            }
-          >
-            <input
-              type="checkbox"
-              checked={pkg.enabled}
-              onChange={() => !pkg.isModLoader && data.toggle(pkg.manifest)}
-              disabled={pkg.isModLoader}
-            />
-            <div className="slider-new"></div>
-          </label>
-        </div>
-
-        {/* More Menu Column */}
-        <div className="package-list__col-more">
-          {/* Placeholder for 'more' menu */}
-        </div>
-      </div>
-    </div>
-  );
-};
+const sortOptions: SelectOption<SortType>[] = [
+  { value: "alphabetical", label: "Name (A-Z)" },
+  { value: "alphabetical-desc", label: "Name (Z-A)" },
+  { value: "author", label: "Author (A-Z)" },
+  { value: "author-desc", label: "Author (Z-A)" },
+  { value: "enabled", label: "Enabled First" },
+  { value: "enabled-desc", label: "Disabled First" },
+];
 
 const InstalledModView: React.FC = () => {
   const [mods, setMods] = useState<ManifestV2[]>([]);
@@ -133,10 +97,8 @@ const InstalledModView: React.FC = () => {
 
   // Filter States
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<
-    "All" | "Updates" | "Disabled" | "Deprecated"
-  >("All");
-  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+  const [activeFilter, setActiveFilter] = useState<FilterType>("All");
+  const [sortOrder, setSortOrder] = useState<SortType>("alphabetical");
 
   const fetchMods = async () => {
     setLoading(true);
@@ -161,11 +123,18 @@ const InstalledModView: React.FC = () => {
     fetchMods();
   }, []);
 
-  const handleToggle = async (mod: ManifestV2) => {
+  const handleToggle = async (mod: ManifestV2, checked: boolean) => {
+    if (
+      mod.getName().toLowerCase().includes("bepinex") ||
+      mod.getName().toLowerCase().includes("modloader")
+    ) {
+      return; // Prevent disabling mod loaders
+    }
+
     const profile = Profile.getActiveAsImmutableProfile();
     try {
       let err: R2Error | void;
-      if (mod.isEnabled()) {
+      if (!checked) {
         err = await ModInstallerService.disable(mod, profile);
       } else {
         err = await ModInstallerService.enable(mod, profile);
@@ -207,7 +176,8 @@ const InstalledModView: React.FC = () => {
       filtered = filtered.filter(
         (m) =>
           m.getName().toLowerCase().includes(lower) ||
-          m.getDisplayName().toLowerCase().includes(lower)
+          m.getDisplayName().toLowerCase().includes(lower) ||
+          m.getAuthorName().toLowerCase().includes(lower)
       );
     }
 
@@ -216,139 +186,237 @@ const InstalledModView: React.FC = () => {
       filtered = filtered.filter((m) => !m.isEnabled());
     }
 
-    // 3. Map to ExtendedMod
-    return filtered.map((mod) => ({
-      id: mod.getName(),
-      name: mod.getDisplayName(),
-      author: mod.getAuthorName(),
-      description: mod.getDescription(),
-      image: mod.getIcon(),
-      tags: [],
-      version: mod.getVersionNumber().toString(),
-      enabled: mod.isEnabled(),
-      isLatest: true,
-      isDeprecated: false,
-      isModLoader:
-        mod.getName().toLowerCase().includes("bepinex") ||
-        mod.getName().toLowerCase().includes("modloader"),
-      manifest: mod,
-    }));
+    // 3. Map
+    return filtered.map(
+      (mod): ExtendedMod => ({
+        id: mod.getName(),
+        name: mod.getName(),
+        displayName: mod.getDisplayName(),
+        author: mod.getAuthorName(),
+        description: mod.getDescription(),
+        icon: mod.getIcon(),
+        version: mod.getVersionNumber().toString(),
+        isEnabled: mod.isEnabled(),
+        isModLoader:
+          mod.getName().toLowerCase().includes("bepinex") ||
+          mod.getName().toLowerCase().includes("modloader"),
+        websiteUrl: mod.getWebsiteUrl(),
+        manifest: mod,
+      })
+    );
   }, [mods, searchQuery, activeFilter]);
 
+  const sortedMods = useMemo(() => {
+    const list = [...processedMods];
+    list.sort((a, b) => {
+      if (sortOrder === "alphabetical") {
+        return a.displayName.localeCompare(b.displayName);
+      } else if (sortOrder === "alphabetical-desc") {
+        return b.displayName.localeCompare(a.displayName);
+      } else if (sortOrder === "author") {
+        return a.author.localeCompare(b.author);
+      } else if (sortOrder === "author-desc") {
+        return b.author.localeCompare(a.author);
+      } else if (sortOrder === "enabled") {
+        return a.isEnabled === b.isEnabled ? 0 : a.isEnabled ? -1 : 1;
+      } else if (sortOrder === "enabled-desc") {
+        return a.isEnabled === b.isEnabled ? 0 : a.isEnabled ? 1 : -1;
+      }
+      return 0;
+    });
+    return list;
+  }, [processedMods, sortOrder]);
+
+  const tableRows = useMemo(() => {
+    return sortedMods.map((mod) => [
+      {
+        value: (
+          <Image
+            src={mod.icon}
+            alt={mod.displayName}
+            cardType="package"
+            square
+            style={{ width: "48px", height: "48px", borderRadius: "4px" }}
+          />
+        ),
+        sortValue: 0,
+      },
+      {
+        value: (
+          <div className="table-name-col">
+            <span className="name">{mod.displayName}</span>
+            <span className="desc">{mod.description}</span>
+          </div>
+        ),
+        sortValue: mod.displayName,
+      },
+      {
+        value: mod.author,
+        sortValue: mod.author,
+      },
+      {
+        value: mod.version,
+        sortValue: mod.version,
+      },
+      {
+        value: (
+          <TooltipWrapper
+            tooltipText={
+              mod.isModLoader
+                ? "Mod loaders cannot be disabled"
+                : mod.isEnabled
+                  ? "Disable"
+                  : "Enable"
+            }
+          >
+            <div onClick={(e) => e.stopPropagation()}>
+              <NewSwitch
+                value={mod.isEnabled}
+                onChange={(c) => handleToggle(mod.manifest, c)}
+                disabled={mod.isModLoader}
+              />
+            </div>
+          </TooltipWrapper>
+        ),
+        sortValue: mod.isEnabled ? 1 : 0,
+      },
+      {
+        value: (
+          <div className="table-actions">
+            <button
+              className="action-btn icon-only"
+              title="Uninstall"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleUninstall(mod.manifest);
+              }}
+            >
+              <NewIcon noWrapper csMode="inline">
+                <FontAwesomeIcon icon={faTrash} />
+              </NewIcon>
+            </button>
+            <button
+              className="action-btn icon-only"
+              title="Open Website"
+              onClick={(e) => {
+                e.stopPropagation();
+                openLink(mod.websiteUrl);
+              }}
+              disabled={!mod.websiteUrl}
+            >
+              <NewIcon noWrapper csMode="inline">
+                <FontAwesomeIcon icon={faGlobe} />
+              </NewIcon>
+            </button>
+          </div>
+        ),
+        sortValue: 0,
+      },
+    ]);
+  }, [sortedMods]);
+
+  const handleTableSort = (meta: TableCompareColumnMeta) => {
+    // 1: Name, 2: Author, 4: Enabled
+    if (meta.identifier === 1) {
+      setSortOrder((prev) =>
+        prev === "alphabetical" ? "alphabetical-desc" : "alphabetical"
+      );
+    } else if (meta.identifier === 2) {
+      setSortOrder((prev) => (prev === "author" ? "author-desc" : "author"));
+    } else if (meta.identifier === 4) {
+      setSortOrder((prev) => (prev === "enabled" ? "enabled-desc" : "enabled"));
+    }
+  };
+
   if (loading) {
-    return <div className="package-list__loading">Loading...</div>;
+    return <div className="loading-state">Loading...</div>;
   }
 
   if (error) {
-    return <div className="package-list__error">{error}</div>;
+    return <div className="error-state">{error}</div>;
   }
 
   return (
-    <div className="package-list">
-      <div className="package-list__controls">
-        <div className="package-list__tools-wrapper">
-          <div className="package-list__search-group">
-            <div className="package-list__search">
-              <SearchIcon />
-              <input
-                type="text"
+    <div className="installed-mod-view">
+      <div className="island installed-mod-view__content">
+        <div className="search-controls island-item">
+          <div className="search-controls__left">
+            <div className="search-input-wrapper">
+              <NewTextInput
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
+                placeholder="Search installed mods..."
+                leftIcon={<FontAwesomeIcon icon={faSearch} />}
+                clearValue={() => setSearchQuery("")}
               />
             </div>
-            <button
-              className="package-list__btn-secondary"
-              onClick={() =>
-                setActiveFilter((f) => (f === "All" ? "Disabled" : "All"))
-              }
-            >
-              <FilterListIcon />
-              <span>{activeFilter === "All" ? "Filters" : activeFilter}</span>
-            </button>
-          </div>
 
-          <div className="package-list__actions-group">
-            <button
-              className="package-list__btn-secondary"
-              onClick={() => {
-                /* Check updates placeholder */
-              }}
-            >
-              Check for updates
-            </button>
+            <NewSelect
+              options={filterOptions}
+              value={activeFilter}
+              onChange={(val: string) => setActiveFilter(val as FilterType)}
+            />
 
-            <div className="package-list__view-toggle">
-              <button
-                className={`package-list__toggle-btn ${
-                  viewMode === "grid" ? "active" : ""
-                }`}
-                onClick={() => setViewMode("grid")}
-                title="Show as grid"
-              >
-                <GridViewIcon />
-              </button>
-              <button
-                className={`package-list__toggle-btn ${
-                  viewMode === "list" ? "active" : ""
-                }`}
-                onClick={() => setViewMode("list")}
-                title="Show as list"
-              >
-                <ViewListIcon />
-              </button>
+            <div className="search-sort-select">
+              <NewSelect
+                options={sortOptions}
+                value={sortOrder}
+                onChange={(val: string) => setSortOrder(val as SortType)}
+                icon={<FontAwesomeIcon icon={faSort} />}
+              />
             </div>
-
-            <button
-              className="package-list__btn-secondary icon-only"
-              title="Mass edit"
+          </div>
+          <div className="search-group">
+            {/* Actions Group */}
+            <NewButton
+              onClick={() => {
+                /* Placeholder for update check logic */
+              }}
+              csVariant="secondary"
+              disabled
+              title="Coming soon"
             >
-              <BuildIcon />
-            </button>
+              <NewIcon noWrapper csMode="inline">
+                <FontAwesomeIcon icon={faSync} />
+              </NewIcon>
+              Check for Updates
+            </NewButton>
+            <span className="mod-count">{processedMods.length} Mods</span>
           </div>
         </div>
-      </div>
 
-      <div className="package-list__content">
-        {/* Header Row - Only for List view */}
-        {viewMode === "list" && (
-          <div className="package-list__header-row">
-            <div className="package-list__col-mod">
-              Mod <KeyboardArrowDownIcon style={{ fontSize: 16 }} />
-            </div>
-            <div className="package-list__col-author">Author</div>
-            <div className="package-list__col-version">Version</div>
-            <div className="package-list__col-categories">Categories</div>
-            <div className="package-list__col-enabled">Enabled</div>
-            <div className="package-list__col-more"></div>
-          </div>
-        )}
-
-        <div className="package-list__installed-view">
+        <div className="listings-table island-item">
           {processedMods.length === 0 ? (
-            <div className="package-list__empty">No mods found.</div>
-          ) : (
-            <div className="package-list__list-container">
-              {/* @ts-ignore */}
-              <AutoSizer>
-                {({ height, width }) => (
-                  <List
-                    height={height}
-                    width={width}
-                    itemCount={processedMods.length}
-                    itemSize={74}
-                    itemData={{
-                      mods: processedMods,
-                      toggle: handleToggle,
-                      uninstall: handleUninstall,
-                      checkUpdates: () => {},
-                    }}
-                  >
-                    {Row}
-                  </List>
-                )}
-              </AutoSizer>
+            <div className="empty-state">
+              <h3>No mods found</h3>
+              <p>
+                {searchQuery
+                  ? "Try adjusting your search."
+                  : "Go installing some mods!"}
+              </p>
             </div>
+          ) : (
+            <NewTable
+              csVariant="packages"
+              headers={tableHeaders}
+              rows={tableRows}
+              sortByHeader={
+                sortOrder.includes("alphabetical")
+                  ? 1
+                  : sortOrder.includes("author")
+                    ? 2
+                    : sortOrder.includes("enabled")
+                      ? 4
+                      : undefined
+              }
+              sortDirection={
+                sortOrder.endsWith("-desc")
+                  ? NewTableSort.DESC
+                  : NewTableSort.ASC
+              }
+              onSortChange={handleTableSort}
+              gridTemplateColumns="68px 4fr 2fr 100px 80px 100px"
+            />
           )}
         </div>
       </div>

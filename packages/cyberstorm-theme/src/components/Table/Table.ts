@@ -1,7 +1,7 @@
 // Table ROOT
 // Variants
-export const TableVariantsList = ["default"] as const;
-export type TableVariants = "default";
+export const TableVariantsList = ["default", "packages"] as const;
+export type TableVariants = "default" | "packages";
 
 // Sizes
 export const TableSizesList = ["medium"] as const;

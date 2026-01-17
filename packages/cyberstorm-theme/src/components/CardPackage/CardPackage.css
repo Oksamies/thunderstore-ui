@@ -46,7 +46,8 @@
 
   /* SIZES */
   .card-package:where(.card-package--size--medium) {
-    &:where(.card-package--variant--card) {
+    &:where(.card-package--variant--card),
+    &:where(.card-package--variant--tile) {
       --card-package--image-wrapper-border-top-left-radius: var(
         --card-package-md-card--image-wrapper-border-top-left-radius
       );
@@ -115,7 +116,8 @@
       );
     }
 
-    &:where(.card-package--variant--fullWidth) {
+    &:where(.card-package--variant--fullWidth),
+    &:where(.card-package--variant--list) {
       --card-package-padding: var(--card-package-md-fullwidth-padding);
       --card-package-gap: var(--card-package-md-fullwidth-gap);
       --card-package--image-wrapper-border-top-left-radius: var(
@@ -183,7 +185,8 @@
   }
 
   /* VARIANTS DEFAULT STATE */
-  .card-package:where(.card-package--variant--card) {
+  .card-package:where(.card-package--variant--card),
+  .card-package:where(.card-package--variant--tile) {
     --card-package-flex-direction: var(--card-package-card-flex-direction);
     --card-package-background-color: var(--card-package-card-background-color);
     --card-package-hover-background-color: var(
@@ -235,7 +238,8 @@
     );
   }
 
-  .card-package:where(.card-package--variant--fullWidth) {
+  .card-package:where(.card-package--variant--fullWidth),
+  .card-package:where(.card-package--variant--list) {
     --card-package-flex-direction: var(--card-package-fullwidth-flex-direction);
     --card-package-background-color: var(
       --card-package-fullwidth-background-color

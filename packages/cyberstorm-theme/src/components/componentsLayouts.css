@@ -16,13 +16,13 @@
     --card-package-featured--content-flex: 1 0 0;
     --card-package-featured--content-align-self: stretch;
     --card-package-featured--info-align-self: stretch;
-    --card-package-fullwidth-flex-direction: column;
+    --card-package-fullwidth-flex-direction: row;
     --card-package-fullwidth--content-flex-direction: column;
     --card-package-fullwidth--content-align-items: flex-start;
     --card-package-fullwidth--content-flex: 1 0 0;
     --card-package-fullwidth--info-justify-content: center;
     --card-package-fullwidth--info-align-self: stretch;
-    --card-package-fullwidth--footer-flex-direction: row;
+    --card-package-fullwidth--footer-flex-direction: column;
     --card-package-fullwidth--tags-justify-content: flex-end;
     --card-package-secondary-flex-direction: row;
     --card-package-secondary--content-flex-direction: row;

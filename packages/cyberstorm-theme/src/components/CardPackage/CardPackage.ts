@@ -4,12 +4,16 @@ export const CardPackageVariantsList = [
   "featured",
   "fullWidth",
   "secondary",
+  "list",
+  "tile",
 ] as const;
 export type CardPackageVariants =
   | "card"
   | "featured"
   | "fullWidth"
-  | "secondary";
+  | "secondary"
+  | "list"
+  | "tile";
 
 // Sizes
 export const CardPackageSizesList = ["medium"] as const;

@@ -40,12 +40,30 @@
     }
   }
 
-  .card-package:focus-within .card-package__image-wrapper {
-    filter: brightness(1.2);
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__image-wrapper,
+  .card-package:where(.card-package--variant--list)
+    .card-package__image-wrapper {
+    position: relative;
+    width: 144px;
+    min-width: 144px;
+    height: 144px;
+    min-height: 144px;
+    border-radius: 8px !important;
+  }
 
-    > div {
-      transform: scale(1.035);
-    }
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__image-wrapper::after,
+  .card-package:where(.card-package--variant--list)
+    .card-package__image-wrapper::after {
+    position: absolute;
+    border-radius: inherit;
+    background: #fff;
+    opacity: 0.5;
+    mix-blend-mode: soft-light;
+    content: "";
+    pointer-events: none;
+    inset: 0;
   }
 
   .card-package__content {
@@ -58,6 +76,12 @@
     justify-content: var(--card-package--content-justify-content);
     height: 100%;
     padding: var(--card-package--content-padding);
+  }
+
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__content {
+    gap: 16px;
+    align-items: flex-start;
   }
 
   .card-package__image-tags {
@@ -83,14 +107,21 @@
     max-width: var(--card-package--info-max-width);
   }
 
+  .card-package:where(.card-package--variant--fullWidth) .card-package__info {
+    gap: 12px;
+  }
+
   /* Title */
   .card-package__title {
-    width: 100%;
+    /* width: 100%; removed for row layout flex */
+    min-width: 0; /* Allow flex item to shrink below content size */
+    max-width: 100%; /* Ensure it doesn't overflow container */
 
     overflow: hidden;
     color: var(--card-package--title-color);
     font-weight: var(--font-weight-bold);
-    font-size: var(--card-package--title-font-size);
+
+    /* font-size: var(--card-package--title-font-size); OVERRIDDEN below for safety in row view */
     font-family: var(--font-family--inter);
     font-style: normal;
     line-height: normal;
@@ -101,8 +132,30 @@
     --link-color: var(--card-package--title-link-color);
   }
 
+  .card-package:where(.card-package--variant--fullWidth) .card-package__title,
+  .card-package:where(.card-package--variant--list) .card-package__title {
+    color: #f5f5f6; /* Primary text */
+    font-size: 20px; /* Force 20px for row view per Figma */
+  }
+
   .card-package__title:focus-visible {
     outline: none !important;
+  }
+
+  .card-package__title-row {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: center;
+    width: 100%;
+  }
+
+  .card-package__status-tags {
+    display: flex;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
   }
 
   /* Author */
@@ -110,9 +163,15 @@
     display: flex;
     flex-direction: row;
     width: 100%;
+    color: #a7aed2; /* Tertiary color per Figma */
     font-weight: var(--card-package--author-font-weight);
     font-size: var(--card-package--author-font-size);
+    font-family: var(--font-family--inter);
     text-decoration: none;
+  }
+
+  .card-package:where(.card-package--variant--fullWidth) .card-package__author {
+    font-size: 14px;
   }
 
   .card-package__link {
@@ -130,12 +189,22 @@
   /* Description */
   .card-package__description {
     flex: 1;
+    overflow: hidden;
     color: var(--card-package--description-color);
     font-weight: var(--card-package--description-font-weight);
     font-size: var(--card-package--description-font-size);
     font-family: var(--card-package--description-font-family);
     font-style: var(--card-package--description-font-style);
     line-height: var(--card-package--description-line-height);
+    overflow-wrap: anywhere;
+  }
+
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__description,
+  .card-package:where(.card-package--variant--list) .card-package__description {
+    color: #a7aed2; /* Tertiary color per Figma */
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   /* Tags */
@@ -151,6 +220,10 @@
     align-self: stretch;
   }
 
+  .card-package:where(.card-package--variant--fullWidth) .card-package__tags {
+    gap: 6px;
+  }
+
   /* Footer */
   .card-package__footer {
     display: flex;
@@ -159,6 +232,128 @@
     align-items: flex-start;
     align-self: stretch;
     justify-content: flex-end;
+  }
+
+  .card-package:where(.card-package--variant--fullWidth) .card-package__footer {
+    flex-shrink: 0;
+    align-items: flex-end; /* Right align buttons */
+    justify-content: flex-start; /* Top align content */
+    width: 144px; /* Fixed width actions column per Figma */
+    min-width: 144px;
+    margin-left: auto; /* Push to right if space available */
+  }
+
+  /* Target the actions passed via footerExtension.
+     Note: Since we can't easily change the classes in footerExtension without refactoring parent,
+     we rely on the parent (OnlinePackageCard) passing a container with class 'actions' or similar,
+     or just generic children.
+     OnlinePackageCard passes a div.actions containing buttons.
+  */
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__footer
+    .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Figma gap 8px */
+    align-items: stretch;
+    width: 100%;
+  }
+
+  /* Use global selector or nested if .install-btn is available.
+     We can override .install-btn styles when inside fullWidth card-package
+  */
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__footer
+    .actions
+    .install-btn {
+    width: 100%;
+    height: 44px; /* Figma */
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__footer
+    .actions
+    .install-btn:not(.installed-btn, .update-btn, .uninstall-btn) {
+    color: #031912;
+    background: #23ffab;
+
+    /* Inner shadow/glow from Figma */
+    box-shadow:
+      inset 0 0 16px 0 #40ae7f,
+      inset 0 1px 0 0 rgb(255 255 255 / 0.2),
+      inset 0 -3px 0 0 rgb(0 0 0 / 0.35);
+  }
+
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__footer
+    .actions
+    .download-btn {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px; /* Figma: var(--button/md/border-radius,8px) */
+    color: #f5f5f6;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: var(--font-family--inter);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  /* Installed Button styles for fullWidth */
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__footer
+    .actions
+    .install-btn.installed-btn {
+    display: flex;
+    gap: 16px;
+    height: 40px;
+    border: none;
+    color: #f5f5f6;
+    font-weight: 700;
+    font-size: 14px;
+    background: transparent;
+    cursor: default;
+  }
+
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__footer
+    .actions
+    .install-btn.installed-btn
+    svg
+    path {
+    fill: #23ffab;
+  }
+
+  /* Uninstall button styles for fullWidth */
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__footer
+    .actions
+    .install-btn.uninstall-btn {
+    gap: 16px;
+    height: 40px;
+    border: none;
+    color: #fcd7de;
+    font-weight: 700;
+    font-size: 14px;
+    background-color: #601624;
+
+    /* Figma inner shadow: Effect(type: INNER_SHADOW, color: #00000040, offset: (0, -3), radius: 0, spread: 0) */
+    box-shadow: inset 0 -3px 0 0 rgb(0 0 0 / 0.4);
+  }
+
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__footer
+    .actions
+    .install-btn.uninstall-btn:hover {
+    background-color: #7d1d2f; /* Slightly lighter on hover ? */
   }
 
   .card-package__meta {
@@ -171,9 +366,57 @@
     color: var(--color-text-tertiary);
   }
 
+  .card-package:where(.card-package--variant--fullWidth) .card-package__meta {
+    gap: 12px 20px; /* Figma */
+  }
+
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__meta
+    .meta-item {
+    color: #a7aed2;
+    font-weight: 700;
+
+    /* Assuming .meta-item class exists inside NewMetaItem or NewIcon components,
+        but usually we style implicit text.
+     */
+    font-size: 12px;
+  }
+
   .card-package__updated {
     color: var(--card-package--updated-color);
     font-weight: var(--card-package--updated-font-weight);
     font-size: var(--card-package--updated-font-size);
+  }
+
+  .card-package__header-link {
+    position: relative;
+    display: block;
+  }
+
+  .card-package__meta-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  /* FullWidth: Tags above Meta */
+  .card-package:where(.card-package--variant--fullWidth)
+    .card-package__meta-row {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    justify-content: flex-end;
+  }
+
+  .card-package:focus-within .card-package__image-wrapper {
+    filter: brightness(1.2);
+
+    > div {
+      transform: scale(1.035);
+    }
   }
 }

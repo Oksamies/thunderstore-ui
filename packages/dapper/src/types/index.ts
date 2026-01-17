@@ -4,4 +4,4 @@ export * from "./package";
 export * from "./team";
 export * from "./user";
 export { type PackageListingType } from "./props";
-export { type PackageCategory } from "./shared";
+export { type PackageCategory, type PaginatedList } from "./shared";

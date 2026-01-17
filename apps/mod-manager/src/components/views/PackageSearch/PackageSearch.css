@@ -1,120 +1,42 @@
 .package-search {
+  position: relative;
   display: flex;
+  flex-direction: column;
   gap: 16px;
   height: 100%;
   max-height: 100%;
   overflow: hidden;
 }
 
-.package-search__sidebar {
-  flex-shrink: 0;
-  width: 260px;
-  padding: 16px;
-  border-radius: 8px; /* if island-item styling is missing */
-  overflow-y: auto;
-  background-color: #111121; /* island-item bg usually, setting explicitly if stand-alone */
-}
-
-.package-search__sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.package-search__sidebar::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  background-color: #29295b;
-}
-
-.filters-container {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.filter-title {
-  margin: 0 0 8px;
-  color: #f5f5f6;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-.filter-select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #29295b;
-  border-radius: 4px;
-  color: #f5f5f6;
-  font-size: 14px;
-  background-color: rgb(255 255 255 / 0.03);
-  outline: none;
-}
-
-.filter-select:focus {
-  border-color: #23ffab;
-}
-
-.category-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  max-height: 300px;
-  padding-right: 4px;
-  overflow-y: auto;
-}
-
-.category-list::-webkit-scrollbar {
-  width: 4px;
-}
-
-.category-list::-webkit-scrollbar-thumb {
-  background-color: #29295b;
-}
-
-.checkbox-simple {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  color: #a7aed2;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.checkbox-simple:hover {
-  color: #f5f5f6;
-}
-
-.checkbox-simple input {
-  accent-color: #23ffab;
-}
-
-.package-search__content {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 8px;
-  overflow-y: hidden;
-}
+/* Sidebar removed */
 
 .search-controls {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  flex-flow: row wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
   padding: 16px;
   border-radius: 8px;
-  background-color: #111121;
+}
+
+.search-controls__left {
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 .search-input-wrapper {
   position: relative;
-  width: 100%;
+  flex: 1;
+  min-width: 240px;
 }
+
+.search-controls__left > .search-input-wrapper {
+  max-width: 20rem;
+}
+
+/* ... existing styles ... */
 
 .search-input {
   box-sizing: border-box;
@@ -175,7 +97,7 @@
   font-weight: 700;
 }
 
-.pagination {
+.results-pagination {
   display: flex;
   gap: 16px;
   align-items: center;
@@ -211,7 +133,6 @@
   padding: 16px;
   border-radius: 8px;
   overflow-y: auto;
-  background-color: #111121;
 }
 
 .listings-grid {
@@ -219,6 +140,31 @@
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 12px;
   padding-bottom: 24px;
+}
+
+.listings-grid--list,
+.listings-grid--fullWidth {
+  display: flex;
+  flex-direction: column;
+}
+
+.listings-grid--tile {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.search-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.search-sort-select {
+  flex-shrink: 1;
+}
+
+.view-options {
+  display: flex;
+  gap: 4px;
 }
 
 .loading-state,
@@ -268,6 +214,48 @@
   background-color: #3b3b7e;
 }
 
-.island-item {
-  /* Basic island styling simulation if not globally available */
+.package-search__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Table Cell Styles */
+.table-name-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.table-name-col .name {
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.table-name-col .desc {
+  overflow: hidden;
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.table-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.table-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }

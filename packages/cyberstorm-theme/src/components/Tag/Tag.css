@@ -3,6 +3,9 @@
   .tag {
     --tag-gap: 1rem;
     --tag-font-weight: var(--font-weight-bold);
+
+    min-width: min-content;
+    white-space: pre;
   }
 
   /* SIZES */

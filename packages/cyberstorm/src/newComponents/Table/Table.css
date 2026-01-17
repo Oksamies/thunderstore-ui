@@ -102,4 +102,129 @@
   :root {
     --table-border: 1px solid var(--color-surface-a8);
   }
+
+  .table.table--variant--packages {
+    /* stylelint-disable no-descending-specificity */
+    --table-border: 0;
+    --table-bg-header: var(--color-surface-a4);
+    --table-bg-row: var(--color-ui-surface-1);
+    --table-row-spacing: 4px;
+
+    /* Flex/Block layout to support gaps between rows */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    thead,
+    tbody {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    tbody {
+      gap: var(--table-row-spacing);
+      margin-top: var(--table-row-spacing);
+    }
+
+    /* Row Layout */
+    .table__row {
+      display: grid;
+      grid-template-columns: var(--dynamic-grid-template-columns);
+      align-items: center;
+      width: 100%;
+      padding: 8px 0; /* Padding inside the row card */
+      border-radius: var(--radius-md); /* Radius on Row */
+      background-color: var(--table-bg-row); /* Background on Row */
+    }
+
+    /* Header Row Specifics */
+    thead .table__row {
+      padding: 0; /* Header doesn't need the card padding */
+      border-radius: var(--radius-md);
+      background-color: var(--table-bg-header);
+    }
+
+    /* Reset generic table styles */
+    tr > th,
+    tr > td {
+      min-width: 0;
+      padding: 0 16px; /* Horizontal padding only */
+      border: none;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      background: transparent; /* Remove cell backgrounds */
+    }
+
+    /* Reduce padding for the icon column to fit the larger image */
+    tr > th:first-child,
+    tr > td:first-child {
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+
+    /* Header Cell Styling */
+    .table__header {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      color: var(--color-text-secondary); /* #cbd0ec */
+      font-weight: 700;
+      font-size: 12px;
+      background: transparent;
+    }
+
+    .table__header:first-child {
+      color: var(--color-text-primary); /* #f5f5f6 for "Mod" header */
+    }
+
+    /* Cell Item Styling */
+    .table__item {
+      align-content: center;
+      padding-top: 0;
+      padding-bottom: 0;
+      color: var(--color-text-secondary);
+      font-weight: 400;
+
+      /* Default text style for cells */
+      font-size: 12px;
+    }
+
+    /* Specific Column Alignments (Based on known PackageSearch structure) */
+
+    /* 5: Downloads, 6: Rating, 8: Actions */
+
+    /* Note: nth-child is 1-based */
+
+    /* Downloads */
+    .table__row > *:nth-child(5) {
+      justify-content: flex-end;
+      text-align: right;
+    }
+
+    /* Rating */
+    .table__row > *:nth-child(6) {
+      justify-content: flex-end;
+      text-align: right;
+    }
+
+    /* Actions */
+    .table__row > *:nth-child(8) {
+      justify-content: flex-end;
+      text-align: right;
+    }
+
+    /* Reset radius logic from generic table */
+    tr:first-child > th:only-child,
+    tr:first-child > th:first-child,
+    tr:first-child > th:last-child,
+    tr:last-child > td:first-child,
+    tr:last-child > td:last-child,
+    thead tr > th:first-child,
+    thead tr > th:last-child,
+    tbody tr > td:first-child,
+    tbody tr > td:last-child {
+      border-radius: 0;
+    }
+  }
 }

@@ -74,6 +74,7 @@ export interface TableProps {
     ) => number;
   };
   ref?: React.Ref<HTMLTableElement>;
+  onSortChange?: (meta: TableCompareColumnMeta) => void;
 }
 
 export function tableDefaultCompare(
@@ -100,7 +101,7 @@ export function tableDefaultCompare(
 
 function SortButton(props: SortButtonProps) {
   const { identifier, current, direction = TableSort.OFF, hook, label } = props;
-
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const hookParams = { identifier, direction: TableSort.DESC };
   let icon = faSort;
 
@@ -135,6 +136,7 @@ export function Table(props: TableProps) {
     csModifiers = [],
     customSortCompare,
     ref,
+    onSortChange,
   } = props;
 
   const [sortVariables, setSortVariables] = useState<TableCompareColumnMeta>({
@@ -142,12 +144,31 @@ export function Table(props: TableProps) {
     direction: sortDirection,
   });
 
+  const handleSortChange: React.Dispatch<
+    React.SetStateAction<TableCompareColumnMeta>
+  > = (action) => {
+    let newState: TableCompareColumnMeta;
+    if (typeof action === "function") {
+      newState = action(sortVariables);
+    } else {
+      newState = action;
+    }
+    setSortVariables(newState);
+    if (onSortChange) {
+      onSortChange(newState);
+    }
+  };
+
   if (!disableSort) {
     if (customSortCompare && customSortCompare[sortVariables.identifier]) {
       rows.sort((a, b) =>
         customSortCompare[sortVariables.identifier](a, b, sortVariables)
       );
+    } else if (onSortChange) {
+      // If onSortChange is provided, we assume server-side sorting is handling the order.
+      // We do NOT sort the rows locally.
     } else {
+      // Default local sorting
       rows.sort((a, b) => tableDefaultCompare(a, b, sortVariables));
     }
   }
@@ -194,7 +215,7 @@ export function Table(props: TableProps) {
                   identifier={headerI}
                   current={sortVariables.identifier}
                   direction={sortVariables.direction}
-                  hook={setSortVariables}
+                  hook={handleSortChange}
                   label={header.value}
                 />
               )}
