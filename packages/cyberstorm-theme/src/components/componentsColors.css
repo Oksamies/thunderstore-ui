@@ -52,9 +52,9 @@
     --button-info-text-color--active: var(--color-accent-blue-11);
     --button-info-text-color--default: var(--color-accent-blue-11);
     --button-info-text-color--hover: var(--color-accent-blue-11);
-    --button-primary-bg-color--active: hsl(256deg 60% 42%);
-    --button-primary-bg-color--default: hsl(256deg 60% 52%);
-    --button-primary-bg-color--hover: hsl(256deg 67% 56%);
+    --button-primary-bg-color--active: hsl(0deg 70% 35%);
+    --button-primary-bg-color--default: hsl(0deg 70% 45%);
+    --button-primary-bg-color--hover: hsl(0deg 75% 50%);
     --button-primary-icon-color--active: var(--color-text-primary);
     --button-primary-icon-color--default: var(--color-text-primary);
     --button-primary-icon-color--hover: var(--color-text-primary);
@@ -84,38 +84,38 @@
     --button-special-border-color--hover: transparent;
     --button-special-background--active: linear-gradient(
           284deg,
-          hsl(203deg 80% 21% / 1) 0%,
-          hsl(155deg 46% 23% / 1) 100%
+          hsl(0deg 80% 15% / 1) 0%,
+          hsl(270deg 70% 15% / 1) 100%
         )
         padding-box,
       linear-gradient(
           284deg,
-          hsl(154deg 65% 67% / 1) 0%,
-          hsl(203deg 92% 63% / 1) 100%
+          hsl(0deg 95% 55% / 1) 0%,
+          hsl(270deg 90% 60% / 1) 100%
         )
         border-box;
     --button-special-background--default: linear-gradient(
           284deg,
-          hsl(275deg 64% 11% / 1) 0%,
-          hsl(156deg 46% 12% / 1) 100%
+          hsl(0deg 80% 10% / 1) 0%,
+          hsl(270deg 70% 10% / 1) 100%
         )
         padding-box,
       linear-gradient(
           284deg,
-          hsl(276deg 77% 54% / 1) 0%,
-          hsl(158deg 100% 57% / 1) 100%
+          hsl(0deg 95% 52% / 1) 0%,
+          hsl(270deg 90% 58% / 1) 100%
         )
         border-box;
     --button-special-background--hover: linear-gradient(
           284deg,
-          hsl(203deg 80% 21% / 1) 0%,
-          hsl(155deg 46% 23% / 1) 100%
+          hsl(0deg 80% 18% / 1) 0%,
+          hsl(270deg 70% 18% / 1) 100%
         )
         padding-box,
       linear-gradient(
           284deg,
-          hsl(154deg 65% 67% / 1) 0%,
-          hsl(203deg 92% 63% / 1) 100%
+          hsl(0deg 95% 58% / 1) 0%,
+          hsl(270deg 90% 65% / 1) 100%
         )
         border-box;
     --button-success-bg-color--active: var(--color-accent-green-2);
@@ -144,12 +144,12 @@
     --card-package-card-background-color: var(--color-surface-a4);
     --card-package-card-hover-background-color: var(--color-surface-a5);
     --card-package-card--updated-color: var(--color-text-tertiary);
-    --card-package-featured-background-color: rgb(61 61 127 / 0.44);
-    --card-package-featured-hover-background-color: rgb(63 63 136 / 0.55);
+    --card-package-featured-background-color: rgb(80 20 20 / 0.55);
+    --card-package-featured-hover-background-color: rgb(100 25 25 / 0.65);
     --card-package-fullwidth-background-color: var(--color-surface-a4);
     --card-package-fullwidth-hover-background-color: var(--color-surface-a6);
-    --card-package-secondary-background-color: rgb(63 63 136 / 0.55);
-    --card-package-secondary-hover-background-color: rgb(63 63 136 / 0.55);
+    --card-package-secondary-background-color: rgb(70 15 15 / 0.50);
+    --card-package-secondary-hover-background-color: rgb(90 20 20 / 0.60);
     --checkbox-bg-color--active: var(--color-nightsky-a10);
     --checkbox-bg-color--default: var(--color-nightsky-a8);
     --checkbox-bg-color--hover: var(--color-nightsky-a10);
@@ -199,26 +199,26 @@
     --heading-warning-text-color--default: var(--color-accent-yellow-7);
     --heading-special-text-color--default: linear-gradient(
           284deg,
-          hsl(275deg 64% 11% / 1) 0%,
-          hsl(156deg 46% 12% / 1) 100%
+          hsl(0deg 80% 10% / 1) 0%,
+          hsl(270deg 70% 10% / 1) 100%
         )
         padding-box,
       linear-gradient(
           284deg,
-          hsl(276deg 77% 54% / 1) 0%,
-          hsl(158deg 100% 57% / 1) 100%
+          hsl(0deg 95% 52% / 1) 0%,
+          hsl(270deg 90% 58% / 1) 100%
         )
         border-box;
     --heading-special-text-color--hover: linear-gradient(
           284deg,
-          hsl(203deg 80% 21% / 1) 0%,
-          hsl(155deg 46% 23% / 1) 100%
+          hsl(0deg 80% 15% / 1) 0%,
+          hsl(270deg 70% 15% / 1) 100%
         )
         padding-box,
       linear-gradient(
           284deg,
-          hsl(154deg 65% 67% / 1) 0%,
-          hsl(203deg 92% 63% / 1) 100%
+          hsl(0deg 95% 58% / 1) 0%,
+          hsl(270deg 90% 65% / 1) 100%
         )
         border-box;
     --heading-accent-text-color--default: var(--color-text-accent);
@@ -232,26 +232,26 @@
     --icon-warning-color--default: var(--color-accent-yellow-7);
     --icon-special-color--default: linear-gradient(
           284deg,
-          hsl(275deg 64% 11% / 1) 0%,
-          hsl(156deg 46% 12% / 1) 100%
+          hsl(0deg 80% 10% / 1) 0%,
+          hsl(270deg 70% 10% / 1) 100%
         )
         padding-box,
       linear-gradient(
           284deg,
-          hsl(276deg 77% 54% / 1) 0%,
-          hsl(158deg 100% 57% / 1) 100%
+          hsl(0deg 95% 52% / 1) 0%,
+          hsl(270deg 90% 58% / 1) 100%
         )
         border-box;
     --icon-special-color--hover: linear-gradient(
           284deg,
-          hsl(203deg 80% 21% / 1) 0%,
-          hsl(155deg 46% 23% / 1) 100%
+          hsl(0deg 80% 15% / 1) 0%,
+          hsl(270deg 70% 15% / 1) 100%
         )
         padding-box,
       linear-gradient(
           284deg,
-          hsl(154deg 65% 67% / 1) 0%,
-          hsl(203deg 92% 63% / 1) 100%
+          hsl(0deg 95% 58% / 1) 0%,
+          hsl(270deg 90% 65% / 1) 100%
         )
         border-box;
     --icon-accent-color--default: var(--color-text-accent);
@@ -292,7 +292,7 @@
     --modal-border-color--default: var(--color-nightsky-a6);
     --modal-text-color--default: var(--color-text-secondary);
     --pagination-item-bg-color--active: var(--color-nightsky-a6);
-    --pagination-item-bg-color--current: hsl(256deg 60% 52%);
+    --pagination-item-bg-color--current: hsl(0deg 70% 45%);
     --pagination-item-bg-color--default: var(--color-nightsky-a7);
     --pagination-item-bg-color--hover: var(--color-nightsky-a8);
     --pagination-item-icon-color--active: var(--color-text-primary);
