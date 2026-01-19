@@ -22,7 +22,7 @@ For each commit, the relevant QA test sections from `QA_TESTING_CHECKLIST.md` ar
   - **Tests:** Section 1 - Unauthenticated access, Section 2 - Package edit access control
   - **Key Areas:** Package edit page 401 errors
 
-- [ ] `fa721457` - Improve error messageing in ReportPackageForm for unauthorized access
+- [ ] `fa721457` - Improve error messaging in ReportPackageForm for unauthorized access
   - **Tests:** Section 1 - Unauthorized error messages, Section 5 - Report package unauthorized
   - **Key Areas:** Error message display, report form access control
 
@@ -178,7 +178,7 @@ For each commit, the relevant QA test sections from `QA_TESTING_CHECKLIST.md` ar
   - **Tests:** Section 5 - Report modal styling, Section 11 - Modal components
   - **Key Areas:** Modal width, responsive design
 
-- [ ] `fa721457` - Improve error messageing in ReportPackageForm for unauthorized access
+- [ ] `fa721457` - Improve error messaging in ReportPackageForm for unauthorized access
   - **Tests:** Section 5 - Report package unauthorized access
   - **Key Areas:** Error messages, access control
 

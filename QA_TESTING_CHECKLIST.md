@@ -32,7 +32,7 @@ This document provides a comprehensive QA testing checklist for changes made to 
 - `adb7e276` - chore: wire session cleanup, enable api tests, and update exports
 - `87c9db37` - fix(auth): unify invalid session handling and cleanup 401 recovery
 - `655cfbea` - packageEdit: show 401 for unauthenticated users
-- `fa721457` - Improve error messageing in ReportPackageForm for unauthorized access
+- `fa721457` - Improve error messaging in ReportPackageForm for unauthorized access
 
 ---
 
@@ -216,7 +216,7 @@ This document provides a comprehensive QA testing checklist for changes made to 
 ### Related Commits:
 - `4269bf35` - Fix types and reportform
 - `c3c08acb` - Adjust modal widths globally
-- `fa721457` - Improve error messageing in ReportPackageForm for unauthorized access
+- `fa721457` - Improve error messaging in ReportPackageForm for unauthorized access
 
 ---
 
