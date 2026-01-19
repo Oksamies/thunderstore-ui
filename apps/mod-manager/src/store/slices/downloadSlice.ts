@@ -13,7 +13,7 @@ import ModInstallerService from "../../services/ModInstallerService";
 // We might need a singleton Dapper or use the hook in component
 
 // Define state shape
-interface DownloadProgress {
+export interface DownloadProgress {
   status:
     | "pending"
     | "fetching-details"
@@ -23,9 +23,13 @@ interface DownloadProgress {
   progress: number; // 0-100
   message: string;
   error?: string;
+  modName?: string;
+  author?: string;
+  iconUrl?: string;
+  version?: string;
 }
 
-interface DownloadState {
+export interface DownloadState {
   // Map of "namespace-name" -> DownloadProgress
   downloads: Record<string, DownloadProgress>;
   // Queue of identifiers to process (if we were strictly serial, but we can rely on thunks for now)
@@ -143,15 +147,28 @@ const downloadSlice = createSlice({
     clearDownload: (state, action: PayloadAction<string>) => {
       delete state.downloads[action.payload];
     },
+    clearFinishedDownloads: (state) => {
+      Object.keys(state.downloads).forEach((key) => {
+        const dl = state.downloads[key];
+        if (dl.status === "completed" || dl.status === "failed") {
+          delete state.downloads[key];
+        }
+      });
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(downloadAndInstallMod.pending, (state, action) => {
-        const modId = `${action.meta.arg.namespace}-${action.meta.arg.name}`;
+        const listing = action.meta.arg;
+        const modId = `${listing.namespace}-${listing.name}`;
         state.downloads[modId] = {
           status: "pending",
           progress: 0,
           message: "Queued",
+          modName: listing.name,
+          author: listing.namespace,
+          iconUrl: listing.icon_url,
+          version: listing.latest_version_number,
         };
         if (!state.queue.includes(modId)) {
           state.queue.push(modId);
@@ -179,5 +196,6 @@ const downloadSlice = createSlice({
   },
 });
 
-export const { updateDownloadStatus, clearDownload } = downloadSlice.actions;
+export const { updateDownloadStatus, clearDownload, clearFinishedDownloads } =
+  downloadSlice.actions;
 export default downloadSlice.reducer;

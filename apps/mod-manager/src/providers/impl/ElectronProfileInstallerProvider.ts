@@ -108,8 +108,8 @@ export default class ElectronProfileInstallerProvider extends ProfileInstallerPr
         await api.fs.rmdir(pluginsDir);
       } else {
         LoggerProvider.instance.Log(
-          LogSeverity.WARNING,
-          `Mod ${modName} not found in plugins directory, cannot disable.`
+          LogSeverity.INFO,
+          `Mod ${modName} not found in plugins directory during disable. Assuming files are already removed.`
         );
       }
     } catch (e: any) {

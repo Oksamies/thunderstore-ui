@@ -1,5 +1,7 @@
 import { Ecosystem } from "../data/ecosystem";
 import { Platform } from "../data/ecosystemTypes";
+import FsProvider from "../providers/FsProvider";
+import PathResolver from "../r2mm/manager/PathResolver";
 import Game from "./Game";
 import StorePlatformMetadata from "./StorePlatformMetadata";
 
@@ -46,15 +48,19 @@ export default class GameManager {
     );
   }
 
-  /*
-    public static async activate(game: Game, platform: Platform) {
-        this._activeGame = game;
-        this._activeGame.setActivePlatformByStore(platform);
-        // TODO: Implement PathResolver and FileUtils
-        // PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, game.internalFolderName);
-        // await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
-    }
-    */
+  public static async activate(game: Game) {
+    this._activeGame = game;
+    // Platform isn't strictly needed for folder setup, but if we had it we'd set it here.
+
+    const api = window.electronAPI;
+    const root = PathResolver.ROOT;
+    const modRoot = api
+      ? await api.pathJoin(root, game.internalFolderName)
+      : `${root}/${game.internalFolderName}`;
+
+    PathResolver.MOD_ROOT = modRoot;
+    await FsProvider.instance.mkdirs(modRoot);
+  }
 
   public static findByFolderName(name?: string | null) {
     return name

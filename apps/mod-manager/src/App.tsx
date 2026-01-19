@@ -58,6 +58,29 @@ function App() {
           );
         }
 
+        // TCLI Initialization
+        if (window.electronAPI) {
+          // TODO: Determine correct path in production
+          let tcliPath = "C:\\projects\\tcli-rust\\target\\debug\\tcli.exe";
+
+          // Check for production path relative to app
+          // In packaged electron, this might be nearby
+          // const prodPath = await window.electronAPI.pathJoin(process.resourcesPath, "tcli.exe");
+
+          if (await window.electronAPI.fs.exists(tcliPath)) {
+            await window.electronAPI.tcli.init(tcliPath, PathResolver.ROOT);
+            LoggerProvider.instance.Log(
+              LogSeverity.INFO,
+              `TCLI Initialized at ${tcliPath}`
+            );
+          } else {
+            LoggerProvider.instance.Log(
+              LogSeverity.WARNING,
+              `TCLI executable not found at ${tcliPath}`
+            );
+          }
+        }
+
         setReady(true);
       } catch (e: any) {
         console.error("Failed to initialize application paths", e);

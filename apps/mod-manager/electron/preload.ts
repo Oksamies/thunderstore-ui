@@ -44,4 +44,15 @@ contextBridge.exposeInMainWorld("electronAPI", {
     maximize: () => ipcRenderer.invoke("window-maximize"),
     close: () => ipcRenderer.invoke("window-close"),
   },
+  tcli: {
+    init: (executablePath: string, workingDirectory: string) =>
+      ipcRenderer.invoke("tcli-init", executablePath, workingDirectory),
+    openProject: (path: string) =>
+      ipcRenderer.invoke("tcli-open-project", path),
+    addPackages: (packages: string[]) =>
+      ipcRenderer.invoke("tcli-add-packages", packages),
+    removePackages: (packages: string[]) =>
+      ipcRenderer.invoke("tcli-remove-packages", packages),
+    installedPackages: () => ipcRenderer.invoke("tcli-installed-packages"),
+  },
 });

@@ -7,12 +7,16 @@ import { promises as fsPromises } from "fs";
 import fs from "fs-extra";
 import path from "path";
 
+import { TcliClient } from "./tcli/client";
+
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.PUBLIC = app.isPackaged
   ? process.env.DIST
   : path.join(process.env.DIST, "../public");
 
 let win: BrowserWindow | null = null;
+let tcliClient: TcliClient | null = null;
+let initLock: Promise<boolean> | null = null;
 const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL;
 
 // Protocol Handling
@@ -169,6 +173,78 @@ const setupIpc = () => {
       }
     }
   );
+
+  // TCLI Handlers
+  ipcMain.handle(
+    "tcli-init",
+    async (_, executablePath: string, workingDirectory: string) => {
+      // Serialize init calls to prevent race conditions and lock contention
+      if (initLock) {
+        await initLock;
+        if (tcliClient) return true; // Already initialized
+      }
+
+      initLock = (async () => {
+        if (tcliClient) {
+          await tcliClient.stop();
+        }
+
+        // Ensure we have a valid project directory for TCLI to start in
+        // TCLI requires a valid Thunderstore.toml to start the server
+        const sessionDir = path.join(workingDirectory, "_tcli_session");
+        await fs.ensureDir(sessionDir);
+
+        const manifestPath = path.join(sessionDir, "Thunderstore.toml");
+        if (!(await fs.pathExists(manifestPath))) {
+          const minimalManifest = `[config]
+schemaVersion = "0.0.1"
+`;
+          await fs.writeFile(manifestPath, minimalManifest, "utf-8");
+        }
+
+        // Clean up any stale lock file from previous runs
+        const lockFile = path.join(sessionDir, ".server-lock");
+        if (await fs.pathExists(lockFile)) {
+          try {
+            await fs.remove(lockFile);
+            console.log("Removed stale .server-lock file");
+          } catch (e) {
+            console.error("Failed to remove .server-lock", e);
+          }
+        }
+
+        tcliClient = new TcliClient(executablePath, sessionDir);
+        await tcliClient.start();
+        return true;
+      })();
+
+      try {
+        return await initLock;
+      } finally {
+        initLock = null;
+      }
+    }
+  );
+
+  ipcMain.handle("tcli-open-project", async (_, path: string) => {
+    if (!tcliClient) throw new Error("TCLI not initialized");
+    return tcliClient.openProject(path);
+  });
+
+  ipcMain.handle("tcli-add-packages", async (_, packages: string[]) => {
+    if (!tcliClient) throw new Error("TCLI not initialized");
+    return tcliClient.addPackages(packages);
+  });
+
+  ipcMain.handle("tcli-remove-packages", async (_, packages: string[]) => {
+    if (!tcliClient) throw new Error("TCLI not initialized");
+    return tcliClient.removePackages(packages);
+  });
+
+  ipcMain.handle("tcli-installed-packages", async () => {
+    if (!tcliClient) throw new Error("TCLI not initialized");
+    return tcliClient.installedPackages();
+  });
 };
 
 function createWindow() {

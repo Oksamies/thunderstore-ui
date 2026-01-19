@@ -185,13 +185,7 @@ const GameSelection = () => {
       }
     }
 
-    GameManager.activeGame = game;
-    PathResolver.MOD_ROOT = window.electronAPI
-      ? await window.electronAPI.pathJoin(
-          PathResolver.ROOT,
-          game.internalFolderName
-        )
-      : path.join(PathResolver.ROOT, game.internalFolderName);
+    await GameManager.activate(game);
 
     await ManagerSettings.instance.setLastSelectedGame(game.internalFolderName);
 

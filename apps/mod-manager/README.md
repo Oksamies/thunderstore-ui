@@ -30,6 +30,7 @@ This roadmap tracks the feature parity goals against the legacy r2modman applica
     - [x] Multiple profile support (Create, Rename, Delete)
     - [x] Import/Export Profiles (Codes & Files)
 - [x] **Mod Installation (Backend)**
+    - [ ] **Migrate to TCLI**: Replace TS logic with Rust TCLI calls.
     - [x] `ModInstallerService` basic implementation
     - [x] Zip extraction & manifest parsing
     - [x] Dependency resolution (Basic)
@@ -102,6 +103,40 @@ Based on legacy app analysis, these are strict requirements:
 *   **State Management**: React Context + Query (replacing Vuex).
 *   **Database**: Dexie.js (IndexedDB) for metadata cache.
 *   **Styling**: Cyberstorm Theme + Cyberstorm UI components + Custom CSS.
+*   **Mod Logic**: Delegate Mod Management logic to `tcli` (Rust).
+
+### TCLI Integration
+
+The mod manager delegates complex mod operations (package cache management, dependency resolution, profile state) to the `tcli-rust` CLI tool via a local JSON-RPC server.
+
+#### Architecture
+`Electron Main Process` ↔ `Stdio Pipes` ↔ `tcli server` (Rust)
+
+1.  **Frontend** calls `window.electronAPI.tcli.method()`.
+2.  **Electron Main** sends JSON-RPC request to `tcli` process over stdin.
+3.  **TCLI** executes the logic (e.g. downloading/installing to disk).
+4.  **TCLI** responds via stdout.
+5.  **Electron Main** resolves the Promise back to Frontend.
+
+#### Frontend API (`window.electronAPI.tcli`)
+Available methods (typed in `vite-env.d.ts`):
+
+-   `init(executablePath: string, workingDirectory: string)`: Starts the server.
+-   `openProject(path: string)`: Loads a profile.
+-   `addPackages(packages: string[])`: Installs mods.
+-   `removePackages(packages: string[])`: Removes mods.
+-   `installedPackages()`: Lists currently installed mods.
+
+#### Setup for Development
+To work with `tcli` integration locally:
+1.  Build `tcli`: `cd tcli-rust && cargo build`.
+2.  In the mod manager, initialize it pointing to your debug executable:
+    ```typescript
+    await window.electronAPI.tcli.init(
+       "C:/projects/tcli-rust/target/debug/tcli.exe",
+       "C:/my-test-profile-path"
+    );
+    ```
 
 ### Implementation Strategy
 

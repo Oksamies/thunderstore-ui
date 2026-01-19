@@ -43,5 +43,15 @@ interface Window {
       maximize: () => Promise<void>;
       close: () => Promise<void>;
     };
+    tcli: {
+      init: (
+        executablePath: string,
+        workingDirectory: string
+      ) => Promise<boolean>;
+      openProject: (path: string) => Promise<{ path: string }>;
+      addPackages: (packages: string[]) => Promise<{ added: number }>;
+      removePackages: (packages: string[]) => Promise<{ removed: number }>;
+      installedPackages: () => Promise<any[]>;
+    };
   };
 }

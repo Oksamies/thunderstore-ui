@@ -20,6 +20,7 @@ const ConfigEditorView = lazy(
   () => import("../components/views/ConfigEditorView")
 );
 const HelpView = lazy(() => import("../components/views/HelpView"));
+const DownloadsView = lazy(() => import("../components/views/DownloadsView"));
 
 // Loading fallback
 const LoadingFallback = () => <div>Loading...</div>;
@@ -102,6 +103,14 @@ export const router = createHashRouter([
             element: (
               <Suspense fallback={<LoadingFallback />}>
                 <HelpView />
+              </Suspense>
+            ),
+          },
+          {
+            path: "downloads",
+            element: (
+              <Suspense fallback={<LoadingFallback />}>
+                <DownloadsView />
               </Suspense>
             ),
           },
