@@ -20,7 +20,7 @@
     --dropshadow-default: drop-shadow(0 2px 4px rgb(139 0 0 / 0.7));
     --textshadow-default: 0 2px 4px rgb(139 0 0 / 0.7);
 
-    /* Color tokens - EVIL THEME */
+    /* Color tokens - Evil theme variant with dark reds, blacks, and purples */
     --color-accent-blue-1: hsl(0deg 80% 5%);
     --color-accent-blue-10: hsl(0deg 92% 70%);
     --color-accent-blue-11: hsl(0deg 92% 85%);
