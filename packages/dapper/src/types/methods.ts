@@ -15,6 +15,13 @@ import {
 import { type PackageListingType } from "./props";
 import { type HTMLContentResponse, type MarkdownResponse } from "./shared";
 import { type ServiceAccount, type TeamDetails, type TeamMember } from "./team";
+import {
+  type Ticket,
+  type TicketCreateDTO,
+  type TicketMessage,
+  type TicketNote,
+  type TicketStatusDTO,
+} from "./tickets";
 import { type CurrentUser, type CurrentUserTeamPermissions } from "./user";
 
 export type GetCommunities = (
@@ -112,3 +119,35 @@ export type GetPackageSubmissionStatus = (
 ) => Promise<PackageSubmissionResponse>;
 
 export type PostTeamCreate = (name: string) => Promise<TeamDetails>;
+
+export type GetTickets = () => Promise<Ticket[]>;
+
+export type GetTicket = (uuid: string) => Promise<Ticket>;
+
+export type CreateTicketMessage = (
+  uuid: string,
+  data: TicketCreateDTO
+) => Promise<TicketMessage>;
+
+export type CreateTicketNote = (
+  uuid: string,
+  data: TicketCreateDTO
+) => Promise<TicketNote>;
+
+export type UpdateTicketStatus = (
+  uuid: string,
+  data: TicketStatusDTO
+) => Promise<Ticket>;
+
+export type GetListingTickets = (
+  community: string,
+  namespace: string,
+  name: string
+) => Promise<Ticket[]>;
+
+export type CreateListingTicket = (
+  community: string,
+  namespace: string,
+  name: string,
+  data: TicketCreateDTO
+) => Promise<Ticket>;

@@ -44,6 +44,7 @@ export {
   type TextAreaInputProps,
 } from "./components/TextAreaInput/TextAreaInput";
 export { ValidationBar } from "./components/ValidationBar/ValidationBar";
+export * from "./components/Ticket";
 
 // newComponents
 export { AdContainer } from "./newComponents/AdContainer/AdContainer";
