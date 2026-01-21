@@ -20,4 +20,11 @@ export interface DapperInterface {
   postTeamCreate: methods.PostTeamCreate;
   postPackageSubmissionMetadata: methods.PostPackageSubmissionMetadata;
   getPackageSubmissionStatus: methods.GetPackageSubmissionStatus;
+  getTickets: methods.GetTickets;
+  getTicket: methods.GetTicket;
+  createTicketMessage: methods.CreateTicketMessage;
+  createTicketNote: methods.CreateTicketNote;
+  updateTicketStatus: methods.UpdateTicketStatus;
+  getListingTickets: methods.GetListingTickets;
+  createListingTicket: methods.CreateListingTicket;
 }

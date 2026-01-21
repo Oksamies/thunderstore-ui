@@ -108,6 +108,13 @@ export default [
       "service-accounts",
       "settings/teams/team/tabs/ServiceAccounts/ServiceAccounts.tsx"
     ),
+    route("tickets", "settings/teams/team/tabs/Tickets/Tickets.tsx"),
     route("settings", "settings/teams/team/tabs/Settings/Settings.tsx"),
+  ]),
+
+  // Moderation
+  ...prefix("m", [
+    route(":communityId/tickets", "m/Tickets/Tickets.tsx"),
+    route(":communityId/tickets/:ticketId", "m/Tickets/TicketDetail.tsx"),
   ]),
 ] satisfies RouteConfig;

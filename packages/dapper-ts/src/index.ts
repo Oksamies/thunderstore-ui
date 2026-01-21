@@ -33,6 +33,15 @@ import {
   getTeamServiceAccounts,
   postTeamCreate,
 } from "./methods/team";
+import {
+  createListingTicket,
+  createTicketMessage,
+  createTicketNote,
+  getListingTickets,
+  getTicket,
+  getTickets,
+  updateTicketStatus,
+} from "./methods/tickets";
 
 export {
   getCommunities,
@@ -60,6 +69,13 @@ export {
   getTeamMembers,
   getTeamServiceAccounts,
   postTeamCreate,
+  getTickets,
+  getTicket,
+  getListingTickets,
+  createTicketMessage,
+  createTicketNote,
+  updateTicketStatus,
+  createListingTicket,
 };
 
 export interface DapperTsInterface extends DapperInterface {
@@ -103,6 +119,13 @@ export class DapperTs implements DapperTsInterface {
       this.postPackageSubmissionMetadata.bind(this);
     this.getPackageSubmissionStatus =
       this.getPackageSubmissionStatus.bind(this);
+    this.getTickets = this.getTickets.bind(this);
+    this.getTicket = this.getTicket.bind(this);
+    this.getListingTickets = this.getListingTickets.bind(this);
+    this.createTicketMessage = this.createTicketMessage.bind(this);
+    this.createTicketNote = this.createTicketNote.bind(this);
+    this.updateTicketStatus = this.updateTicketStatus.bind(this);
+    this.createListingTicket = this.createListingTicket.bind(this);
   }
 
   public getDynamicHTML = getDynamicHTML;
@@ -130,4 +153,11 @@ export class DapperTs implements DapperTsInterface {
   public postTeamCreate = postTeamCreate;
   public postPackageSubmissionMetadata = postPackageSubmissionMetadata;
   public getPackageSubmissionStatus = getPackageSubmissionStatus;
+  public getTickets = getTickets;
+  public getTicket = getTicket;
+  public getListingTickets = getListingTickets;
+  public createTicketMessage = createTicketMessage;
+  public createTicketNote = createTicketNote;
+  public updateTicketStatus = updateTicketStatus;
+  public createListingTicket = createListingTicket;
 }
