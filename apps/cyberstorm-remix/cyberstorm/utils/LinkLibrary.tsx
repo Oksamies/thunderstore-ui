@@ -143,6 +143,13 @@ const library: LinkLibrary = {
       ref={p.customRef}
     />
   ),
+  PackageComments: (p) => (
+    <Link
+      {...p}
+      url={`/c/${p.community}/p/${p.namespace}/${p.package}/comments`}
+      ref={p.customRef}
+    />
+  ),
   PackageSource: (p) => (
     <Link
       {...p}
@@ -175,6 +182,13 @@ const library: LinkLibrary = {
     <Link
       {...p}
       url={`/c/${p.community}/p/${p.namespace}/${p.package}/v/${p.version}/versions`}
+      ref={p.customRef}
+    />
+  ),
+  PackageVersionComments: (p) => (
+    <Link
+      {...p}
+      url={`/c/${p.community}/p/${p.namespace}/${p.package}/v/${p.version}/comments`}
       ref={p.customRef}
     />
   ),

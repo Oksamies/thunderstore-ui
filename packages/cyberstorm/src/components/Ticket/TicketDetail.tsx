@@ -6,7 +6,7 @@ import {
   TicketUser,
 } from "@thunderstore/dapper/types/tickets";
 
-import { TextAreaInput } from "../../components/TextAreaInput/TextAreaInput";
+import { CommentInput } from "../../components/Comment/CommentInput";
 import { Alert } from "../../newComponents/Alert/Alert";
 import { Button } from "../../newComponents/Button/Button";
 import { Heading } from "../../newComponents/Heading/Heading";
@@ -126,38 +126,26 @@ export function TicketDetail({
 
         {activeTab === "message" ? (
           <div className="ticket-compose-area">
-            <TextAreaInput
+            <CommentInput
               value={messageContent}
-              onChange={(e) => setMessageContent(e.target.value)}
+              onChange={setMessageContent}
+              onSubmit={handleSendMessage}
               placeholder="Write a reply..."
-              disabled={isSubmitting}
+              isSubmitting={isSubmitting}
             />
-            <Button
-              onClick={handleSendMessage}
-              disabled={isSubmitting || !messageContent.trim()}
-              csVariant="primary"
-            >
-              Send Reply
-            </Button>
           </div>
         ) : (
           <div className="ticket-compose-area ticket-compose-area--note">
             <Alert csVariant="warning">
               This note is only visible to other moderators.
             </Alert>
-            <TextAreaInput
+            <CommentInput
               value={noteContent}
-              onChange={(e) => setNoteContent(e.target.value)}
+              onChange={setNoteContent}
+              onSubmit={handleSendNote}
               placeholder="Internal note..."
-              disabled={isSubmitting}
+              isSubmitting={isSubmitting}
             />
-            <Button
-              onClick={handleSendNote}
-              disabled={isSubmitting || !noteContent.trim()}
-              csVariant="warning"
-            >
-              Add Note
-            </Button>
           </div>
         )}
       </div>

@@ -31,6 +31,12 @@ export { TooltipWrapper } from "./primitiveComponents/utils/utils";
 // components
 export { CodeBox, type CodeBoxProps } from "./components/CodeBox/CodeBox";
 export {
+  Comment,
+  type CommentProps,
+  CommentInput,
+  type CommentInputProps,
+} from "./components/Comment";
+export {
   LinkingProvider,
   type LinkLibrary,
   LinkingContext,

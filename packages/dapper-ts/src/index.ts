@@ -1,6 +1,11 @@
 import type { DapperInterface } from "@thunderstore/dapper";
 import type { RequestConfig } from "@thunderstore/thunderstore-api";
 
+import {
+  deleteComment,
+  getListingComments,
+  restoreComment,
+} from "./methods/comment";
 import { getCommunities, getCommunity } from "./methods/communities";
 import { getCommunityFilters } from "./methods/communityFilters";
 import {
@@ -76,6 +81,9 @@ export {
   createTicketNote,
   updateTicketStatus,
   createListingTicket,
+  deleteComment,
+  restoreComment,
+  getListingComments,
 };
 
 export interface DapperTsInterface extends DapperInterface {
@@ -126,6 +134,9 @@ export class DapperTs implements DapperTsInterface {
     this.createTicketNote = this.createTicketNote.bind(this);
     this.updateTicketStatus = this.updateTicketStatus.bind(this);
     this.createListingTicket = this.createListingTicket.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
+    this.restoreComment = this.restoreComment.bind(this);
+    this.getListingComments = this.getListingComments.bind(this);
   }
 
   public getDynamicHTML = getDynamicHTML;
@@ -160,4 +171,7 @@ export class DapperTs implements DapperTsInterface {
   public createTicketNote = createTicketNote;
   public updateTicketStatus = updateTicketStatus;
   public createListingTicket = createListingTicket;
+  public deleteComment = deleteComment;
+  public restoreComment = restoreComment;
+  public getListingComments = getListingComments;
 }

@@ -290,6 +290,21 @@ export default function PackageListingVersion() {
                 >
                   Versions
                 </NewLink>
+                <NewLink
+                  key="comments"
+                  primitiveType="cyberstormLink"
+                  linkId="PackageVersionComments"
+                  community={listing.community_identifier}
+                  namespace={listing.namespace}
+                  package={listing.name}
+                  version={packageVersion}
+                  aria-current={currentTab === "comments"}
+                  rootClasses={`tabs-item${
+                    currentTab === "comments" ? " tabs-item--current" : ""
+                  }`}
+                >
+                  Comments
+                </NewLink>
               </Tabs>
 
               <div className="package-listing__content">
