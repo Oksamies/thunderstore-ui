@@ -102,6 +102,8 @@ export interface LinkLibrary {
   PackageChangelog: (props: AnyProps & PackageProps) => RE | null;
   /** Package's versions view */
   PackageVersions: (props: AnyProps & PackageProps) => RE | null;
+  /** Package's comments view */
+  PackageComments: (props: AnyProps & PackageProps) => RE | null;
   /** Package's source view */
   PackageSource: (props: AnyProps & PackageProps) => RE | null;
   /** View listing other packages that depend on this package */
@@ -114,6 +116,8 @@ export interface LinkLibrary {
   PackageVersionRequired: (props: AnyProps & PackageVersionProps) => RE | null;
   /** PackageVersion's versions view */
   PackageVersionVersions: (props: AnyProps & PackageVersionProps) => RE | null;
+  /** PackageVersion's comments view */
+  PackageVersionComments: (props: AnyProps & PackageVersionProps) => RE | null;
   /** PackageVersionWithoutCommunity's detail view */
   PackageVersionWithoutCommunity: (
     props: AnyProps & Omit<PackageVersionProps, "community">
@@ -175,12 +179,14 @@ const library: LinkLibrary = {
   PackageWikiPageEdit: noop,
   PackageChangelog: noop,
   PackageVersions: noop,
+  PackageComments: noop,
   PackageSource: noop,
   PackageDependants: noop,
   PackageFormatDocs: noop,
   PackageVersion: noop,
   PackageVersionRequired: noop,
   PackageVersionVersions: noop,
+  PackageVersionComments: noop,
   PackageVersionWithoutCommunity: noop,
   PackageVersionWithoutCommunityRequired: noop,
   PackageVersionWithoutCommunityVersions: noop,

@@ -23,6 +23,7 @@ export default [
         route("required", "p/tabs/Required/Required.tsx"),
         route("changelog", "p/tabs/Changelog/Changelog.tsx"),
         route("versions", "p/tabs/Versions/Versions.tsx"),
+        route("comments", "p/tabs/Comments/Comments.tsx"),
         route("source", "p/tabs/Source/Source.tsx"),
         ...prefix("wiki", [
           layout("p/tabs/Wiki/Wiki.tsx", [
@@ -45,6 +46,9 @@ export default [
             id: "VersionRequired",
           }),
           route("versions", "p/tabs/Versions/PackageVersionVersions.tsx"),
+          route("comments", "p/tabs/Comments/Comments.tsx", {
+            id: "VersionComments",
+          }),
         ]
       ),
       route(":namespaceId/:packageId/edit", "p/packageEdit.tsx"),

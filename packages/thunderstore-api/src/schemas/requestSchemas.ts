@@ -680,3 +680,10 @@ export const packageSourceRequestParamsSchema = z.object({
 export type PackageSourceRequestParams = z.infer<
   typeof packageSourceRequestParamsSchema
 >;
+
+// CommentRequest
+export const commentRequestParamsSchema = z.object({
+  uuid: z.string().uuid(),
+});
+
+export type CommentRequestParams = z.infer<typeof commentRequestParamsSchema>;

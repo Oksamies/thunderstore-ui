@@ -470,6 +470,21 @@ export default function PackageListing() {
                   </NewLink>
 
                   <NewLink
+                    key="comments"
+                    primitiveType="cyberstormLink"
+                    linkId="PackageComments"
+                    community={listing.community_identifier}
+                    namespace={listing.namespace}
+                    package={listing.name}
+                    aria-current={currentTab === "comments"}
+                    rootClasses={`tabs-item${
+                      currentTab === "comments" ? " tabs-item--current" : ""
+                    }`}
+                  >
+                    Comments
+                  </NewLink>
+
+                  <NewLink
                     key="source"
                     primitiveType="cyberstormLink"
                     linkId="PackageSource"

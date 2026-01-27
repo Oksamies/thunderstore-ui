@@ -27,4 +27,7 @@ export interface DapperInterface {
   updateTicketStatus: methods.UpdateTicketStatus;
   getListingTickets: methods.GetListingTickets;
   createListingTicket: methods.CreateListingTicket;
+  deleteComment: methods.DeleteComment;
+  restoreComment: methods.RestoreComment;
+  getListingComments: methods.GetListingComments;
 }

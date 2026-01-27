@@ -1,3 +1,4 @@
+import { type Comment } from "./comment";
 import {
   type Communities,
   type Community,
@@ -151,3 +152,13 @@ export type CreateListingTicket = (
   name: string,
   data: TicketCreateDTO
 ) => Promise<Ticket>;
+
+export type DeleteComment = (uuid: string) => Promise<void>;
+
+export type RestoreComment = (uuid: string) => Promise<void>;
+
+export type GetListingComments = (
+  community: string,
+  namespace: string,
+  name: string
+) => Promise<Comment[]>;
