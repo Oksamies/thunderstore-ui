@@ -3,7 +3,10 @@ import { z } from "zod";
 export const CommentSchema = z.object({
   uuid: z.string().uuid(),
   parent: z.string().uuid().nullable().optional(),
-  author_id: z.number().nullable().optional(),
+  author: z.object({
+    username: z.string(),
+    avatar: z.string().nullable(),
+  }),
   body: z.string(),
   is_internal: z.boolean(),
   is_deleted: z.boolean(),

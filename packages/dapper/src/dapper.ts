@@ -30,4 +30,5 @@ export interface DapperInterface {
   deleteComment: methods.DeleteComment;
   restoreComment: methods.RestoreComment;
   getListingComments: methods.GetListingComments;
+  createListingComment: methods.CreateListingComment;
 }

@@ -20,7 +20,6 @@ import {
   type Ticket,
   type TicketCreateDTO,
   type TicketMessage,
-  type TicketNote,
   type TicketStatusDTO,
 } from "./tickets";
 import { type CurrentUser, type CurrentUserTeamPermissions } from "./user";
@@ -133,7 +132,7 @@ export type CreateTicketMessage = (
 export type CreateTicketNote = (
   uuid: string,
   data: TicketCreateDTO
-) => Promise<TicketNote>;
+) => Promise<TicketMessage>;
 
 export type UpdateTicketStatus = (
   uuid: string,
@@ -162,3 +161,12 @@ export type GetListingComments = (
   namespace: string,
   name: string
 ) => Promise<Comment[]>;
+
+export type CreateListingComment = (
+  community: string,
+  namespace: string,
+  name: string,
+  body: string,
+  parent?: string,
+  is_internal?: boolean
+) => Promise<Comment>;

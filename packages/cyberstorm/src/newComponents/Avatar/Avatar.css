@@ -8,6 +8,12 @@
   background: transparent;
 }
 
+.avatar__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .avatar__placeholder-root {
   --icon-inline-size: var(--size);
 }

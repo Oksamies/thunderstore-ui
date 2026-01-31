@@ -4,7 +4,6 @@ import {
   TicketStatus,
   ticketCreateSchema,
   ticketMessageSchema,
-  ticketNoteSchema,
   ticketSchema,
   ticketStatusUpdateSchema,
 } from "../schemas/tickets";
@@ -41,7 +40,7 @@ export const fetchCreateTicketNote = async (
     },
     requestSchema: ticketCreateSchema,
     queryParamsSchema: undefined,
-    responseSchema: ticketNoteSchema,
+    responseSchema: ticketMessageSchema,
   });
 };
 

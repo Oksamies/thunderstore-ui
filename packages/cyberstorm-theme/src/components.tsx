@@ -159,3 +159,11 @@ export {
   type AvatarSizes,
   AvatarSizesList,
 } from "./components/Avatar/Avatar";
+export {
+  type CommentVariants,
+  CommentVariantsList,
+  type CommentSizes,
+  CommentSizesList,
+  type CommentModifiers,
+  CommentModifiersList,
+} from "./components/Comment/Comment";

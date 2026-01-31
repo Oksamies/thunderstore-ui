@@ -1,80 +1,125 @@
 import { type OutletContextShape } from "app/root";
-import { useState } from "react";
-import { useOutletContext } from "react-router";
+import { useEffect, useState } from "react";
+import { useOutletContext, useParams } from "react-router";
 
 import {
   Comment,
   CommentInput,
   type CommentProps,
-} from "@thunderstore/cyberstorm/components/Comment";
+} from "@thunderstore/cyberstorm";
+import { type Comment as ApiComment } from "@thunderstore/dapper/types";
 
-// Mock data for now
-const MOCK_COMMENTS: CommentProps[] = [
-  {
-    id: "1",
-    author: {
-      username: "TestUser",
-      avatar: "",
-      badges: ["Developer"],
-    },
-    timestamp: new Date().toISOString(),
-    content: "This is a great mod! Thanks for creating it.",
-    voteScore: 5,
-    userVote: 1,
-    replies: [
-      {
-        id: "2",
-        author: {
-          username: "ModAuthor",
-          avatar: "",
-          badges: ["Maintainer"],
-        },
-        timestamp: new Date().toISOString(),
-        content: "Glad you like it!",
-        voteScore: 2,
-        userVote: 0,
-        replies: [],
-      },
-    ],
-  },
-  {
-    id: "3",
-    author: {
-      username: "AnotherUser",
-      avatar: "",
-    },
-    timestamp: new Date(Date.now() - 86400000).toISOString(),
-    content: "I found a bug in the latest version. Can you check?",
-    voteScore: 0,
-    userVote: -1,
-    replies: [],
-  },
-];
+function buildCommentTree(flatComments: ApiComment[]): CommentProps[] {
+  const commentMap = new Map<string, CommentProps>();
+  const roots: CommentProps[] = [];
 
-export default function PackageComments() {
-  const context = useOutletContext() as OutletContextShape;
-  const { currentUser } = context;
-  const [commentText, setCommentText] = useState("");
-  const [comments, setComments] = useState(MOCK_COMMENTS);
-
-  const handleSubmit = () => {
-    if (!commentText.trim() || !currentUser) return;
-
-    const newComment: CommentProps = {
-      id: Math.random().toString(),
+  flatComments.forEach((c) => {
+    commentMap.set(c.uuid, {
+      id: c.uuid,
       author: {
-        username: currentUser.username || "Anonymous",
-        avatar: currentUser.avatar || "",
+        username: c.author.username,
+        avatar: c.author.avatar || "",
+        badges: [],
       },
-      timestamp: new Date().toISOString(),
-      content: commentText,
+      timestamp: c.datetime_created,
+      content: c.body,
       voteScore: 0,
       userVote: 0,
       replies: [],
-    };
+    });
+  });
 
-    setComments([newComment, ...comments]);
-    setCommentText("");
+  flatComments.forEach((c) => {
+    const node = commentMap.get(c.uuid)!;
+    if (c.parent) {
+      const parent = commentMap.get(c.parent);
+      if (parent) {
+        parent.replies = parent.replies || [];
+        parent.replies.push(node);
+      } else {
+        roots.push(node);
+      }
+    } else {
+      roots.push(node);
+    }
+  });
+
+  roots.sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+
+  const sortReplies = (node: CommentProps) => {
+    if (node.replies && node.replies.length > 0) {
+      node.replies.sort(
+        (a, b) =>
+          new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+      );
+      node.replies.forEach(sortReplies);
+    }
+  };
+  roots.forEach(sortReplies);
+
+  return roots;
+}
+
+export default function PackageComments() {
+  const context = useOutletContext() as OutletContextShape;
+  const { currentUser, dapper } = context;
+  const { communityId, namespaceId, packageName } = useParams();
+
+  const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState<CommentProps[]>([]);
+
+  const fetchComments = async () => {
+    if (!communityId || !namespaceId || !packageName) return;
+    try {
+      const apiComments = await dapper.getListingComments(
+        communityId,
+        namespaceId,
+        packageName
+      );
+      setComments(buildCommentTree(apiComments));
+    } catch (e) {
+      console.error("Failed to fetch comments", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, [communityId, namespaceId, packageName, dapper]);
+
+  const handleSubmit = async () => {
+    if (!commentText.trim() || !currentUser) return;
+    if (!communityId || !namespaceId || !packageName) return;
+
+    try {
+      await dapper.createListingComment(
+        communityId,
+        namespaceId,
+        packageName,
+        commentText
+      );
+      setCommentText("");
+      fetchComments();
+    } catch (e) {
+      console.error("Failed to post comment", e);
+    }
+  };
+
+  const handleReplySubmit = async (commentId: string, content: string) => {
+    if (!communityId || !namespaceId || !packageName) return;
+    try {
+      await dapper.createListingComment(
+        communityId,
+        namespaceId,
+        packageName,
+        content,
+        commentId
+      );
+      fetchComments();
+    } catch (e) {
+      console.error("Failed to post reply", e);
+    }
   };
 
   return (
@@ -107,7 +152,11 @@ export default function PackageComments() {
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
         {comments.map((comment) => (
-          <Comment key={comment.id} {...comment} />
+          <Comment
+            key={comment.id}
+            {...comment}
+            onSubmitReply={handleReplySubmit}
+          />
         ))}
       </div>
     </div>

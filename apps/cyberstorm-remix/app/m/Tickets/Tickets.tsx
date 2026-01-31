@@ -2,11 +2,14 @@ import {
   getPublicEnvVariables,
   getSessionTools,
 } from "cyberstorm/security/publicEnvVariables";
-import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "react-router";
+import {
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  redirect,
+} from "react-router";
 import { Link, useLoaderData } from "react-router";
 
-import { TicketList } from "@thunderstore/cyberstorm/components/Ticket/TicketList";
-import { Heading } from "@thunderstore/cyberstorm/newComponents/Heading/Heading";
+import { Heading, TicketList } from "@thunderstore/cyberstorm";
 import { DapperTs } from "@thunderstore/dapper-ts";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {

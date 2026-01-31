@@ -19,6 +19,7 @@ export default defineConfig({
         "@thunderstore/typed-event-emitter",
       ],
     },
+    emptyOutDir: false,
   },
   plugins: [dts({ rollupTypes: true })],
 });

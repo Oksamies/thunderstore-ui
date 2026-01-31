@@ -1,6 +1,6 @@
 import React from "react";
 
-import type { Ticket, TicketStatus } from "@thunderstore/dapper";
+import { Ticket, TicketStatus } from "@thunderstore/dapper/types";
 
 import { Link } from "../../newComponents/Link/Link";
 import {
@@ -52,7 +52,11 @@ export function TicketList({ tickets, getTicketUrl }: TicketListProps) {
     },
     {
       value: (
-        <Link to={getTicketUrl(ticket)} csVariant="primary">
+        <Link
+          primitiveType="link"
+          href={getTicketUrl(ticket)}
+          csVariant="primary"
+        >
           View
         </Link>
       ),

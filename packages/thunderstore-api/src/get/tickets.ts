@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { apiFetch } from "../apiFetch";
 import { RequestConfig } from "../index";
-import { ticketSchema } from "../schemas/tickets";
+import { ticketMessageSchema, ticketSchema } from "../schemas/tickets";
 
 export const fetchGetTickets = async (config: RequestConfig) => {
   return apiFetch({
@@ -27,6 +27,22 @@ export const fetchGetTicket = async (config: RequestConfig, uuid: string) => {
     requestSchema: undefined,
     queryParamsSchema: undefined,
     responseSchema: ticketSchema,
+  });
+};
+
+export const fetchGetTicketMessages = async (
+  config: RequestConfig,
+  uuid: string
+) => {
+  return apiFetch({
+    args: {
+      config: () => config,
+      path: `/api/cyberstorm/tickets/${uuid}/messages/`,
+      useSession: true,
+    },
+    requestSchema: undefined,
+    queryParamsSchema: undefined,
+    responseSchema: z.array(ticketMessageSchema),
   });
 };
 

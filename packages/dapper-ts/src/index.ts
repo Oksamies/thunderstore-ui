@@ -2,6 +2,7 @@ import type { DapperInterface } from "@thunderstore/dapper";
 import type { RequestConfig } from "@thunderstore/thunderstore-api";
 
 import {
+  createListingComment,
   deleteComment,
   getListingComments,
   restoreComment,
@@ -84,6 +85,7 @@ export {
   deleteComment,
   restoreComment,
   getListingComments,
+  createListingComment,
 };
 
 export interface DapperTsInterface extends DapperInterface {
@@ -137,6 +139,7 @@ export class DapperTs implements DapperTsInterface {
     this.deleteComment = this.deleteComment.bind(this);
     this.restoreComment = this.restoreComment.bind(this);
     this.getListingComments = this.getListingComments.bind(this);
+    this.createListingComment = this.createListingComment.bind(this);
   }
 
   public getDynamicHTML = getDynamicHTML;
@@ -174,4 +177,5 @@ export class DapperTs implements DapperTsInterface {
   public deleteComment = deleteComment;
   public restoreComment = restoreComment;
   public getListingComments = getListingComments;
+  public createListingComment = createListingComment;
 }

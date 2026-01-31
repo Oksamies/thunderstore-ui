@@ -1,0 +1,5 @@
+@layer theme-components {
+  .comment {
+    --comment-gap: var(--space-8);
+  }
+}

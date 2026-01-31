@@ -21,6 +21,9 @@ export default defineConfig({
       authToken: process.env.SENTRY_AUTH_TOKEN,
     }),
   ],
+  resolve: {
+    dedupe: ["react", "react-dom"],
+  },
   build: {
     // For building the assets under right path.
     // TODO: Remove when moving fully under TS main domain.

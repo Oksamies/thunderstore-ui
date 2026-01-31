@@ -2,12 +2,16 @@ import {
   getPublicEnvVariables,
   getSessionTools,
 } from "cyberstorm/security/publicEnvVariables";
-import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "react-router";
+import {
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  redirect,
+} from "react-router";
 import { useLoaderData, useNavigation, useSubmit } from "react-router";
 
-import { TicketDetail } from "@thunderstore/cyberstorm/components/Ticket/TicketDetail";
+import { TicketDetail } from "@thunderstore/cyberstorm";
 import { DapperTs } from "@thunderstore/dapper-ts";
-import { TicketStatus } from "@thunderstore/dapper/types/tickets";
+import { TicketStatus } from "@thunderstore/dapper/types";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const session = await getSessionTools().getSession(
@@ -19,6 +23,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   }));
 
   const ticket = await dapper.getTicket(params.ticketId!);
+  const messages = await dapper.getTicketMessages(params.ticketId!);
   const user = await dapper.getCurrentUser();
 
   // Basic check if user is moderator for this ticket's community
@@ -30,9 +35,9 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   const isModerator = true; // TODO: Check actual permissions via dapper.getCommunity(ticket.community.identifier) -> check perms
   // Actually, we can check if ticket.notes is present (backend only returns notes to mods)
 
-  const isModByData = ticket.notes !== undefined;
+  const isModByData = messages.some((m) => m.is_internal);
 
-  return { ticket, user, isModerator: isModByData };
+  return { ticket, user, isModerator: isModByData, messages };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -63,7 +68,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function TicketDetailRoute() {
-  const { ticket, user, isModerator } = useLoaderData<typeof loader>();
+  const { ticket, user, isModerator, messages } =
+    useLoaderData<typeof loader>();
   const submit = useSubmit();
   const navigation = useNavigation();
 
@@ -100,6 +106,7 @@ export default function TicketDetailRoute() {
     <div className="w-full p-4">
       <TicketDetail
         ticket={ticket}
+        messages={messages}
         currentUser={ticketUser || { username: "Guest" }}
         isModerator={isModerator}
         onSendMessage={handleSendMessage}

@@ -60,6 +60,7 @@ export * from "./post/teamMember";
 export * from "./post/tickets";
 export * from "./post/usermedia";
 export * from "./post/comment";
+export * from "./post/listingComment";
 export * from "./delete/comment";
 export * from "./errors";
 export * from "./schemas/requestSchemas";

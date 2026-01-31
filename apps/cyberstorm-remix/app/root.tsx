@@ -562,7 +562,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   ) : null}
                 </div>
                 <Footer />
-                {shouldShowAds ? <AdsInit /> : null}
+                {/* {shouldShowAds ? <AdsInit /> : null} */}
               </TooltipProvider>
             </ToastProvider>
           </LinkingProvider>

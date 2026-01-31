@@ -2,9 +2,10 @@ import React, { useState } from "react";
 
 import {
   Ticket,
+  TicketMessage,
   TicketStatus,
   TicketUser,
-} from "@thunderstore/dapper/types/tickets";
+} from "@thunderstore/dapper/types";
 
 import { CommentInput } from "../../components/Comment/CommentInput";
 import { Alert } from "../../newComponents/Alert/Alert";
@@ -16,6 +17,7 @@ import { TicketChat } from "./TicketChat";
 
 export interface TicketDetailProps {
   ticket: Ticket;
+  messages: TicketMessage[];
   currentUser: TicketUser;
   isModerator: boolean;
   onSendMessage: (content: string) => Promise<void>;
@@ -25,6 +27,7 @@ export interface TicketDetailProps {
 
 export function TicketDetail({
   ticket,
+  messages,
   currentUser,
   isModerator,
   onSendMessage,
@@ -69,9 +72,7 @@ export function TicketDetail({
   return (
     <div className="ticket-detail">
       <div className="ticket-detail__header">
-        <Heading size="h2" weight="bold">
-          Ticket #{ticket.uuid.slice(0, 8)}
-        </Heading>
+        <Heading csLevel="2">Ticket #{ticket.uuid.slice(0, 8)}</Heading>
         <div className="ticket-detail__meta">
           <span>Status:</span>
           {isModerator && onUpdateStatus ? (
@@ -90,20 +91,14 @@ export function TicketDetail({
       </div>
 
       <div className="ticket-detail__context">
-        <Heading size="h4" weight="bold">
-          Context
-        </Heading>
+        <Heading csLevel="4">Context</Heading>
         <p>Package: {ticket.listing?.package_name || "N/A"}</p>
         <p>Community: {ticket.community?.name || "N/A"}</p>
         <p>Team: {ticket.team?.name || "N/A"}</p>
       </div>
 
       <div className="ticket-detail__chat">
-        <TicketChat
-          messages={ticket.messages}
-          notes={isModerator ? ticket.notes : []}
-          currentUser={currentUser}
-        />
+        <TicketChat messages={messages} currentUser={currentUser} />
       </div>
 
       <div className="ticket-detail__compose">

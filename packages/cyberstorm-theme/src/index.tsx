@@ -4,6 +4,7 @@ import "./components/Avatar/Avatar.css";
 import "./components/Button/Button.css";
 import "./components/CardPackage/CardPackage.css";
 import "./components/CodeInput/CodeInput.css";
+import "./components/Comment/Comment.css";
 import "./components/Drawer/Drawer.css";
 import "./components/DropDown/DropDown.css";
 import "./components/Heading/Heading.css";

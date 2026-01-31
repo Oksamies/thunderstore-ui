@@ -16,13 +16,7 @@ export interface TicketMessage {
   author?: TicketUser;
   content: string;
   created_at: string;
-}
-
-export interface TicketNote {
-  uuid: string;
-  author?: TicketUser;
-  content: string;
-  created_at: string;
+  is_internal?: boolean;
 }
 
 export interface Ticket {
@@ -43,8 +37,7 @@ export interface Ticket {
   created_by?: TicketUser;
   created_at: string;
   last_updated: string;
-  messages: TicketMessage[];
-  notes?: TicketNote[];
+  messages: string[];
 }
 
 export interface TicketCreateDTO {

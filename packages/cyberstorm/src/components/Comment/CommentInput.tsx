@@ -43,60 +43,66 @@ export function CommentInput({
       <div className="comment-input__toolbar">
         <div className="comment-input__toolbar-group">
           <Button
-            csVariant="tertiary"
+            csVariant="secondary"
             csSize="small"
             onClick={() => handleFormat("bold")}
             title="Bold"
+            csModifiers={["only-icon", "ghost"]}
           >
             <Icon noWrapper>
               <FontAwesomeIcon icon={faBold} />
             </Icon>
           </Button>
           <Button
-            csVariant="tertiary"
+            csVariant="secondary"
             csSize="small"
             onClick={() => handleFormat("italic")}
             title="Italic"
+            csModifiers={["only-icon", "ghost"]}
           >
             <Icon noWrapper>
               <FontAwesomeIcon icon={faItalic} />
             </Icon>
           </Button>
           <Button
-            csVariant="tertiary"
+            csVariant="secondary"
             csSize="small"
             onClick={() => handleFormat("link")}
             title="Link"
+            csModifiers={["only-icon", "ghost"]}
           >
             <Icon noWrapper>
               <FontAwesomeIcon icon={faLink} />
             </Icon>
           </Button>
           <Button
-            csVariant="tertiary"
+            csVariant="secondary"
             csSize="small"
             onClick={() => handleFormat("code")}
             title="Code"
+            csModifiers={["only-icon", "ghost"]}
           >
             <Icon noWrapper>
               <FontAwesomeIcon icon={faCode} />
             </Icon>
           </Button>
           <Button
-            csVariant="tertiary"
+            csVariant="secondary"
             csSize="small"
             onClick={() => handleFormat("quote")}
             title="Quote"
+            csModifiers={["only-icon", "ghost"]}
           >
             <Icon noWrapper>
               <FontAwesomeIcon icon={faQuoteRight} />
             </Icon>
           </Button>
           <Button
-            csVariant="tertiary"
+            csVariant="secondary"
             csSize="small"
             onClick={() => handleFormat("list")}
             title="List"
+            csModifiers={["only-icon", "ghost"]}
           >
             <Icon noWrapper>
               <FontAwesomeIcon icon={faListUl} />
@@ -108,9 +114,10 @@ export function CommentInput({
 
         <div className="comment-input__toolbar-group">
           <Button
-            csVariant="tertiary"
+            csVariant="secondary"
             csSize="small"
             onClick={() => setMode(mode === "edit" ? "preview" : "edit")}
+            csModifiers={["ghost"]}
           >
             <Icon csMode="inline" noWrapper>
               <FontAwesomeIcon icon={mode === "edit" ? faEye : faPen} />

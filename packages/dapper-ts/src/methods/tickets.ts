@@ -1,13 +1,11 @@
-import {
-  TicketCreateDTO,
-  TicketStatusDTO,
-} from "@thunderstore/dapper/types/tickets";
+import { TicketCreateDTO, TicketStatusDTO } from "@thunderstore/dapper/types";
 import {
   fetchCreateListingTicket,
   fetchCreateTicketMessage,
   fetchCreateTicketNote,
   fetchGetListingTickets,
   fetchGetTicket,
+  fetchGetTicketMessages,
   fetchGetTickets,
   fetchUpdateTicketStatus,
 } from "@thunderstore/thunderstore-api";
@@ -20,6 +18,10 @@ export async function getTickets(this: DapperTsInterface) {
 
 export async function getTicket(this: DapperTsInterface, uuid: string) {
   return await fetchGetTicket(this.config(), uuid);
+}
+
+export async function getTicketMessages(this: DapperTsInterface, uuid: string) {
+  return await fetchGetTicketMessages(this.config(), uuid);
 }
 
 export async function getListingTickets(

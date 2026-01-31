@@ -19,13 +19,7 @@ export const ticketMessageSchema = z.object({
   author: ticketUserSchema.optional().nullable(),
   content: z.string().min(1),
   created_at: z.string().datetime(),
-});
-
-export const ticketNoteSchema = z.object({
-  uuid: z.string().uuid(),
-  author: ticketUserSchema.optional().nullable(),
-  content: z.string().min(1),
-  created_at: z.string().datetime(),
+  is_internal: z.boolean().optional(),
 });
 
 export const ticketSchema = z.object({
@@ -55,13 +49,11 @@ export const ticketSchema = z.object({
   created_by: ticketUserSchema.optional().nullable(),
   created_at: z.string().datetime(),
   last_updated: z.string().datetime(),
-  messages: z.array(ticketMessageSchema),
-  notes: z.array(ticketNoteSchema).optional(),
+  messages: z.array(z.string().uuid()),
 });
 
 export type Ticket = z.infer<typeof ticketSchema>;
 export type TicketMessage = z.infer<typeof ticketMessageSchema>;
-export type TicketNote = z.infer<typeof ticketNoteSchema>;
 export type TicketStatus = z.infer<typeof ticketStatusSchema>;
 
 export const ticketCreateSchema = z.object({

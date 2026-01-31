@@ -1,62 +1,44 @@
 import React from "react";
 
-import {
-  TicketMessage,
-  TicketNote,
-  TicketUser,
-} from "@thunderstore/dapper/types/tickets";
+import { TicketMessage, TicketUser } from "@thunderstore/dapper/types";
 
-import { Comment } from "../Comment";
+import { Comment } from "../../components/Comment/Comment";
 import "./Ticket.css";
-
-// Helper to sort messages and notes
-type TimelineItem =
-  | { type: "message"; data: TicketMessage }
-  | { type: "note"; data: TicketNote };
 
 export interface TicketChatProps {
   messages: TicketMessage[];
-  notes?: TicketNote[];
-  currentUser?: TicketUser;
+  currentUser: TicketUser;
 }
 
-export function TicketChat({
-  messages,
-  notes = [],
-  currentUser,
-}: TicketChatProps) {
-  const timeline: TimelineItem[] = [
-    ...messages.map((m) => ({ type: "message" as const, data: m })),
-    ...notes.map((n) => ({ type: "note" as const, data: n })),
-  ].sort(
+export function TicketChat({ messages, currentUser }: TicketChatProps) {
+  // Merge messages and notes into a single timeline sorted by date
+  // We attach a type discriminator to handle rendering differences
+  const timeline = [...messages].sort(
     (a, b) =>
-      new Date(a.data.created_at).getTime() -
-      new Date(b.data.created_at).getTime()
+      new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
   );
 
   return (
     <div className="ticket-chat">
       {timeline.map((item) => {
-        const isNote = item.type === "note";
-        // const isMe = item.data.author?.username === currentUser?.username; // Comment handles actions, logic for "me" highlighting maybe not needed or different
+        const isNote = item.is_internal;
 
         return (
           <Comment
-            key={item.data.uuid}
-            id={item.data.uuid}
+            key={item.uuid}
+            id={item.uuid}
             rootClasses={
               isNote ? "ticket-chat__item--note" : "ticket-chat__item--message"
             }
             author={{
-              username: item.data.author?.username || "Unknown",
-              avatar: item.data.author?.avatar, // Assuming avatar is available on TicketUser
+              username: item.author?.username || "Unknown",
+              avatar: item.author?.avatar || "",
               badges: isNote ? ["Internal Note"] : undefined,
             }}
-            timestamp={item.data.created_at}
-            content={item.data.content}
-            voteScore={0} // Logic for votes not in TicketMessage yet
+            timestamp={item.created_at}
+            content={item.content}
+            voteScore={0}
             userVote={0}
-            // onReply and onVote not implemented for Tickets yet
           />
         );
       })}
