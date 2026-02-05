@@ -129,7 +129,7 @@
 
   .package-search__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(max(14rem, calc((100% - (3 * 0.75rem)) / 4)), 1fr));
     gap: var(--gap-sm);
     width: 100%;
 
@@ -154,7 +154,7 @@
     }
 
     .package-search__grid {
-      grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(max(10rem, calc((100% - (2 * 0.75rem)) / 3)), 1fr));
     }
   }
 
@@ -186,7 +186,7 @@
     }
 
     .package-search__grid {
-      grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(max(12rem, calc((100% - (2 * 0.75rem)) / 3)), 1fr));
 
       > .skeleton {
         height: 28rem;
@@ -202,7 +202,7 @@
   /* This is added for better grid on phones */
   @media (width <= 416px) {
     .package-search__grid {
-      grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(max(10rem, calc((100% - (2 * 0.75rem)) / 3)), 1fr));
     }
   }
 }
