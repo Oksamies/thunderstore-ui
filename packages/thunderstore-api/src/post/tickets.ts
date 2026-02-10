@@ -1,7 +1,7 @@
 import { apiFetch } from "../apiFetch";
-import { RequestConfig } from "../index";
+import type { RequestConfig } from "../index";
+import type { TicketStatus } from "../schemas/tickets";
 import {
-  TicketStatus,
   ticketCreateSchema,
   ticketMessageSchema,
   ticketSchema,

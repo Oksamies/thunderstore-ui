@@ -27,6 +27,7 @@ export interface ThunderstoreLinkProps {
   team?: string;
   user?: string;
   wikipageslug?: string;
+  ticket?: string;
 }
 
 // STEP 2 of adding new link definitions:
@@ -43,6 +44,7 @@ export const thunderstoreLinkProps: ThunderstoreLinkProps = {
   team: "",
   user: "",
   wikipageslug: "",
+  ticket: "",
 };
 
 // Accepting any and all props is required to keep the linking
@@ -156,6 +158,14 @@ export interface LinkLibrary {
   TermsOfService: NoRequiredProps;
   /** User */
   User: (props: AnyProps & { user: string }) => RE | null;
+  /** Moderation Dashboard */
+  ModerationDashboard: NoRequiredProps;
+  /** Community Moderation Queue */
+  CommunityModeration: (props: AnyProps & { community: string }) => RE | null;
+  /** Ticket Detail */
+  TicketDetail: (
+    props: AnyProps & { community: string; ticket: string }
+  ) => RE | null;
 }
 
 const noop = () => null;
@@ -202,6 +212,9 @@ const library: LinkLibrary = {
   TeamSettingsServiceAccounts: noop,
   TeamSettingsSettings: noop,
   TermsOfService: noop,
+  ModerationDashboard: noop,
+  CommunityModeration: noop,
+  TicketDetail: noop,
 };
 
 // OPTIONAL STEP 5 of adding new link definitions:

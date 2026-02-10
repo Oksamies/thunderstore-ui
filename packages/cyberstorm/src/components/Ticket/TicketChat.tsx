@@ -1,6 +1,4 @@
-import React from "react";
-
-import { TicketMessage, TicketUser } from "@thunderstore/dapper/types";
+import type { TicketMessage, TicketUser } from "@thunderstore/dapper/types";
 
 import { Comment } from "../../components/Comment/Comment";
 import "./Ticket.css";
@@ -10,7 +8,7 @@ export interface TicketChatProps {
   currentUser: TicketUser;
 }
 
-export function TicketChat({ messages, currentUser }: TicketChatProps) {
+export function TicketChat({ messages }: TicketChatProps) {
   // Merge messages and notes into a single timeline sorted by date
   // We attach a type discriminator to handle rendering differences
   const timeline = [...messages].sort(

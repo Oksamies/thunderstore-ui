@@ -13,6 +13,8 @@ export interface ThunderstoreLinkProps {
   version?: string;
   team?: string;
   user?: string;
+  ticket?: string;
+  wikipageslug?: string;
 }
 
 interface LinkProps
@@ -24,6 +26,8 @@ interface LinkProps
   url: string;
   customRef?: React.ForwardedRef<HTMLAnchorElement>;
   version?: string;
+  ticket?: string;
+  wikipageslug?: string;
 }
 
 export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
@@ -43,6 +47,8 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
     delete forwardedProps.team;
     delete forwardedProps.user;
     delete forwardedProps.version;
+    delete forwardedProps.ticket;
+    delete forwardedProps.wikipageslug;
     const fProps =
       forwardedProps as React.AnchorHTMLAttributes<HTMLAnchorElement>;
     return (
@@ -158,6 +164,13 @@ const library: LinkLibrary = {
       ref={p.customRef}
     />
   ),
+  PackageComments: (p) => (
+    <Link
+      {...p}
+      url={`/c/${p.community}/p/${p.namespace}/${p.package}/comments/`}
+      ref={p.customRef}
+    />
+  ),
   PackageVersion: (p) => (
     <Link
       {...p}
@@ -176,6 +189,13 @@ const library: LinkLibrary = {
     <Link
       {...p}
       url={`/c/${p.community}/p/${p.namespace}/${p.package}/v/${p.version}/versions`}
+      ref={p.customRef}
+    />
+  ),
+  PackageVersionComments: (p) => (
+    <Link
+      {...p}
+      url={`/c/${p.community}/p/${p.namespace}/${p.package}/v/${p.version}/comments`}
       ref={p.customRef}
     />
   ),
@@ -225,6 +245,17 @@ const library: LinkLibrary = {
   ),
   TeamSettingsServiceAccounts: (p) => (
     <Link {...p} url={`/teams/${p.team}/service-accounts`} ref={p.customRef} />
+  ),
+  ModerationDashboard: (p) => <Link {...p} url={"/m/"} ref={p.customRef} />,
+  CommunityModeration: (p) => (
+    <Link {...p} url={`/m/${p.community}/tickets/`} ref={p.customRef} />
+  ),
+  TicketDetail: (p) => (
+    <Link
+      {...p}
+      url={`/m/${p.community}/tickets/${p.ticket}`}
+      ref={p.customRef}
+    />
   ),
   TeamSettingsSettings: (p) => (
     <Link {...p} url={`/teams/${p.team}/settings`} ref={p.customRef} />

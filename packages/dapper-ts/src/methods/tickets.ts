@@ -1,4 +1,7 @@
-import { TicketCreateDTO, TicketStatusDTO } from "@thunderstore/dapper/types";
+import type {
+  TicketCreateDTO,
+  TicketStatusDTO,
+} from "@thunderstore/dapper/types";
 import {
   fetchCreateListingTicket,
   fetchCreateTicketMessage,

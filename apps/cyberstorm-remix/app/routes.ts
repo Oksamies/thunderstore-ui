@@ -118,6 +118,7 @@ export default [
 
   // Moderation
   ...prefix("m", [
+    index("m/Dashboard.tsx"),
     route(":communityId/tickets", "m/Tickets/Tickets.tsx"),
     route(":communityId/tickets/:ticketId", "m/Tickets/TicketDetail.tsx"),
   ]),

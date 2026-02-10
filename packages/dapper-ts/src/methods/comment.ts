@@ -1,4 +1,4 @@
-import { DapperInterface } from "@thunderstore/dapper";
+import type { DapperInterface } from "@thunderstore/dapper";
 import {
   commentDelete as commentDeleteApi,
   commentRestore as commentRestoreApi,
@@ -6,7 +6,7 @@ import {
   getListingComments as getListingCommentsApi,
 } from "@thunderstore/thunderstore-api";
 
-import { DapperTsInterface } from "../index";
+import type { DapperTsInterface } from "../index";
 
 export async function deleteComment(
   this: DapperTsInterface,
@@ -14,7 +14,7 @@ export async function deleteComment(
 ): ReturnType<DapperInterface["deleteComment"]> {
   const config = this.config();
   await commentDeleteApi({
-    config,
+    config: () => config,
     params: { uuid },
     data: {},
     queryParams: {},
@@ -27,7 +27,7 @@ export async function restoreComment(
 ): ReturnType<DapperInterface["restoreComment"]> {
   const config = this.config();
   await commentRestoreApi({
-    config,
+    config: () => config,
     params: { uuid },
     data: {},
     queryParams: {},
@@ -41,8 +41,8 @@ export async function getListingComments(
   name: string
 ): ReturnType<DapperInterface["getListingComments"]> {
   const config = this.config();
-  return await getListingCommentsApi({
-    config,
+  const result = await getListingCommentsApi({
+    config: () => config,
     params: {
       community_id: community,
       namespace_id: namespace,
@@ -51,6 +51,13 @@ export async function getListingComments(
     data: {},
     queryParams: {},
   });
+  return result.map((c) => ({
+    ...c,
+    author: {
+      ...c.author,
+      avatar: c.author.avatar ?? null,
+    },
+  }));
 }
 
 export async function createListingComment(
@@ -63,8 +70,8 @@ export async function createListingComment(
   is_internal?: boolean
 ): ReturnType<DapperInterface["createListingComment"]> {
   const config = this.config();
-  return await createListingCommentApi({
-    config,
+  const result = await createListingCommentApi({
+    config: () => config,
     params: {
       community_id: community,
       namespace_id: namespace,
@@ -77,4 +84,11 @@ export async function createListingComment(
     },
     queryParams: {},
   });
+  return {
+    ...result,
+    author: {
+      ...result.author,
+      avatar: result.author.avatar ?? null,
+    },
+  };
 }

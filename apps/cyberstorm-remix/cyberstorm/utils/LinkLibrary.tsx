@@ -37,6 +37,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
     delete forwardedProps.user;
     delete forwardedProps.version;
     delete forwardedProps.wikipageslug;
+    delete forwardedProps.ticket;
     const fProps =
       forwardedProps as React.AnchorHTMLAttributes<HTMLAnchorElement>;
     return (
@@ -246,6 +247,17 @@ const library: LinkLibrary = {
     <Link {...p} url={"/terms-of-service/"} ref={p.customRef} />
   ),
   User: (p) => <Link {...p} url={`/u/${p.user}/`} ref={p.customRef} />,
+  ModerationDashboard: (p) => <Link {...p} url={"/m/"} ref={p.customRef} />,
+  CommunityModeration: (p) => (
+    <Link {...p} url={`/m/${p.community}/tickets/`} ref={p.customRef} />
+  ),
+  TicketDetail: (p) => (
+    <Link
+      {...p}
+      url={`/m/${p.community}/tickets/${p.ticket}`}
+      ref={p.customRef}
+    />
+  ),
 };
 
 export { library as LinkLibrary };

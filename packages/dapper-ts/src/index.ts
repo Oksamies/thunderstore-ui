@@ -45,6 +45,7 @@ import {
   createTicketNote,
   getListingTickets,
   getTicket,
+  getTicketMessages,
   getTickets,
   updateTicketStatus,
 } from "./methods/tickets";
@@ -77,6 +78,7 @@ export {
   postTeamCreate,
   getTickets,
   getTicket,
+  getTicketMessages,
   getListingTickets,
   createTicketMessage,
   createTicketNote,
@@ -131,6 +133,7 @@ export class DapperTs implements DapperTsInterface {
       this.getPackageSubmissionStatus.bind(this);
     this.getTickets = this.getTickets.bind(this);
     this.getTicket = this.getTicket.bind(this);
+    this.getTicketMessages = this.getTicketMessages.bind(this);
     this.getListingTickets = this.getListingTickets.bind(this);
     this.createTicketMessage = this.createTicketMessage.bind(this);
     this.createTicketNote = this.createTicketNote.bind(this);
@@ -169,6 +172,7 @@ export class DapperTs implements DapperTsInterface {
   public getPackageSubmissionStatus = getPackageSubmissionStatus;
   public getTickets = getTickets;
   public getTicket = getTicket;
+  public getTicketMessages = getTicketMessages;
   public getListingTickets = getListingTickets;
   public createTicketMessage = createTicketMessage;
   public createTicketNote = createTicketNote;

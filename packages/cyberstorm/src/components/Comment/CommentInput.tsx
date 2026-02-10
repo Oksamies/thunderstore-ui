@@ -9,7 +9,7 @@ import {
   faQuoteRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { Button } from "../../newComponents/Button/Button";
 import { Icon } from "../../newComponents/Icon/Icon";

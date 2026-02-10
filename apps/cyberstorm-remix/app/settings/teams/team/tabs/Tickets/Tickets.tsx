@@ -8,28 +8,33 @@ import { useLoaderData } from "react-router";
 import { TicketList } from "@thunderstore/cyberstorm";
 import { DapperTs } from "@thunderstore/dapper-ts";
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
-  const session = await getSessionTools().getSession(
-    request.headers.get("Cookie")
+export async function loader() {
+  return { tickets: [] };
+}
+
+export async function clientLoader({ params }: LoaderFunctionArgs) {
+  const sessionTools = getSessionTools();
+  const dapper = new DapperTs(
+    () => sessionTools.getConfig(),
+    () => sessionTools.clearInvalidSession()
   );
-  const dapper = new DapperTs(() => ({
-    apiHost: getPublicEnvVariables().CYBERSTORM_API_URL,
-    sessionId: session.get("session_id"),
-  }));
 
-  // TODO: Update backend to support filtering by Team/Namespace efficiently.
-  // For now, this might return an empty list or requires backend support for `package__namespace`
-  // passing params.namespaceId (which is the team name)
-  const tickets = await dapper.getTickets({
-    // @ts-ignore - Assuming backend might accept this or we add it later
-    package__namespace: params.namespaceId,
-  });
+  const tickets = await dapper.getTickets();
+  const teamTickets = tickets.filter(
+    (t: any) => t.team?.name === params.namespaceId
+  );
 
-  return { tickets };
+  return { tickets: teamTickets };
+}
+
+clientLoader.hydrate = true;
+
+export function HydrateFallback() {
+  return <div>Loading tickets...</div>;
 }
 
 export default function TeamTickets() {
-  const { tickets } = useLoaderData<typeof loader>();
+  const { tickets } = useLoaderData<typeof clientLoader>();
 
   return (
     <div className="flex flex-col gap-4">
@@ -38,7 +43,7 @@ export default function TeamTickets() {
           Team Tickets
         </h2>
       </div>
-      <TicketList tickets={tickets.results} />
+      <TicketList tickets={tickets} />
     </div>
   );
 }

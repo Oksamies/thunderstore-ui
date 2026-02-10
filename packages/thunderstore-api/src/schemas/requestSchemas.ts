@@ -13,6 +13,7 @@ import {
   qQueryParam,
   searchQueryParam,
   sectionQueryParam,
+  statusQueryParam,
 } from "./queryParamSchemas";
 
 // UsermediaInitiateUploadRequest
@@ -109,6 +110,7 @@ export const packageListingsRequestQueryParamsSchema = z.array(
     qQueryParam,
     packageListingsOrderingQueryParam,
     pageQueryParam,
+    statusQueryParam,
   ])
 );
 
@@ -687,3 +689,25 @@ export const commentRequestParamsSchema = z.object({
 });
 
 export type CommentRequestParams = z.infer<typeof commentRequestParamsSchema>;
+
+// ListingCommentCreateRequest
+export const listingCommentCreateRequestParamsSchema = z.object({
+  community_id: z.string(),
+  namespace_id: z.string(),
+  package_name: z.string(),
+});
+
+export type ListingCommentCreateRequestParams = z.infer<
+  typeof listingCommentCreateRequestParamsSchema
+>;
+
+export const listingCommentCreateRequestDataSchema = z.object({
+  body: z.string().min(1),
+  reply_to: z.string().uuid().optional(),
+  parent: z.string().uuid().optional(),
+  is_internal: z.boolean().optional(),
+});
+
+export type ListingCommentCreateRequestData = z.infer<
+  typeof listingCommentCreateRequestDataSchema
+>;

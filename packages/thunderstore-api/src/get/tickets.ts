@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { apiFetch } from "../apiFetch";
-import { RequestConfig } from "../index";
+import type { RequestConfig } from "../index";
 import { ticketMessageSchema, ticketSchema } from "../schemas/tickets";
 
 export const fetchGetTickets = async (config: RequestConfig) => {

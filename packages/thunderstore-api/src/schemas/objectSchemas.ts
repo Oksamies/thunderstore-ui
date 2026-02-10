@@ -131,6 +131,7 @@ export const packageListingSchema = z.object({
   namespace: z.string().min(1),
   rating_count: z.number().int(),
   size: z.number().int(),
+  review_status: z.enum(["unreviewed", "approved", "rejected"]).optional(),
 });
 
 export const packageListingStatusSchema = z.object({

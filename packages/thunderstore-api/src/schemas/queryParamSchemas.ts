@@ -74,3 +74,8 @@ export const packageListingsOrderingQueryParam = z.object({
   value: z.nativeEnum(PackageListingsOrderingEnum).optional(),
   impotent: z.nativeEnum(PackageListingsOrderingEnum),
 });
+
+export const statusQueryParam = z.object({
+  key: z.literal("status"),
+  value: z.enum(["unreviewed", "approved", "rejected"]).optional(),
+});

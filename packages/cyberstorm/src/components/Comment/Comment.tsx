@@ -12,7 +12,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { Avatar } from "../../newComponents/Avatar/Avatar";
 import { Button } from "../../newComponents/Button/Button";

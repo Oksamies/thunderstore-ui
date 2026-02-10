@@ -21,7 +21,8 @@ export async function getPackageListings(
   excludedCategories?: string[],
   section?: string,
   nsfw?: boolean,
-  deprecated?: boolean
+  deprecated?: boolean,
+  status?: "unreviewed" | "approved" | "rejected"
 ) {
   let supportedOrdering = undefined;
   // As dapper accepts more options, than the TS api at this time, we'll need to check if the given ordering is supported.
@@ -70,6 +71,10 @@ export async function getPackageListings(
       key: "deprecated",
       value: deprecated,
       impotent: false,
+    },
+    {
+      key: "status",
+      value: status,
     },
   ];
 

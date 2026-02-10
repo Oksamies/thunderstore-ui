@@ -18,6 +18,7 @@ interface typeWorkaroundProps extends PropsWithChildren {
   user?: string;
   url?: string;
   wikipageslug?: string;
+  ticket?: string;
 }
 
 export type CyberstormLinkIds =
@@ -59,7 +60,10 @@ export type CyberstormLinkIds =
   | "TeamSettingsServiceAccounts"
   | "TeamSettingsSettings"
   | "TermsOfService"
-  | "User";
+  | "User"
+  | "ModerationDashboard"
+  | "CommunityModeration"
+  | "TicketDetail";
 
 interface CyberstormLinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -86,6 +90,7 @@ export const CyberstormLink = React.forwardRef<
     team = "",
     user = "",
     wikipageslug = "",
+    ticket = "",
     ...forwardedProps
   } = props;
   const fProps =
@@ -104,6 +109,7 @@ export const CyberstormLink = React.forwardRef<
       team={team}
       user={user}
       wikipageslug={wikipageslug}
+      ticket={ticket}
       customRef={forwardedRef}
     >
       {children}

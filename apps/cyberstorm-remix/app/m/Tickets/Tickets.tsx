@@ -1,50 +1,82 @@
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   getPublicEnvVariables,
   getSessionTools,
 } from "cyberstorm/security/publicEnvVariables";
+import { type LoaderFunctionArgs } from "react-router";
+import { useLoaderData } from "react-router";
+
 import {
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  redirect,
-} from "react-router";
-import { Link, useLoaderData } from "react-router";
-
-import { Heading, TicketList } from "@thunderstore/cyberstorm";
+  Heading,
+  NewButton,
+  NewIcon,
+  TicketList,
+} from "@thunderstore/cyberstorm";
 import { DapperTs } from "@thunderstore/dapper-ts";
+import type { Ticket } from "@thunderstore/dapper/types";
 
-export async function loader({ params, request }: LoaderFunctionArgs) {
-  const session = await getSessionTools().getSession(
-    request.headers.get("Cookie")
+import "../Dashboard.css";
+
+export async function loader({ params }: LoaderFunctionArgs) {
+  return { tickets: [], communityId: params.communityId };
+}
+
+export async function clientLoader({ params }: LoaderFunctionArgs) {
+  const sessionTools = getSessionTools();
+  const dapper = new DapperTs(
+    () => sessionTools.getConfig(),
+    () => sessionTools.clearInvalidSession()
   );
 
-  const dapper = new DapperTs(() => ({
-    apiHost: getPublicEnvVariables().CYBERSTORM_API_URL,
-    sessionId: session.get("session_id"),
-  }));
-
-  // Pass community filter to backend
-  // @ts-ignore - Assuming dapper.getTickets accepts params object
-  const tickets = await dapper.getTickets({ community: params.communityId });
-
-  // If backend filtering isn't working yet, we might get all, so safe to filter again or rely on backend
-  // But let's assume backend works as implemented in Phase 3
-  const communityTickets = tickets;
+  const tickets = await dapper.getTickets();
+  const communityTickets = tickets.filter(
+    (t: Ticket) => t.community?.identifier === params.communityId
+  );
 
   return { tickets: communityTickets, communityId: params.communityId };
 }
 
+clientLoader.hydrate = true;
+
+export function HydrateFallback() {
+  return (
+    <div className="dashboard-root">
+      <div className="dashboard-header">
+        <Heading csLevel="1">Loading tickets...</Heading>
+      </div>
+    </div>
+  );
+}
+
 export default function Tickets() {
-  const { tickets, communityId } = useLoaderData<typeof loader>();
+  const { tickets, communityId } = useLoaderData<typeof clientLoader>();
 
   return (
-    <div className="w-full flex flex-col gap-4 p-4">
-      <Heading size="h1" weight="bold">
-        Moderation Queue: {communityId}
-      </Heading>
-      <TicketList
-        tickets={tickets}
-        getTicketUrl={(t) => `/m/${communityId}/tickets/${t.uuid}`}
-      />
+    <div className="dashboard-root">
+      <div className="dashboard-header">
+        <div className="flex items-center gap-4">
+          <NewButton
+            primitiveType="link"
+            href="/m"
+            csSize="small"
+            csVariant="secondary"
+          >
+            <NewIcon csMode="inline" noWrapper>
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </NewIcon>
+            Back to Dashboard
+          </NewButton>
+        </div>
+        <Heading csLevel="1">Moderation Queue: {communityId}</Heading>
+        <p className="dashboard-header__description">
+          Managing tickets specifically for {communityId}.
+        </p>
+      </div>
+
+      <div className="dashboard-section">
+        <TicketList tickets={tickets} />
+      </div>
     </div>
   );
 }

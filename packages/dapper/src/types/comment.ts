@@ -3,7 +3,7 @@ export interface Comment {
   parent?: string | null;
   author: {
     username: string;
-    avatar: string;
+    avatar: string | null;
   };
   body: string;
   is_internal: boolean;

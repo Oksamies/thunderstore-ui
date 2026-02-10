@@ -15,6 +15,7 @@ export interface PackageListing {
   namespace: string;
   rating_count: number;
   size: number;
+  review_status?: "unreviewed" | "approved" | "rejected";
 }
 
 export type PackageListings = PaginatedList<PackageListing>;
