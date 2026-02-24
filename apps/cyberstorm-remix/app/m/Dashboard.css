@@ -20,25 +20,6 @@
     color: var(--color-text-secondary);
   }
 
-  /* Grid Layout */
-  .dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-16);
-  }
-
-  @media (width >= 768px) {
-    .dashboard-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (width >= 1200px) {
-    .dashboard-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
   .community-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -61,62 +42,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-16);
-  }
-
-  /* Stats Card */
-  .stats-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-8);
-    padding: var(--space-16);
-    border: 1px solid var(--color-surface-a3);
-    border-radius: var(--radius-lg);
-    background-color: var(--color-surface-2);
-    transition: all 0.2s ease-in-out;
-  }
-
-  .stats-card--clickable {
-    cursor: pointer;
-  }
-
-  .stats-card--clickable:hover {
-    border-color: var(--color-surface-a6);
-    background-color: var(--color-surface-3);
-  }
-
-  .stats-card--active {
-    border-color: var(--color-accent-blue-6);
-    background-color: var(--color-accent-blue-2);
-  }
-
-  .stats-card__header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-
-  .stats-card__title {
-    color: var(--color-text-secondary);
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-body-sm);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .stats-card__icon {
-    color: var(--color-text-secondary);
-  }
-
-  .stats-card__value {
-    color: var(--color-text-primary);
-    font-weight: var(--font-weight-bold);
-    font-size: 1.875rem;
-    line-height: 2.25rem;
-  }
-
-  .stats-card__description {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-body-xs);
   }
 
   /* Community Card */
@@ -181,5 +106,17 @@
     display: flex;
     gap: var(--space-8);
     margin-top: auto;
+  }
+
+  .dashboard-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+    border: 1px dashed var(--color-surface-a3);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-secondary);
+    text-align: center;
   }
 }

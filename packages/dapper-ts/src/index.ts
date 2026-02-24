@@ -5,6 +5,7 @@ import {
   createListingComment,
   deleteComment,
   getListingComments,
+  reactToComment,
   restoreComment,
 } from "./methods/comment";
 import { getCommunities, getCommunity } from "./methods/communities";
@@ -14,6 +15,10 @@ import {
   getCurrentUserTeamPermissions,
 } from "./methods/currentUser";
 import { getDynamicHTML } from "./methods/dynamicHTML";
+import {
+  getModerationStats,
+  getUserModeratedCommunities,
+} from "./methods/moderation";
 import {
   getPackageChangelog,
   getPackagePermissions,
@@ -43,6 +48,7 @@ import {
   createListingTicket,
   createTicketMessage,
   createTicketNote,
+  getCommunityTickets,
   getListingTickets,
   getTicket,
   getTicketMessages,
@@ -84,10 +90,13 @@ export {
   createTicketNote,
   updateTicketStatus,
   createListingTicket,
+  getCommunityTickets,
   deleteComment,
   restoreComment,
   getListingComments,
   createListingComment,
+  getModerationStats,
+  getUserModeratedCommunities,
 };
 
 export interface DapperTsInterface extends DapperInterface {
@@ -132,6 +141,7 @@ export class DapperTs implements DapperTsInterface {
     this.getPackageSubmissionStatus =
       this.getPackageSubmissionStatus.bind(this);
     this.getTickets = this.getTickets.bind(this);
+    this.getCommunityTickets = this.getCommunityTickets.bind(this);
     this.getTicket = this.getTicket.bind(this);
     this.getTicketMessages = this.getTicketMessages.bind(this);
     this.getListingTickets = this.getListingTickets.bind(this);
@@ -141,8 +151,12 @@ export class DapperTs implements DapperTsInterface {
     this.createListingTicket = this.createListingTicket.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
     this.restoreComment = this.restoreComment.bind(this);
+    this.reactToComment = this.reactToComment.bind(this);
     this.getListingComments = this.getListingComments.bind(this);
     this.createListingComment = this.createListingComment.bind(this);
+    this.getModerationStats = this.getModerationStats.bind(this);
+    this.getUserModeratedCommunities =
+      this.getUserModeratedCommunities.bind(this);
   }
 
   public getDynamicHTML = getDynamicHTML;
@@ -171,6 +185,7 @@ export class DapperTs implements DapperTsInterface {
   public postPackageSubmissionMetadata = postPackageSubmissionMetadata;
   public getPackageSubmissionStatus = getPackageSubmissionStatus;
   public getTickets = getTickets;
+  public getCommunityTickets = getCommunityTickets;
   public getTicket = getTicket;
   public getTicketMessages = getTicketMessages;
   public getListingTickets = getListingTickets;
@@ -180,6 +195,9 @@ export class DapperTs implements DapperTsInterface {
   public createListingTicket = createListingTicket;
   public deleteComment = deleteComment;
   public restoreComment = restoreComment;
+  public reactToComment = reactToComment;
+  public getModerationStats = getModerationStats;
+  public getUserModeratedCommunities = getUserModeratedCommunities;
   public getListingComments = getListingComments;
   public createListingComment = createListingComment;
 }

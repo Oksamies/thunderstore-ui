@@ -20,6 +20,15 @@ export const ticketMessageSchema = z.object({
   content: z.string().min(1),
   created_at: z.string().datetime(),
   is_internal: z.boolean().optional(),
+  reactions: z
+    .record(
+      z.string(),
+      z.object({
+        count: z.number(),
+        user_reacted: z.boolean(),
+      })
+    )
+    .optional(),
 });
 
 export const ticketSchema = z.object({

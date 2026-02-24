@@ -10,4 +10,5 @@ export interface Comment {
   is_deleted: boolean;
   datetime_created: string;
   datetime_updated: string;
+  reactions?: Record<string, { count: number; user_reacted: boolean }>;
 }

@@ -37,6 +37,7 @@ export function TicketChat({ messages }: TicketChatProps) {
             content={item.content}
             voteScore={0}
             userVote={0}
+            reactions={item.reactions}
           />
         );
       })}

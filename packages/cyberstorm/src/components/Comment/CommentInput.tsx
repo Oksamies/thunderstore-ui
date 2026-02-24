@@ -9,7 +9,7 @@ import {
   faQuoteRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "../../newComponents/Button/Button";
 import { Icon } from "../../newComponents/Icon/Icon";
@@ -31,11 +31,78 @@ export function CommentInput({
   isSubmitting = false,
 }: CommentInputProps) {
   const [mode, setMode] = useState<"edit" | "preview">("edit");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // TODO: Implement actual text insertion logic (using ref for cursor position)
   const handleFormat = (type: string) => {
-    // Placeholder logic
-    console.log("Format", type);
+    if (!textareaRef.current) return;
+
+    const textarea = textareaRef.current;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = value.substring(start, end);
+
+    let prefix = "";
+    let suffix = "";
+    let defaultText = "";
+
+    switch (type) {
+      case "bold":
+        prefix = "**";
+        suffix = "**";
+        defaultText = "bold text";
+        break;
+      case "italic":
+        prefix = "*";
+        suffix = "*";
+        defaultText = "italic text";
+        break;
+      case "link":
+        prefix = "[";
+        suffix = "](url)";
+        defaultText = "link text";
+        break;
+      case "code":
+        prefix = "`";
+        suffix = "`";
+        defaultText = "code";
+        break;
+      case "quote":
+        prefix = "> ";
+        suffix = "";
+        defaultText = "quote";
+        break;
+      case "list":
+        prefix = "- ";
+        suffix = "";
+        defaultText = "list item";
+        break;
+    }
+
+    const textToInsert = selectedText || defaultText;
+    const newText =
+      value.substring(0, start) +
+      prefix +
+      textToInsert +
+      suffix +
+      value.substring(end);
+
+    onChange(newText);
+
+    // Set cursor position after state update
+    setTimeout(() => {
+      textarea.focus();
+      if (selectedText) {
+        textarea.setSelectionRange(
+          start + prefix.length,
+          start + prefix.length + selectedText.length
+        );
+      } else {
+        textarea.setSelectionRange(
+          start + prefix.length,
+          start + prefix.length + defaultText.length
+        );
+      }
+    }, 0);
   };
 
   return (
@@ -131,6 +198,7 @@ export function CommentInput({
 
       {mode === "edit" ? (
         <textarea
+          ref={textareaRef}
           className="comment-input__textarea"
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -152,11 +220,12 @@ export function CommentInput({
       <div className="comment-input__footer">
         <span className="comment-input__hint">Markdown supported</span>
         <Button
-          csVariant="primary"
+          csVariant="secondary"
+          csSize="small"
           onClick={onSubmit}
           disabled={isSubmitting || !value.trim()}
         >
-          Post Comment
+          Post
         </Button>
       </div>
     </div>

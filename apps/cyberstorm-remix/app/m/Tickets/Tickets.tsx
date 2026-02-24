@@ -29,12 +29,12 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
     () => sessionTools.clearInvalidSession()
   );
 
-  const tickets = await dapper.getTickets();
-  const communityTickets = tickets.filter(
-    (t: Ticket) => t.community?.identifier === params.communityId
-  );
+  const communityId = params.communityId;
+  const tickets = communityId
+    ? await dapper.getCommunityTickets(communityId)
+    : [];
 
-  return { tickets: communityTickets, communityId: params.communityId };
+  return { tickets, communityId };
 }
 
 clientLoader.hydrate = true;
@@ -57,8 +57,8 @@ export default function Tickets() {
       <div className="dashboard-header">
         <div className="flex items-center gap-4">
           <NewButton
-            primitiveType="link"
-            href="/m"
+            primitiveType="cyberstormLink"
+            linkId="ModerationDashboard"
             csSize="small"
             csVariant="secondary"
           >

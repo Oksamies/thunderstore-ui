@@ -23,8 +23,10 @@ function buildCommentTree(flatComments: ApiComment[]): CommentProps[] {
       },
       timestamp: c.datetime_created,
       content: c.body,
+      isDeleted: c.is_deleted,
       voteScore: 0,
       userVote: 0,
+      reactions: c.reactions,
       replies: [],
     });
   });
@@ -65,18 +67,19 @@ function buildCommentTree(flatComments: ApiComment[]): CommentProps[] {
 export default function PackageComments() {
   const context = useOutletContext() as OutletContextShape;
   const { currentUser, dapper } = context;
-  const { communityId, namespaceId, packageName } = useParams();
+  const { communityId, namespaceId, packageId } = useParams();
 
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<CommentProps[]>([]);
+  const [canModerate, setCanModerate] = useState(false);
 
   const fetchComments = async () => {
-    if (!communityId || !namespaceId || !packageName) return;
+    if (!communityId || !namespaceId || !packageId) return;
     try {
       const apiComments = await dapper.getListingComments(
         communityId,
         namespaceId,
-        packageName
+        packageId
       );
       setComments(buildCommentTree(apiComments));
     } catch (e) {
@@ -85,20 +88,45 @@ export default function PackageComments() {
   };
 
   useEffect(() => {
+    const checkModeration = async () => {
+      if (currentUser?.username && communityId) {
+        try {
+          const communities = await dapper.getUserModeratedCommunities();
+          const isMod = communities.some((c) => c.identifier === communityId);
+          setCanModerate(isMod);
+        } catch (e) {
+          console.error("Failed to check moderation status", e);
+        }
+      }
+    };
+    checkModeration();
+  }, [currentUser, communityId, dapper]);
+
+  useEffect(() => {
     fetchComments();
-  }, [communityId, namespaceId, packageName, dapper]);
+  }, [communityId, namespaceId, packageId, dapper]);
 
   const handleSubmit = async () => {
+    console.log("Submitting comment:", commentText);
+    console.log(
+      !commentText.trim(),
+      !currentUser,
+      communityId,
+      namespaceId,
+      packageId
+    );
     if (!commentText.trim() || !currentUser) return;
-    if (!communityId || !namespaceId || !packageName) return;
+    if (!communityId || !namespaceId || !packageId) return;
 
     try {
+      console.log("Posting comment to API...");
       await dapper.createListingComment(
         communityId,
         namespaceId,
-        packageName,
+        packageId,
         commentText
       );
+      console.log("Comment posted successfully");
       setCommentText("");
       fetchComments();
     } catch (e) {
@@ -107,18 +135,47 @@ export default function PackageComments() {
   };
 
   const handleReplySubmit = async (commentId: string, content: string) => {
-    if (!communityId || !namespaceId || !packageName) return;
+    if (!communityId || !namespaceId || !packageId) return;
     try {
       await dapper.createListingComment(
         communityId,
         namespaceId,
-        packageName,
+        packageId,
         content,
         commentId
       );
       fetchComments();
     } catch (e) {
       console.error("Failed to post reply", e);
+    }
+  };
+
+  const handleDelete = async (commentId: string) => {
+    try {
+      await dapper.deleteComment(commentId);
+      fetchComments();
+    } catch (e) {
+      console.error("Failed to delete comment", e);
+    }
+  };
+
+  const handleRestore = async (commentId: string) => {
+    try {
+      await dapper.restoreComment(commentId);
+      fetchComments();
+    } catch (e) {
+      console.error("Failed to restore comment", e);
+    }
+  };
+
+  const handleReaction = async (commentId: string, reaction: string) => {
+    try {
+      if (dapper.reactToComment) {
+        await dapper.reactToComment(commentId, reaction);
+        fetchComments();
+      }
+    } catch (e) {
+      console.error("Failed to react to comment", e);
     }
   };
 
@@ -151,13 +208,30 @@ export default function PackageComments() {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        {comments.map((comment) => (
-          <Comment
-            key={comment.id}
-            {...comment}
-            onSubmitReply={handleReplySubmit}
-          />
-        ))}
+        {comments.length === 0 ? (
+          <div
+            style={{
+              padding: "2rem",
+              textAlign: "center",
+              color: "var(--cs-color-text-muted)",
+              backgroundColor: "var(--cs-color-surface-1)",
+              borderRadius: "var(--cs-border-radius-primary)",
+            }}
+          >
+            No comments yet. Be the first to share your thoughts!
+          </div>
+        ) : (
+          comments.map((comment) => (
+            <Comment
+              key={comment.id}
+              {...comment}
+              onSubmitReply={handleReplySubmit}
+              onReaction={handleReaction}
+              onDelete={canModerate ? handleDelete : undefined}
+              onRestore={canModerate ? handleRestore : undefined}
+            />
+          ))
+        )}
       </div>
     </div>
   );

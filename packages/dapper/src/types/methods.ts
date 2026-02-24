@@ -5,6 +5,10 @@ import {
   type CommunityFilters,
 } from "./community";
 import {
+  type ModerationStats,
+  type UserModerationCommunity,
+} from "./moderation";
+import {
   type PackageListingDetails,
   type PackageListings,
   type PackagePermissions,
@@ -122,6 +126,8 @@ export type PostTeamCreate = (name: string) => Promise<TeamDetails>;
 
 export type GetTickets = () => Promise<Ticket[]>;
 
+export type GetCommunityTickets = (communityId: string) => Promise<Ticket[]>;
+
 export type GetTicket = (uuid: string) => Promise<Ticket>;
 
 export type CreateTicketMessage = (
@@ -156,6 +162,8 @@ export type DeleteComment = (uuid: string) => Promise<void>;
 
 export type RestoreComment = (uuid: string) => Promise<void>;
 
+export type ReactToComment = (uuid: string, reaction: string) => Promise<void>;
+
 export type GetListingComments = (
   community: string,
   namespace: string,
@@ -170,3 +178,9 @@ export type CreateListingComment = (
   parent?: string,
   is_internal?: boolean
 ) => Promise<Comment>;
+
+export type GetModerationStats = () => Promise<ModerationStats>;
+
+export type GetUserModeratedCommunities = () => Promise<
+  UserModerationCommunity[]
+>;

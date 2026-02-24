@@ -68,3 +68,5 @@ export * from "./schemas/responseSchemas";
 export * from "./schemas/objectSchemas";
 export * from "./schemas/queryParamSchemas";
 export * from "./schemas/comment";
+export * from "./schemas/moderation";
+export * from "./get/moderation";

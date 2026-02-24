@@ -1,6 +1,7 @@
 import type { DapperInterface } from "@thunderstore/dapper";
 import {
   commentDelete as commentDeleteApi,
+  commentReaction as commentReactionApi,
   commentRestore as commentRestoreApi,
   createListingComment as createListingCommentApi,
   getListingComments as getListingCommentsApi,
@@ -30,6 +31,20 @@ export async function restoreComment(
     config: () => config,
     params: { uuid },
     data: {},
+    queryParams: {},
+  });
+}
+
+export async function reactToComment(
+  this: DapperTsInterface,
+  uuid: string,
+  reaction: string
+): ReturnType<DapperInterface["reactToComment"]> {
+  const config = this.config();
+  await commentReactionApi({
+    config: () => config,
+    params: { uuid },
+    data: { reaction },
     queryParams: {},
   });
 }
@@ -69,6 +84,7 @@ export async function createListingComment(
   parent?: string,
   is_internal?: boolean
 ): ReturnType<DapperInterface["createListingComment"]> {
+  console.log("Creating comment with body:", body);
   const config = this.config();
   const result = await createListingCommentApi({
     config: () => config,
@@ -84,6 +100,7 @@ export async function createListingComment(
     },
     queryParams: {},
   });
+  console.log("API response for createListingComment:", result);
   return {
     ...result,
     author: {

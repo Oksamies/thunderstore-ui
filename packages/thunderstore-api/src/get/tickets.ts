@@ -17,6 +17,23 @@ export const fetchGetTickets = async (config: RequestConfig) => {
   });
 };
 
+export const fetchGetCommunityTickets = async (
+  config: RequestConfig,
+  communityId: string
+) => {
+  return apiFetch({
+    args: {
+      config: () => config,
+      path: "/api/cyberstorm/tickets/",
+      useSession: true,
+      queryParams: [{ key: "community_id", value: communityId }],
+    },
+    requestSchema: undefined,
+    queryParamsSchema: undefined,
+    responseSchema: z.array(ticketSchema),
+  });
+};
+
 export const fetchGetTicket = async (config: RequestConfig, uuid: string) => {
   return apiFetch({
     args: {

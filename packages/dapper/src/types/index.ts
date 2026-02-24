@@ -5,5 +5,6 @@ export * from "./team";
 export * from "./user";
 export * from "./tickets";
 export * from "./comment";
+export * from "./moderation";
 export { type PackageListingType } from "./props";
 export { type PackageCategory } from "./shared";

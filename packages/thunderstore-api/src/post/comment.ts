@@ -22,3 +22,25 @@ export function commentRestore(
     responseSchema: undefined,
   });
 }
+
+export function commentReaction(
+  props: ApiEndpointProps<CommentRequestParams, object, { reaction: string }>
+): Promise<undefined> {
+  const { config, params, data } = props;
+  const path = `/api/cyberstorm/comments/${params.uuid}/reaction/`;
+
+  return apiFetch({
+    args: {
+      config,
+      path,
+      request: {
+        method: "POST",
+        body: JSON.stringify(data),
+      },
+      useSession: true,
+    },
+    requestSchema: undefined,
+    queryParamsSchema: undefined,
+    responseSchema: undefined,
+  });
+}

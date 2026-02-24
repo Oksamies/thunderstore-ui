@@ -63,6 +63,8 @@ export type CyberstormLinkIds =
   | "User"
   | "ModerationDashboard"
   | "CommunityModeration"
+  | "CommunityModerationReviews"
+  | "CommunityModerationComments"
   | "TicketDetail";
 
 interface CyberstormLinkProps

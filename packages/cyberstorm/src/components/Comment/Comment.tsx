@@ -2,23 +2,26 @@ import {
   faCaretDown,
   faCaretUp,
   faCode,
+  faEllipsisH,
   faFlag,
   faGem,
+  faHeartCircleBolt,
   faPen,
   faQuoteLeft,
   faReply,
-  faThumbsDown,
-  faThumbsUp,
   faTrash,
+  faTrashRestore,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
 import { Avatar } from "../../newComponents/Avatar/Avatar";
 import { Button } from "../../newComponents/Button/Button";
+import { DropDown, DropDownItem } from "../../newComponents/DropDown/DropDown";
 import { Icon } from "../../newComponents/Icon/Icon";
+import { Popover } from "../../newComponents/Popover/Popover";
 import { Tag } from "../../newComponents/Tag/Tag";
-import { classnames } from "../../utils/utils";
+import { classnames, componentClasses } from "../../utils/utils";
 import { RelativeTime } from "../RelativeTime/RelativeTime";
 import "./Comment.css";
 import { CommentInput } from "./CommentInput";
@@ -33,18 +36,20 @@ export interface CommentProps {
   };
   timestamp: string;
   content: string; // Markdown supported in theory, but currently strings.
-  voteScore: number;
-  userVote: -1 | 0 | 1;
+  reactions?: Record<string, { count: number; user_reacted: boolean }>;
   replies?: CommentProps[];
   replyCount?: number;
   isReply?: boolean; // Prop to indicate if this is a reply (child comment)
   onReply?: (commentId: string) => void;
   onSubmitReply?: (commentId: string, content: string) => Promise<void> | void;
   onVote?: (commentId: string, vote: -1 | 0 | 1) => void;
+  onReaction?: (commentId: string, reaction: string) => void;
   onEdit?: (commentId: string) => void;
   onDelete?: (commentId: string) => void;
+  onRestore?: (commentId: string) => void;
   onReport?: (commentId: string) => void;
   onExpandReplies?: (commentId: string) => void;
+  isDeleted?: boolean;
 }
 
 /**
@@ -112,28 +117,40 @@ const parseContent = (content: string) => {
   return parts;
 };
 
+const REACTION_EMOJIS: Record<string, string> = {
+  thumbs_up: "👍",
+  thumbs_down: "👎",
+  heart: "❤️",
+  laugh: "😄",
+  confused: "😕",
+  rocket: "🚀",
+};
+
 export function Comment({
   id,
   author,
   timestamp,
   content,
-  voteScore,
-  userVote,
+  reactions,
   replies,
   replyCount,
   rootClasses,
   isReply = false,
   onReply,
   onVote,
+  onReaction,
   onEdit,
   onDelete,
+  onRestore,
   onReport,
   onExpandReplies,
   onSubmitReply,
+  isDeleted = false,
 }: CommentProps) {
   const [isReplying, setIsReplying] = useState(false);
   const [areRepliesOpen, setAreRepliesOpen] = useState(false);
   const [replyText, setReplyText] = useState("");
+  const [isReactionPickerOpen, setIsReactionPickerOpen] = useState(false);
 
   const handleReplyClick = () => {
     if (onReply) {
@@ -159,18 +176,17 @@ export function Comment({
     onDelete?.(id);
   };
 
+  const handleRestoreClick = () => {
+    onRestore?.(id);
+  };
+
   const handleReportClick = () => {
     onReport?.(id);
   };
 
-  const handleUpvote = () => {
-    const newVote = userVote === 1 ? 0 : 1;
-    onVote?.(id, newVote);
-  };
-
-  const handleDownvote = () => {
-    const newVote = userVote === -1 ? 0 : -1;
-    onVote?.(id, newVote);
+  const handleReaction = (reaction: string) => {
+    onReaction?.(id, reaction);
+    setIsReactionPickerOpen(false);
   };
 
   const handleRepliesClick = () => {
@@ -247,136 +263,241 @@ export function Comment({
               </span>
             </div>
 
-            <div className="comment__body">
-              {parsedContent.map((part, i) => {
-                if (part.type === "quote") {
-                  return (
-                    <div className="comment__quote" key={i}>
-                      <div className="comment__quote-content">
-                        <div className="comment__quote-header">
-                          <Icon csMode="inline" csVariant="primary">
-                            <FontAwesomeIcon icon={faQuoteLeft} />
-                          </Icon>
-                          {author.username} wrote:
-                        </div>
-                        <div className="comment__quote-text">
-                          {part.content}
+            <div
+              className={classnames(
+                "comment__body",
+                isDeleted ? "comment__body--deleted" : ""
+              )}
+            >
+              {isDeleted ? (
+                <div className="comment__deleted-message">
+                  <Icon csMode="inline" csVariant="warning">
+                    <FontAwesomeIcon icon={faTrash} />
+                  </Icon>
+                  <span>This comment has been deleted.</span>
+                </div>
+              ) : (
+                parsedContent.map((part, i) => {
+                  if (part.type === "quote") {
+                    return (
+                      <div className="comment__quote" key={i}>
+                        <div className="comment__quote-content">
+                          <div className="comment__quote-header">
+                            <Icon csMode="inline" csVariant="primary">
+                              <FontAwesomeIcon icon={faQuoteLeft} />
+                            </Icon>
+                            {author.username} wrote:
+                          </div>
+                          <div className="comment__quote-text">
+                            {part.content}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                }
-                if (part.type === "code") {
+                    );
+                  }
+                  if (part.type === "code") {
+                    return (
+                      <pre className="comment__pre" key={i}>
+                        {part.content}
+                      </pre>
+                    );
+                  }
                   return (
-                    <pre className="comment__pre" key={i}>
-                      {part.content}
-                    </pre>
+                    <p key={i}>
+                      {part.content || (
+                        <span style={{ opacity: 0.5 }}>Empty line</span>
+                      )}
+                    </p>
                   );
-                }
-                return (
-                  <p key={i}>
-                    {part.content || (
-                      <span style={{ opacity: 0.5 }}>Empty line</span>
-                    )}
-                  </p>
-                );
-              })}
+                })
+              )}
             </div>
 
             <div className="comment__footer">
-              <Button
-                csVariant="secondary"
-                csSize="small"
-                onClick={handleReplyClick}
-              >
-                <Icon csMode="inline" noWrapper>
-                  <FontAwesomeIcon icon={faReply} />
-                </Icon>
-                Reply
-              </Button>
-              <div className="comment-like-system">
-                <Button
-                  csVariant="secondary"
-                  csModifiers={["ghost", "only-icon"]}
-                  rootClasses={classnames(
-                    "comment-like-system__button",
-                    "comment-like-system__button--upvote",
-                    userVote === 1 ? "comment-like-system__button--active" : ""
-                  )}
-                  onClick={handleUpvote}
-                  title="Upvote"
-                >
-                  <Icon csMode="inline" noWrapper>
-                    <FontAwesomeIcon icon={faThumbsUp} />
-                  </Icon>
-                </Button>
-                <span className="comment-like-system__count">{voteScore}</span>
-                <Button
-                  csVariant="secondary"
-                  csModifiers={["ghost", "only-icon"]}
-                  rootClasses={classnames(
-                    "comment-like-system__button",
-                    "comment-like-system__button--downvote",
-                    userVote === -1 ? "comment-like-system__button--active" : ""
-                  )}
-                  onClick={handleDownvote}
-                  title="Downvote"
-                >
-                  <Icon csMode="inline" noWrapper>
-                    <FontAwesomeIcon icon={faThumbsDown} />
-                  </Icon>
-                </Button>
-              </div>
-              {showRepliesButton && (
-                <Button
-                  csVariant="secondary"
-                  csSize="small"
-                  onClick={handleRepliesClick}
-                >
-                  <Icon csMode="inline" noWrapper>
-                    <FontAwesomeIcon
-                      icon={areRepliesOpen ? faCaretUp : faCaretDown}
-                    />
-                  </Icon>
-                  Replies
-                </Button>
-              )}
-              {onEdit && (
-                <Button
-                  csVariant="secondary"
-                  csSize="small"
-                  onClick={handleEditClick}
-                >
-                  <Icon csMode="inline" noWrapper>
-                    <FontAwesomeIcon icon={faPen} />
-                  </Icon>
-                  Edit
-                </Button>
-              )}
-              {onReport && (
-                <Button
-                  csVariant="secondary"
-                  csSize="small"
-                  onClick={handleReportClick}
-                >
-                  <Icon csMode="inline" noWrapper>
-                    <FontAwesomeIcon icon={faFlag} />
-                  </Icon>
-                  Report
-                </Button>
-              )}
-              {onDelete && (
-                <div className="comment__action-icon">
+              {!isDeleted && (
+                <>
                   <Button
-                    csVariant="danger"
+                    csVariant="secondary"
                     csSize="small"
-                    onClick={handleDeleteClick}
-                    title="Delete"
+                    onClick={handleReplyClick}
                   >
                     <Icon csMode="inline" noWrapper>
-                      <FontAwesomeIcon icon={faTrash} />
+                      <FontAwesomeIcon icon={faReply} />
                     </Icon>
+                    Reply
                   </Button>
+                  <div className="comment-like-system">
+                    {reactions &&
+                      Object.entries(REACTION_EMOJIS).map(([key, emoji]) => {
+                        const reactionData = reactions[key];
+                        if (
+                          !reactionData ||
+                          (reactionData.count === 0 &&
+                            !reactionData.user_reacted)
+                        ) {
+                          return null;
+                        }
+                        return (
+                          <Button
+                            key={key}
+                            csVariant="secondary"
+                            csSize="small"
+                            csModifiers={["ghost"]}
+                            rootClasses={classnames(
+                              "comment-like-system__button",
+                              reactionData.user_reacted
+                                ? "comment-like-system__button--active"
+                                : ""
+                            )}
+                            onClick={() => handleReaction(key)}
+                            title={key.replace("_", " ")}
+                          >
+                            <span className="comment-like-system__emoji">
+                              {emoji}
+                            </span>
+                            <span className="comment-like-system__count">
+                              {reactionData.count}
+                            </span>
+                          </Button>
+                        );
+                      })}
+
+                    <div className="comment-like-system__wrapper">
+                      <Popover
+                        open={isReactionPickerOpen}
+                        onOpenChange={setIsReactionPickerOpen}
+                        trigger={
+                          <Button
+                            csVariant="secondary"
+                            csSize="small"
+                            csModifiers={["ghost", "only-icon"]}
+                            rootClasses="comment-like-system__button"
+                            title="Add reaction"
+                          >
+                            <Icon csMode="inline" noWrapper>
+                              <FontAwesomeIcon icon={faHeartCircleBolt} />
+                            </Icon>
+                          </Button>
+                        }
+                      >
+                        <div className="comment-reaction-picker">
+                          {Object.entries(REACTION_EMOJIS).map(
+                            ([key, emoji]) => (
+                              <button
+                                key={key}
+                                className="comment-reaction-picker__button"
+                                onClick={() => handleReaction(key)}
+                                title={key.replace("_", " ")}
+                              >
+                                {emoji}
+                              </button>
+                            )
+                          )}
+                        </div>
+                      </Popover>
+                    </div>
+                  </div>
+                  {showRepliesButton && (
+                    <Button
+                      csVariant="secondary"
+                      csSize="small"
+                      onClick={handleRepliesClick}
+                    >
+                      <Icon csMode="inline" noWrapper>
+                        <FontAwesomeIcon
+                          icon={areRepliesOpen ? faCaretUp : faCaretDown}
+                        />
+                      </Icon>
+                      Replies
+                    </Button>
+                  )}
+                  {onEdit && (
+                    <Button
+                      csVariant="secondary"
+                      csSize="small"
+                      onClick={handleEditClick}
+                    >
+                      <Icon csMode="inline" noWrapper>
+                        <FontAwesomeIcon icon={faPen} />
+                      </Icon>
+                      Edit
+                    </Button>
+                  )}
+
+                  {(onReport || onDelete) && (
+                    <DropDown
+                      trigger={
+                        <button
+                          className={classnames(
+                            "button",
+                            ...componentClasses(
+                              "button",
+                              "secondary",
+                              "small",
+                              ["only-icon"]
+                            )
+                          )}
+                        >
+                          <Icon csMode="inline" noWrapper>
+                            <FontAwesomeIcon icon={faEllipsisH} />
+                          </Icon>
+                        </button>
+                      }
+                    >
+                      {onReport && (
+                        <DropDownItem onClick={handleReportClick}>
+                          <div className="dropdown-item-content">
+                            <Icon csMode="inline" noWrapper>
+                              <FontAwesomeIcon icon={faFlag} />
+                            </Icon>
+                            Report
+                          </div>
+                        </DropDownItem>
+                      )}
+                      {onDelete && (
+                        <DropDownItem
+                          onClick={handleDeleteClick}
+                          csVariant="primary"
+                        >
+                          <div className="dropdown-item-content">
+                            <Icon csMode="inline" noWrapper>
+                              <FontAwesomeIcon icon={faTrash} />
+                            </Icon>
+                            Delete
+                          </div>
+                        </DropDownItem>
+                      )}
+                    </DropDown>
+                  )}
+                </>
+              )}
+              {isDeleted && onRestore && (
+                <div className="comment__actions-dropdown">
+                  <DropDown
+                    trigger={
+                      <button
+                        className={classnames(
+                          "button",
+                          ...componentClasses("button", "secondary", "small", [
+                            "only-icon",
+                          ])
+                        )}
+                      >
+                        <Icon csMode="inline" noWrapper>
+                          <FontAwesomeIcon icon={faEllipsisH} />
+                        </Icon>
+                      </button>
+                    }
+                  >
+                    <DropDownItem onClick={handleRestoreClick}>
+                      <div className="dropdown-item-content">
+                        <Icon csMode="inline" noWrapper>
+                          <FontAwesomeIcon icon={faTrashRestore} />
+                        </Icon>
+                        Restore
+                      </div>
+                    </DropDownItem>
+                  </DropDown>
                 </div>
               )}
             </div>
@@ -406,8 +527,10 @@ export function Comment({
                   onReply={onReply}
                   onSubmitReply={onSubmitReply}
                   onVote={onVote}
+                  onReaction={onReaction}
                   onEdit={onEdit}
                   onDelete={onDelete}
+                  onRestore={onRestore}
                   onReport={onReport}
                   onExpandReplies={onExpandReplies}
                 />

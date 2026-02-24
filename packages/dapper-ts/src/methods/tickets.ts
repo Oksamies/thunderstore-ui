@@ -6,6 +6,7 @@ import {
   fetchCreateListingTicket,
   fetchCreateTicketMessage,
   fetchCreateTicketNote,
+  fetchGetCommunityTickets,
   fetchGetListingTickets,
   fetchGetTicket,
   fetchGetTicketMessages,
@@ -17,6 +18,13 @@ import type { DapperTsInterface } from "../index";
 
 export async function getTickets(this: DapperTsInterface) {
   return await fetchGetTickets(this.config());
+}
+
+export async function getCommunityTickets(
+  this: DapperTsInterface,
+  communityId: string
+) {
+  return await fetchGetCommunityTickets(this.config(), communityId);
 }
 
 export async function getTicket(this: DapperTsInterface, uuid: string) {

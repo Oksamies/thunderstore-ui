@@ -95,6 +95,10 @@ export { Modal, type ModalProps } from "./newComponents/Modal/Modal";
 export { Pagination as NewPagination } from "./newComponents/Pagination/Pagination";
 export type { PaginationProps } from "./newComponents/Pagination/Pagination";
 export {
+  Popover as NewPopover,
+  type PopoverProps as NewPopoverProps,
+} from "./newComponents/Popover/Popover";
+export {
   Select as NewSelect,
   type SelectProps as NewSelectProps,
 } from "./newComponents/Select/Select";

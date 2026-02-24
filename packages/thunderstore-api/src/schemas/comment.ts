@@ -12,6 +12,15 @@ export const CommentSchema = z.object({
   is_deleted: z.boolean(),
   datetime_created: z.string(),
   datetime_updated: z.string(),
+  reactions: z
+    .record(
+      z.string(),
+      z.object({
+        count: z.number(),
+        user_reacted: z.boolean(),
+      })
+    )
+    .optional(),
 });
 
 export const CommentCreateSchema = z.object({

@@ -121,5 +121,7 @@ export default [
     index("m/Dashboard.tsx"),
     route(":communityId/tickets", "m/Tickets/Tickets.tsx"),
     route(":communityId/tickets/:ticketId", "m/Tickets/TicketDetail.tsx"),
+    route(":communityId/reviews", "m/Reviews/Reviews.tsx"),
+    route(":communityId/comments", "m/Comments/Comments.tsx"),
   ]),
 ] satisfies RouteConfig;

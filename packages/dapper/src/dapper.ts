@@ -21,6 +21,7 @@ export interface DapperInterface {
   postPackageSubmissionMetadata: methods.PostPackageSubmissionMetadata;
   getPackageSubmissionStatus: methods.GetPackageSubmissionStatus;
   getTickets: methods.GetTickets;
+  getCommunityTickets: methods.GetCommunityTickets;
   getTicket: methods.GetTicket;
   createTicketMessage: methods.CreateTicketMessage;
   createTicketNote: methods.CreateTicketNote;
@@ -29,6 +30,9 @@ export interface DapperInterface {
   createListingTicket: methods.CreateListingTicket;
   deleteComment: methods.DeleteComment;
   restoreComment: methods.RestoreComment;
+  reactToComment: methods.ReactToComment;
   getListingComments: methods.GetListingComments;
   createListingComment: methods.CreateListingComment;
+  getModerationStats: methods.GetModerationStats;
+  getUserModeratedCommunities: methods.GetUserModeratedCommunities;
 }

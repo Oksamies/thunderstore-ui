@@ -251,6 +251,12 @@ const library: LinkLibrary = {
   CommunityModeration: (p) => (
     <Link {...p} url={`/m/${p.community}/tickets/`} ref={p.customRef} />
   ),
+  CommunityModerationReviews: (p) => (
+    <Link {...p} url={`/m/${p.community}/reviews/`} ref={p.customRef} />
+  ),
+  CommunityModerationComments: (p) => (
+    <Link {...p} url={`/m/${p.community}/comments/`} ref={p.customRef} />
+  ),
   TicketDetail: (p) => (
     <Link
       {...p}

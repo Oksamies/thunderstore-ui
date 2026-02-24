@@ -117,12 +117,13 @@ export default function TicketDetailRoute() {
     <div className="dashboard-root">
       <div className="flex items-center gap-4 mb-4">
         <NewButton
-          primitiveType="link"
-          href={
+          primitiveType="cyberstormLink"
+          linkId={
             ticket?.community?.identifier
-              ? `/m/${ticket.community.identifier}/tickets`
-              : "/m"
+              ? "CommunityModeration"
+              : "ModerationDashboard"
           }
+          community={ticket?.community?.identifier || ""}
           csSize="small"
           csVariant="secondary"
         >

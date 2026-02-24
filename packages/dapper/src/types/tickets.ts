@@ -17,6 +17,7 @@ export interface TicketMessage {
   content: string;
   created_at: string;
   is_internal?: boolean;
+  reactions?: Record<string, { count: number; user_reacted: boolean }>;
 }
 
 export interface Ticket {

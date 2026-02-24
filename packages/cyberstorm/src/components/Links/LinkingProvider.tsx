@@ -162,6 +162,14 @@ export interface LinkLibrary {
   ModerationDashboard: NoRequiredProps;
   /** Community Moderation Queue */
   CommunityModeration: (props: AnyProps & { community: string }) => RE | null;
+  /** Community Moderation Reviews */
+  CommunityModerationReviews: (
+    props: AnyProps & { community: string }
+  ) => RE | null;
+  /** Community Moderation Comments */
+  CommunityModerationComments: (
+    props: AnyProps & { community: string }
+  ) => RE | null;
   /** Ticket Detail */
   TicketDetail: (
     props: AnyProps & { community: string; ticket: string }
@@ -214,6 +222,8 @@ const library: LinkLibrary = {
   TermsOfService: noop,
   ModerationDashboard: noop,
   CommunityModeration: noop,
+  CommunityModerationReviews: noop,
+  CommunityModerationComments: noop,
   TicketDetail: noop,
 };
 
