@@ -6,6 +6,7 @@ import {
 import { useToast } from "@thunderstore/cyberstorm";
 import type { DapperTs } from "@thunderstore/dapper-ts";
 
+import "./ManifestConfiguration.css";
 import { useDependencySearch } from "./useDependencySearch";
 
 export interface ManifestConfigurationProps {
@@ -36,7 +37,6 @@ export function ManifestConfiguration({
   const {
     dependencySourceCommunity,
     setDependencySourceCommunity,
-    dependencySearchQuery,
     setDependencySearchQuery,
     dependencySearchResults,
     selectedDependency,
@@ -47,46 +47,46 @@ export function ManifestConfiguration({
 
   return (
     <div className="upload__step-container">
-      <div className="upload__dnd-edit-fields">
-        <fieldset className="upload__manifest-fieldset">
-          <legend className="upload__dnd-edit-legend">
+      <div className="upload__fields">
+        <fieldset className="manifest-configuration__manifest-fieldset">
+          <legend className="manifest-configuration__legend">
             <h2>Manifest Configuration</h2>
           </legend>
 
-          <div className="upload__dnd-edit-field">
-            <label htmlFor="versionNumber" className="upload__dnd-edit-label">
-              Version Number (from manifest.json)
+          <div className="upload__field">
+            <label htmlFor="versionNumber" className="upload__label">
+              Version Number
             </label>
             <NewTextInput
               id="versionNumber"
               value={versionNumber}
               onChange={(e) => setVersionNumber(e.target.value)}
               placeholder="e.g. 1.0.0"
-              className="upload__dnd-edit-input"
+              className="upload__input"
             />
           </div>
 
-          <div className="upload__dnd-edit-field">
-            <label
-              htmlFor="packageDescription"
-              className="upload__dnd-edit-label"
-            >
-              Package Description (from manifest.json)
+          <div className="upload__field">
+            <label htmlFor="packageDescription" className="upload__label">
+              Package Description
             </label>
             <NewTextInput
               id="packageDescription"
               value={packageDescription}
               onChange={(e) => setPackageDescription(e.target.value)}
               placeholder="Short description of your package"
-              className="upload__dnd-edit-input"
+              className="upload__input"
             />
           </div>
 
-          <div className="upload__dnd-edit-field">
-            <span className="upload__dnd-edit-label">Dependencies</span>
-            <div className="upload__dnd-dependencies">
+          <div className="upload__field">
+            <span className="upload__label">Dependencies</span>
+            <div className="manifest-configuration__dependencies">
               {dependencies.map((dep, idx) => (
-                <div key={idx} className="upload__dnd-dependency-item">
+                <div
+                  key={idx}
+                  className="manifest-configuration__dependency-item"
+                >
                   <span>
                     {dep.namespace}-{dep.name}-{dep.version}
                   </span>
@@ -105,7 +105,7 @@ export function ManifestConfiguration({
               {!isAddingDependency ? (
                 <NewButton
                   csSize="small"
-                  csVariant="primary"
+                  csVariant="secondary"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsAddingDependency(true);
@@ -114,7 +114,7 @@ export function ManifestConfiguration({
                   Add Dependency
                 </NewButton>
               ) : (
-                <div className="upload__dnd-dependency-search">
+                <div className="manifest-configuration__dependency-search">
                   <NewSelectSearch
                     placeholder="Filter by community..."
                     options={communityOptions}
@@ -157,10 +157,10 @@ export function ManifestConfiguration({
                     value={selectedDependency || undefined}
                   />
 
-                  <div className="upload__dnd-dependency-search-actions">
+                  <div className="manifest-configuration__dependency-search-actions">
                     <NewButton
                       csSize="small"
-                      csVariant="primary"
+                      csVariant="secondary"
                       disabled={!selectedDependency}
                       onClick={async (e) => {
                         e.preventDefault();

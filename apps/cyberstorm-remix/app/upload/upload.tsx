@@ -210,6 +210,7 @@ export default function Upload() {
     versionNumber,
     packageDescription,
     dependencies,
+    setDependencies,
     setHandle,
     setUsermedia,
     setIsDone,
@@ -407,20 +408,6 @@ export default function Upload() {
                   </div>
                 </div>
 
-                <div className="upload__step-container">
-                  <div className="upload__dnd-edit-field">
-                    <span className="upload__dnd-edit-label">
-                      <h2>Files</h2>
-                    </span>
-                    <VirtualZipEditor
-                      files={virtualFiles}
-                      setFiles={setVirtualFiles}
-                      onReadmeChange={setReadmeContent}
-                      onChangelogChange={setChangelogContent}
-                    />
-                  </div>
-                </div>
-
                 <ManifestConfiguration
                   versionNumber={versionNumber}
                   setVersionNumber={setVersionNumber}
@@ -431,6 +418,20 @@ export default function Upload() {
                   communityOptions={communityOptions}
                   dapper={dapper}
                 />
+
+                <div className="upload__step-container">
+                  <div className="upload__field">
+                    <span className="upload__label">
+                      <h2>Files</h2>
+                    </span>
+                    <VirtualZipEditor
+                      files={virtualFiles}
+                      setFiles={setVirtualFiles}
+                      onReadmeChange={setReadmeContent}
+                      onChangelogChange={setChangelogContent}
+                    />
+                  </div>
+                </div>
 
                 <MarkdownConfiguration
                   readmeContent={readmeContent}
@@ -489,7 +490,7 @@ export default function Upload() {
 
                     {formInputs.communities &&
                       formInputs.communities.length !== 0 && (
-                        <div className="upload__dnd-edit-field--margin">
+                        <div className="upload__field--margin">
                           {formInputs.communities.map((community) => {
                             const communityData = uploadData.results.find(
                               (c) => c.identifier === community
@@ -502,9 +503,9 @@ export default function Upload() {
                             return (
                               <div
                                 key={community}
-                                className="upload__category upload__dnd-edit-field--margin"
+                                className="upload__category upload__field--margin"
                               >
-                                <span className="upload__dnd-edit-label">
+                                <span className="upload__label">
                                   {communityData?.name} Categories
                                 </span>
                                 <NewSelectSearch
@@ -656,7 +657,7 @@ export default function Upload() {
                       formInputs.communities.length === 0 || !!handle || isDone
                     }
                     onClick={handlePublishPackage}
-                    csVariant="primary"
+                    csVariant="secondary"
                     csSize="big"
                     rootClasses="upload__submit"
                   >

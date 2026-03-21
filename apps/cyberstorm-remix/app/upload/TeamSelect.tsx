@@ -1,5 +1,7 @@
 import { NewLink, NewSelectSearch } from "@thunderstore/cyberstorm";
 
+import "./TeamSelect.css";
+
 interface TeamSelectProps {
   availableTeams: { name: string; role: string; member_count: number }[];
   authorName: string;
@@ -52,8 +54,8 @@ export function TeamSelect({
                 : undefined
             }
           />
-          <span className="upload__no-teams">
-            <p className="upload__no-teams-text">No teams available?</p>
+          <span className="team-select__no-teams">
+            <p className="team-select__no-teams-text">No teams available?</p>
             <NewLink
               key="create-team-link"
               primitiveType="cyberstormLink"

@@ -17,6 +17,7 @@ import {
 import { type PackageSubmissionResult } from "@thunderstore/dapper/types";
 
 import { PageHeader } from "../commonComponents/PageHeader/PageHeader";
+import "./SubmissionResult.css";
 
 export function formatBytes(bytes: number, decimals = 2): string {
   if (!+bytes) {
@@ -55,31 +56,31 @@ export interface MiniPackageCardProps {
 
 export function MiniPackageCard(props: MiniPackageCardProps) {
   return (
-    <div className="upload__mini-card">
-      <div className="upload__mini-card-icon-wrapper">
+    <div className="submission-result__mini-card">
+      <div className="submission-result__mini-card-icon-wrapper">
         {props.iconUrl ? (
           <img
             src={props.iconUrl}
             alt="icon"
-            className="upload__mini-card-icon"
+            className="submission-result__mini-card-icon"
           />
         ) : (
           <FontAwesomeIcon
             icon={faFileZip}
-            className="upload__mini-card-icon-fallback"
+            className="submission-result__mini-card-icon-fallback"
           />
         )}
       </div>
-      <div className="upload__mini-card-content">
-        <h4 className="upload__mini-card-title">
+      <div className="submission-result__mini-card-content">
+        <h4 className="submission-result__mini-card-title">
           {props.name || "Unknown Package"}
         </h4>
-        <div className="upload__mini-card-meta">
+        <div className="submission-result__mini-card-meta">
           <span>{props.author || "Unknown Author"}</span>
           {props.version && <span>{props.version}</span>}
         </div>
         {props.overlayText && (
-          <span className="upload__mini-card-desc">{props.overlayText}</span>
+          <span className="submission-result__mini-card-desc">{props.overlayText}</span>
         )}
       </div>
       {props.actionText && props.onAction && (

@@ -179,9 +179,13 @@ export function useStrongForm<
         });
     } else {
       // A quick hack to allow the form to work without a refiner.
+      // We still update the state in case something depends on it, but we'll also use props.inputs directly.
       setSubmissionData(props.inputs as unknown as SubmissionDataShape);
     }
   }, [props.inputs]);
+
+  // Derive the active submission data to avoid stale state issues when submitting immediately
+  const activeSubmissionData = props.refiner ? submissionData : (props.inputs as unknown as SubmissionDataShape);
 
   const submit = async () => {
     setHasAttemptedSubmit(true);
@@ -210,7 +214,7 @@ export function useStrongForm<
       }
       throw refineError;
     }
-    if (!submissionData) {
+    if (!activeSubmissionData) {
       const error = new Error("Form has not been refined yet!");
       if (props.onSubmitError) {
         props.onSubmitError(error as SubmissionError);
@@ -221,7 +225,7 @@ export function useStrongForm<
     setSubmitting(true);
     try {
       await props
-        .submitor(submissionData)
+        .submitor(activeSubmissionData)
         .then((output) => {
           setSubmitOutput(output);
           if (props.onSubmitSuccess) {
@@ -229,16 +233,10 @@ export function useStrongForm<
           }
         })
         .catch((error) => {
-          console.log(
-            "CATCH error",
-            error,
-            "instanceof RequestQueryParamsParseError?",
-            error instanceof RequestQueryParamsParseError,
-            "instanceof RequestBodyParseError?",
-            error instanceof RequestBodyParseError
-          );
           if (
             error instanceof RequestBodyParseError ||
+            (error instanceof Error &&
+              error.name === "RequestBodyParseError") ||
             (error instanceof Error &&
               error.constructor.name === "RequestBodyParseError")
           ) {
@@ -253,6 +251,8 @@ export function useStrongForm<
           if (
             error instanceof RequestQueryParamsParseError ||
             (error instanceof Error &&
+              error.name === "RequestQueryParamsParseError") ||
+            (error instanceof Error &&
               error.constructor.name === "RequestQueryParamsParseError")
           ) {
             setSubmitError(
@@ -265,6 +265,7 @@ export function useStrongForm<
           }
           if (
             error instanceof ParseError ||
+            (error instanceof Error && error.name === "ParseError") ||
             (error instanceof Error && error.constructor.name === "ParseError")
           ) {
             setSubmitError(

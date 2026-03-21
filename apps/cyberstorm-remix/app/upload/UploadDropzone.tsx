@@ -12,6 +12,7 @@ import { DnDFileInput } from "@thunderstore/react-dnd";
 import type { IBaseUploadHandle, UserMedia } from "@thunderstore/ts-uploader";
 
 import { formatBytes } from "./SubmissionResult";
+import "./UploadDropzone.css";
 
 interface UploadDropzoneProps {
   file: File | null;
@@ -74,24 +75,24 @@ export function UploadDropzone({
         name="file"
         baseState={
           file ? (
-            <div className="upload__dnd-file-details">
+            <div className="upload-dropzone__dnd-file-details">
               {iconPreviewUrl ? (
                 <img
                   src={iconPreviewUrl}
                   alt="icon"
-                  className="upload__dnd-file-icon"
+                  className="upload-dropzone__dnd-file-icon"
                 />
               ) : (
                 <FontAwesomeIcon
                   icon={faFileZip}
-                  className="upload__dnd-file-icon-fallback"
+                  className="upload-dropzone__dnd-file-icon-fallback"
                 />
               )}
-              <div className="upload__dnd-file-info">
-                <span className="upload__dnd-file-name">
+              <div className="upload-dropzone__dnd-file-info">
+                <span className="upload-dropzone__dnd-file-name">
                   {packageName || file.name}
                 </span>
-                <div className="upload__dnd-file-meta">
+                <div className="upload-dropzone__dnd-file-meta">
                   <span>{authorName || "Unknown Author"}</span>
                   <span>•</span>
                   <span>{versionNumber || "Unknown Version"}</span>
@@ -101,12 +102,12 @@ export function UploadDropzone({
                   </span>
                 </div>
                 {packageDescription && (
-                  <span className="upload__dnd-file-desc">
+                  <span className="upload-dropzone__dnd-file-desc">
                     {packageDescription}
                   </span>
                 )}
               </div>
-              <div className="upload__dnd-file-actions">
+              <div className="upload-dropzone__dnd-file-actions">
                 <NewButton
                   onClick={(e) => {
                     e.stopPropagation();

@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useRef } from "react";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, assert, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 
 import {
   ParseError,
@@ -80,8 +81,9 @@ type AnyStrongForm = ReturnType<
 >;
 
 // React 18 act() warning suppression: mark the environment as act-capable.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
+(
+  globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }
+).IS_REACT_ACT_ENVIRONMENT = true;
 
 function useConst<T>(create: () => T): T {
   const ref = useRef<T | null>(null);
@@ -627,12 +629,9 @@ describe("StrongForm.useStrongForm", () => {
         >
       | undefined;
 
-    const bodyParseError = Object.assign(
-      Object.create(RequestBodyParseError.prototype),
-      {
-        error: { formErrors: { name: "bad" } },
-      }
-    );
+    const bodyParseError = new RequestBodyParseError({
+      formErrors: { name: "bad" },
+    } as unknown as z.ZodError);
 
     const { unmount } = render(
       React.createElement(function Harness() {
@@ -689,12 +688,9 @@ describe("StrongForm.useStrongForm", () => {
         >
       | undefined;
 
-    const queryParseError = Object.assign(
-      Object.create(RequestQueryParamsParseError.prototype),
-      {
-        error: { formErrors: { name: "bad" } },
-      }
-    );
+    const queryParseError = new RequestQueryParamsParseError({
+      formErrors: { name: "bad" },
+    } as unknown as z.ZodError);
 
     const { unmount } = render(
       React.createElement(function Harness() {
@@ -751,9 +747,9 @@ describe("StrongForm.useStrongForm", () => {
         >
       | undefined;
 
-    const parseError = Object.assign(Object.create(ParseError.prototype), {
-      error: { formErrors: { name: "bad" } },
-    });
+    const parseError = new ParseError({
+      formErrors: { name: "bad" },
+    } as unknown as z.ZodError);
 
     const onSubmitError = vi.fn();
 

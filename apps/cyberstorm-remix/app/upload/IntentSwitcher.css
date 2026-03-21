@@ -1,0 +1,56 @@
+@layer nimbus-layout {
+  .intent-switcher__intent-switchers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .intent-switcher__intent-button {
+    flex: 1;
+    min-width: min(100%, 250px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem;
+    background-color: var(--color-surface-1);
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--color-text-primary);
+  }
+
+  .intent-switcher__intent-button:hover,
+  .intent-switcher__intent-button--active {
+    background-color: var(--color-surface-a4);
+    border-color: var(--color-accent-green-6);
+  }
+
+  .intent-switcher__intent-button h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .intent-switcher__intent-button p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    text-align: center;
+  }
+
+  .intent-switcher__intent-converge {
+    position: absolute;
+    bottom: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--color-text-tertiary);
+  }
+}

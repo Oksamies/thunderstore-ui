@@ -1,5 +1,7 @@
 import { classnames } from "@thunderstore/cyberstorm";
 
+import "./IntentSwitcher.css";
+
 export interface IntentSwitcherProps {
   intent: "new" | "update";
   setIntent: (intent: "new" | "update") => void;
@@ -16,13 +18,13 @@ export function IntentSwitcher({
   onNewIntent,
 }: IntentSwitcherProps) {
   return (
-    <div className="upload__intent-switchers">
+    <div className="intent-switcher__intent-switchers">
       <div
         role="button"
         tabIndex={0}
         className={classnames(
-          "upload__intent-button",
-          intent === "new" ? "upload__intent-button--active" : null
+          "intent-switcher__intent-button",
+          intent === "new" ? "intent-switcher__intent-button--active" : null
         )}
         onClick={() => {
           setIntent("new");
@@ -42,8 +44,8 @@ export function IntentSwitcher({
         role="button"
         tabIndex={0}
         className={classnames(
-          "upload__intent-button",
-          intent === "update" ? "upload__intent-button--active" : null
+          "intent-switcher__intent-button",
+          intent === "update" ? "intent-switcher__intent-button--active" : null
         )}
         onClick={() => setIntent("update")}
         onKeyDown={(e) => {

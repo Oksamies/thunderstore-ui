@@ -1,0 +1,182 @@
+@layer nimbus-layout {
+  .upload-dropzone__dnd-icon-upload {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .upload-dropzone__dnd-icon-overlay-container {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border-radius: 10%;
+    overflow: hidden;
+    cursor: pointer;
+    display: block;
+    background-color: var(--color-surface-2);
+  }
+
+  .upload-dropzone__dnd-icon-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 10%;
+  }
+
+  .upload-dropzone__dnd-icon-preview-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--color-text-tertiary);
+  }
+
+  .upload-dropzone__dnd-icon-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    color: white;
+    font-size: 1.5rem;
+  }
+
+  .upload-dropzone__dnd-icon-overlay-container:hover .upload-dropzone__dnd-icon-overlay {
+    opacity: 1;
+  }
+
+  .drag-n-drop {
+    display: flex;
+    flex: 1 0 0;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+    align-self: stretch;
+    justify-content: center;
+    padding: 1.5rem 2rem;
+    border: 2px dashed var(--color-surface-a9);
+
+    border-radius: var(--radius-md);
+    background: var(--color-surface-a4);
+
+    cursor: pointer;
+  }
+
+  .drag-n-drop--success {
+    border: 2px solid var(--color-cyber-green-7);
+    background: var(--color-surface-1);
+  }
+
+  .drag-n-drop__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .drag-n-drop__icon {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .drag-n-drop__main-text {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-bold);
+
+    font-size: var(--font-size-body-lg);
+    text-align: center;
+  }
+
+  .drag-n-drop__sub-text {
+    color: var(--color-text-tertiary);
+    font-weight: var(--font-weight-medium);
+
+    font-size: var(--font-size-body-md);
+    text-align: center;
+  }
+
+  .drag-n-drop__remove-button {
+    color: var(--color-text-tertiary);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-body-md);
+    background: transparent;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-skip-ink: none;
+    text-decoration-thickness: auto;
+    text-underline-offset: auto;
+    text-underline-position: from-font;
+  }
+
+  .upload-dropzone__dnd-file-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+  }
+
+  .upload-dropzone__dnd-file-icon {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    background-color: var(--color-surface-2);
+  }
+
+  .upload-dropzone__dnd-file-icon-fallback {
+    font-size: 3rem;
+    color: var(--color-text-tertiary);
+  }
+
+  .upload-dropzone__dnd-file-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .upload-dropzone__dnd-file-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    word-break: break-all;
+  }
+
+  .upload-dropzone__dnd-file-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+
+  .upload-dropzone__dnd-file-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-tertiary);
+    margin-top: 0.5rem;
+  }
+
+  .upload-dropzone__dnd-file-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    z-index: 10;
+  }
+}

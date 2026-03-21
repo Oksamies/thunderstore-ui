@@ -16,8 +16,8 @@ export function MarkdownConfiguration({
   return (
     <>
       <div className="upload__step-container">
-        <div className="upload__dnd-edit-field">
-          <span className="upload__dnd-edit-label">
+        <div className="upload__field">
+          <span className="upload__label">
             <h2>README.md</h2>
           </span>
           <MarkdownEditor
@@ -26,8 +26,8 @@ export function MarkdownConfiguration({
             placeholder="README.md content"
           />
         </div>
-        <div className="upload__dnd-edit-field">
-          <span className="upload__dnd-edit-label">
+        <div className="upload__field">
+          <span className="upload__label">
             <h2>CHANGELOG.md</h2>
           </span>
           <MarkdownEditor

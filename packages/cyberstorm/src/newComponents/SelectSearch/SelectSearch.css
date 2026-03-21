@@ -33,7 +33,7 @@
   /* Input styles */
   .select-search__input {
     flex: 1;
-    min-width: 200px;
+    min-width: 10px;
     margin: 0;
     color: var(--select-search-text-color);
     font-weight: var(--select-search-font-weight);
@@ -103,11 +103,11 @@
 
   .select-search__selected-and-input-container {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     align-items: center;
     width: 100%;
     min-height: var(--select-search-height, 2.75rem);
-    padding: var(--select-search-padding);
+    padding: var(--select-search-padding, 0.5rem);
 
     & > input {
       outline: none;

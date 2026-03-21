@@ -39,6 +39,9 @@ export function VirtualZipEditor({
   const [draggingPath, setDraggingPath] = useState<string | null>(null);
   const [targetParent, setTargetParent] = useState<string>("");
 
+  const [addingFolderTo, setAddingFolderTo] = useState<string | null>(null);
+  const [subFolderName, setSubFolderName] = useState("");
+
   useEffect(() => {
     if (editingPath && renameInputRef.current) {
       renameInputRef.current.focus();
@@ -58,6 +61,21 @@ export function VirtualZipEditor({
     }
     setNewFolderName("");
     setTargetParent("");
+  };
+
+  const handleAddSubFolder = (parentPath: string) => {
+    if (!subFolderName) return;
+    const baseName = subFolderName.endsWith("/")
+      ? subFolderName
+      : `${subFolderName}/`;
+
+    const folderPath = parentPath + baseName;
+
+    if (!files.find((f) => f.path === folderPath)) {
+      setFiles([...files, { path: folderPath, content: null }]);
+    }
+    setSubFolderName("");
+    setAddingFolderTo(null);
   };
 
   const handleAddFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -212,16 +230,16 @@ export function VirtualZipEditor({
             const isFolder = file.path.endsWith("/");
 
             return (
-              <li
-                key={file.path}
-                className="virtual-zip-editor__list-item"
-                style={{ marginLeft: `${depth * 20}px` }}
-                draggable
-                onDragStart={(e) => handleDragStart(e, file.path)}
-                onDragOver={handleDragOver}
-                onDrop={(e) => isFolder && handleDrop(e, file.path)}
-              >
-                <span className="virtual-zip-editor__list-item-content">
+              <React.Fragment key={file.path}>
+                <li
+                  className="virtual-zip-editor__list-item"
+                  style={{ marginLeft: `${depth * 20}px` }}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, file.path)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => isFolder && handleDrop(e, file.path)}
+                >
+                  <span className="virtual-zip-editor__list-item-content">
                   <NewIcon
                     csMode="inline"
                     noWrapper
@@ -255,18 +273,32 @@ export function VirtualZipEditor({
                 </span>
                 <div className="virtual-zip-editor__actions">
                   {isFolder && (
-                    <button
-                      className="virtual-zip-editor__action-btn virtual-zip-editor__action-btn--add"
-                      onClick={() => {
-                        setTargetParent(file.path);
-                        fileInputRef.current?.click();
-                      }}
-                      title="Add File Here"
-                    >
-                      <NewIcon csMode="inline" noWrapper>
-                        <FontAwesomeIcon icon={faFilePlus} />
-                      </NewIcon>
-                    </button>
+                    <>
+                      <button
+                        className="virtual-zip-editor__action-btn virtual-zip-editor__action-btn--add"
+                        onClick={() => {
+                          setAddingFolderTo(file.path);
+                          setSubFolderName("");
+                        }}
+                        title="Add Folder Here"
+                      >
+                        <NewIcon csMode="inline" noWrapper>
+                          <FontAwesomeIcon icon={faFolderPlus} />
+                        </NewIcon>
+                      </button>
+                      <button
+                        className="virtual-zip-editor__action-btn virtual-zip-editor__action-btn--add"
+                        onClick={() => {
+                          setTargetParent(file.path);
+                          fileInputRef.current?.click();
+                        }}
+                        title="Add File Here"
+                      >
+                        <NewIcon csMode="inline" noWrapper>
+                          <FontAwesomeIcon icon={faFilePlus} />
+                        </NewIcon>
+                      </button>
+                    </>
                   )}
                   <button
                     className="virtual-zip-editor__action-btn"
@@ -288,73 +320,128 @@ export function VirtualZipEditor({
                   </button>
                 </div>
               </li>
-            );
-          })}
-          <li
-            className="virtual-zip-editor__list-item virtual-zip-editor__add-controls"
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "")}
-          >
-            <span className="virtual-zip-editor__list-item-content">
-              <NewIcon
-                csMode="inline"
-                noWrapper
-                rootClasses="virtual-zip-editor__icon"
-              >
-                <FontAwesomeIcon icon={faFolderPlus} />
-              </NewIcon>
-              <NewTextInput
-                type="text"
-                placeholder={
-                  targetParent
-                    ? `New folder in ${targetParent}...`
-                    : "New folder name..."
-                }
-                value={newFolderName}
-                csSize="small"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setNewFolderName(e.target.value)
-                }
-                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (e.key === "Enter") {
-                    handleAddFolder();
-                  }
-                }}
-                className="virtual-zip-editor__inline-input"
-              />
-            </span>
-            <div className="virtual-zip-editor__actions">
-              <NewButton
-                onClick={() => setTargetParent("")}
-                csSize="small"
-                csVariant="secondary"
-                style={{ display: targetParent ? "block" : "none" }}
-              >
-                Clear Target
-              </NewButton>
-              <NewButton
-                onClick={handleAddFolder}
-                csSize="small"
-                csVariant="secondary"
-              >
-                Add
-              </NewButton>
-              <NewButton
-                onClick={() => {
-                  setTargetParent("");
-                  fileInputRef.current?.click();
-                }}
-                csSize="small"
-                csVariant="primary"
-              >
-                <NewIcon csMode="inline" noWrapper>
-                  <FontAwesomeIcon icon={faFilePlus} />
-                </NewIcon>
-                Add Files
-              </NewButton>
-            </div>
-          </li>
+              {addingFolderTo === file.path && (
+                <li
+                  className="virtual-zip-editor__list-item"
+                  style={{ marginLeft: `${(depth + 1) * 20}px` }}
+                >
+                  <span className="virtual-zip-editor__list-item-content">
+                    <NewIcon
+                      csMode="inline"
+                      noWrapper
+                      rootClasses="virtual-zip-editor__icon"
+                    >
+                      <FontAwesomeIcon icon={faFolderPlus} />
+                    </NewIcon>
+                    <NewTextInput
+                      type="text"
+                      placeholder="New folder name..."
+                      value={subFolderName}
+                      csSize="small"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSubFolderName(e.target.value)
+                      }
+                      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                        if (e.key === "Enter") {
+                          handleAddSubFolder(file.path);
+                        } else if (e.key === "Escape") {
+                          setAddingFolderTo(null);
+                          setSubFolderName("");
+                        }
+                      }}
+                      autoFocus
+                      className="virtual-zip-editor__inline-input"
+                    />
+                  </span>
+                  <div className="virtual-zip-editor__actions">
+                    <NewButton
+                      onClick={() => handleAddSubFolder(file.path)}
+                      csSize="small"
+                      csVariant="secondary"
+                    >
+                      Add
+                    </NewButton>
+                    <NewButton
+                      onClick={() => {
+                        setAddingFolderTo(null);
+                        setSubFolderName("");
+                      }}
+                      csSize="small"
+                      csVariant="secondary"
+                    >
+                      Cancel
+                    </NewButton>
+                  </div>
+                </li>
+              )}
+            </React.Fragment>
+          );
+        })}
         </ul>
+        <div
+          className="virtual-zip-editor__list-item virtual-zip-editor__add-controls"
+          onDragOver={handleDragOver}
+          onDrop={(e) => handleDrop(e, "")}
+        >
+          <span className="virtual-zip-editor__list-item-content">
+            <NewIcon
+              csMode="inline"
+              noWrapper
+              rootClasses="virtual-zip-editor__icon"
+            >
+              <FontAwesomeIcon icon={faFolderPlus} />
+            </NewIcon>
+            <NewTextInput
+              type="text"
+              placeholder={
+                targetParent
+                  ? `New folder in ${targetParent}...`
+                  : "New folder name..."
+              }
+              value={newFolderName}
+              csSize="small"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setNewFolderName(e.target.value)
+              }
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === "Enter") {
+                  handleAddFolder();
+                }
+              }}
+              className="virtual-zip-editor__inline-input"
+            />
+          </span>
+          <div className="virtual-zip-editor__actions">
+            <NewButton
+              onClick={() => setTargetParent("")}
+              csSize="small"
+              csVariant="secondary"
+              style={{ display: targetParent ? "block" : "none" }}
+            >
+              Clear Target
+            </NewButton>
+            <NewButton
+              onClick={handleAddFolder}
+              csSize="small"
+              csVariant="secondary"
+            >
+              Add
+            </NewButton>
+            <NewButton
+              onClick={() => {
+                setTargetParent("");
+                fileInputRef.current?.click();
+              }}
+              csSize="small"
+              csVariant="secondary"
+            >
+              <NewIcon csMode="inline" noWrapper>
+                <FontAwesomeIcon icon={faFilePlus} />
+              </NewIcon>
+              Add Files
+            </NewButton>
+          </div>
+        </div>
       </div>
     </div>
   );

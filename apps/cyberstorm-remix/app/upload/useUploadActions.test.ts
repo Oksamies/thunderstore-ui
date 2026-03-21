@@ -60,6 +60,7 @@ describe("useUploadActions", () => {
   };
 
   const setOriginalZipBuffer = vi.fn();
+  const setVirtualFiles = vi.fn();
   const setVersionNumber = vi.fn();
   const setPackageName = vi.fn();
   const setPackageDescription = vi.fn();
@@ -71,6 +72,7 @@ describe("useUploadActions", () => {
   const setUsermedia = vi.fn();
   const setIsDone = vi.fn();
   const setSubmissionStatus = vi.fn();
+  const setDependencies = vi.fn();
 
   const requestConfig = vi.fn(() => ({ apiHost: "http://localhost:8000" }));
 
@@ -79,6 +81,7 @@ describe("useUploadActions", () => {
     toast: mockToast,
     requestConfig,
     setOriginalZipBuffer,
+    setVirtualFiles,
     setVersionNumber,
     setPackageName,
     setPackageDescription,
@@ -99,6 +102,7 @@ describe("useUploadActions", () => {
     versionNumber: "",
     packageDescription: "",
     dependencies: [],
+    setDependencies,
     setHandle,
     setUsermedia,
     setIsDone,
@@ -137,6 +141,7 @@ describe("useUploadActions", () => {
             name: "TestPack",
             version_number: "2.0.0",
             description: "Test Desc",
+            dependencies: ["Devs-Dep1-1.0.0"],
           })
         )
       );
@@ -154,12 +159,14 @@ describe("useUploadActions", () => {
       });
 
       expect(setOriginalZipBuffer).toHaveBeenCalled();
+      expect(setVirtualFiles).toHaveBeenCalled();
       expect(mockJSZipLoadAsync).toHaveBeenCalled();
       expect(setReadmeContent).toHaveBeenCalledWith("# Readme");
       expect(setChangelogContent).toHaveBeenCalledWith("# Changelog");
       expect(setPackageName).toHaveBeenCalledWith("TestPack");
       expect(setVersionNumber).toHaveBeenCalledWith("2.0.0");
       expect(setPackageDescription).toHaveBeenCalledWith("Test Desc");
+      expect(setDependencies).toHaveBeenCalledWith([{ namespace: "Devs", name: "Dep1", version: "1.0.0" }]);
       expect(setIconPreviewUrl).toHaveBeenCalledWith("blob:mock-url");
     });
 

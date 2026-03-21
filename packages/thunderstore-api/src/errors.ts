@@ -125,17 +125,20 @@ export class ApiError extends Error {
 export class RequestBodyParseError extends Error {
   constructor(public error: z.ZodError) {
     super(error.message);
+    this.name = "RequestBodyParseError";
   }
 }
 
 export class RequestQueryParamsParseError extends Error {
   constructor(public error: z.ZodError) {
     super(error.message);
+    this.name = "RequestQueryParamsParseError";
   }
 }
 
 export class ParseError extends Error {
   constructor(public error: z.ZodError) {
     super(error.message);
+    this.name = "ParseError";
   }
 }

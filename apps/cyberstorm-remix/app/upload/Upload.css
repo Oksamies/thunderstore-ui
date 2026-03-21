@@ -1,85 +1,33 @@
 @layer nimbus-layout {
-  .upload__dnd-edit-fields {
+  .upload__fields {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     width: 100%;
+    min-width: 0;
   }
 
-  .upload__dnd-edit-field {
+  .upload__field {
     width: 100%;
+    min-width: 0;
   }
 
-  .upload__dnd-edit-field--margin {
+  .upload__field--margin {
     margin-bottom: 1rem;
   }
 
-  .upload__dnd-edit-label {
+  .upload__label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
   }
 
-  .upload__dnd-edit-label--bold {
+  .upload__label--bold {
     font-weight: 700;
   }
 
-  .upload__dnd-edit-input {
+  .upload__input {
     width: 100%;
-  }
-
-  .upload__dnd-icon-upload {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  .upload__dnd-icon-overlay-container {
-    position: relative;
-    width: 64px;
-    height: 64px;
-    border-radius: 10%;
-    overflow: hidden;
-    cursor: pointer;
-    display: block;
-    background-color: var(--color-surface-2);
-  }
-
-  .upload__dnd-icon-preview {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 10%;
-  }
-
-  .upload__dnd-icon-preview-fallback {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    color: var(--color-text-tertiary);
-  }
-
-  .upload__dnd-icon-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    color: white;
-    font-size: 1.5rem;
-  }
-
-  .upload__dnd-icon-overlay-container:hover .upload__dnd-icon-overlay {
-    opacity: 1;
   }
 
   .upload {
@@ -90,13 +38,48 @@
     gap: 5rem;
   }
 
+  .upload__category-label {
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+
+    font-size: var(--font-size-body-md);
+  }
+
+  .upload__nsfw-switch {
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap-md);
+    align-items: center;
+    align-self: flex-start;
+    justify-content: flex-start;
+  }
+
+  .upload__buttons {
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap-md);
+    align-self: stretch;
+  }
+
+  .upload__submit {
+    flex: 1;
+    align-self: stretch;
+  }
+
+  .upload__content {
+    flex: 1;
+    min-width: 0;
+  }
+
   .upload__meta {
     display: flex;
+    flex: 0 1 50px;
     flex-direction: column;
     gap: var(--gap-xs);
     align-items: flex-start;
     align-self: stretch;
-    width: 21rem;
+    min-width: 15rem;
+    max-width: 21rem;
   }
 
   .upload__title {
@@ -123,6 +106,7 @@
     flex-direction: column;
     gap: var(--gap-md);
     align-items: flex-start;
+    min-width: 0;
   }
 
   .upload__divider {
@@ -135,19 +119,6 @@
     background-color: var(--border-default);
   }
 
-  .upload__no-teams {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-  }
-
-  .upload__no-teams-text {
-    color: var(--color-text-secondary);
-    font-weight: var(--font-weight-medium);
-
-    font-size: var(--font-size-body-md);
-  }
-
   .upload__category {
     display: flex;
     flex-direction: column;
@@ -156,104 +127,8 @@
     align-self: stretch;
   }
 
-  .upload__category-label {
-    color: var(--color-text-secondary);
-    font-weight: var(--font-weight-medium);
-
-    font-size: var(--font-size-body-md);
-  }
-
-  .drag-n-drop {
-    display: flex;
-    flex: 1 0 0;
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: center;
-    align-self: stretch;
-    justify-content: center;
-    padding: 1.5rem 2rem;
-    border: 2px dashed var(--color-surface-a9);
-
-    border-radius: var(--radius-md);
-    background: var(--color-surface-a4);
-
-    cursor: pointer;
-  }
-
-  .drag-n-drop--success {
-    border: 2px solid var(--color-cyber-green-7);
-    background: var(--color-surface-1);
-  }
-
-  .drag-n-drop__body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .drag-n-drop__icon {
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-  }
-
-  .drag-n-drop__main-text {
-    color: var(--color-text-primary);
-    font-weight: var(--font-weight-bold);
-
-    font-size: var(--font-size-body-lg);
-    text-align: center;
-  }
-
-  .drag-n-drop__sub-text {
-    color: var(--color-text-tertiary);
-    font-weight: var(--font-weight-medium);
-
-    font-size: var(--font-size-body-md);
-    text-align: center;
-  }
-
-  .drag-n-drop__remove-button {
-    color: var(--color-text-tertiary);
-    font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-body-md);
-    background: transparent;
-    text-decoration-line: underline;
-    text-decoration-style: solid;
-    text-decoration-skip-ink: none;
-    text-decoration-thickness: auto;
-    text-underline-offset: auto;
-    text-underline-position: from-font;
-  }
-
-  .upload__nsfw-switch {
-    display: flex;
-    flex-direction: row;
-    gap: var(--gap-md);
-    align-items: center;
-    align-self: flex-start;
-    justify-content: flex-start;
-  }
-
-  .upload__buttons {
-    display: flex;
-    flex-direction: row;
-    gap: var(--gap-md);
-    align-self: stretch;
-  }
-
-  .upload__submit {
-    flex: 1;
-    align-self: stretch;
-  }
-
   /* Mobile breakpoint */
-  @media (width <= 475px) {
+  @media (width <= 1100px) {
     .upload__row {
       flex-direction: column;
       gap: var(--gap-3xl);
@@ -296,314 +171,6 @@
     border: 4px solid #fff;
   }
 
-  .upload__progress {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-md);
-    width: 100%;
-    margin-top: var(--gap-md);
-  }
-
-  .upload__status {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-md);
-    width: 100%;
-  }
-
-  .upload__status-header {
-    display: flex;
-    flex-direction: row;
-    gap: var(--gap-md);
-    align-items: center;
-  }
-
-  .upload__progress-bar {
-    width: 100%;
-    height: 8px;
-    border-radius: 4px;
-    overflow: hidden;
-    background-color: var(--color-surface-a9);
-  }
-
-  .upload__progress-bars {
-    display: flex;
-    flex-direction: row;
-    gap: var(--gap-md);
-    width: 100%;
-  }
-
-  .upload__progress-bar-fill {
-    height: 100%;
-    background-color: var(--color-accent-green-6);
-    transition: width 0.3s ease;
-  }
-
-  .upload__progress-info {
-    display: flex;
-    flex-direction: row;
-    align-items: space-between;
-    justify-content: space-between;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-body-sm);
-  }
-
-  .upload__progress-speed {
-    display: inline-flex;
-    flex-direction: row;
-    gap: 0.5em;
-    align-items: flex-end;
-  }
-
-  .submission__status {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-md);
-  }
-
-  .submission__status-item {
-    display: flex;
-    flex: 1 1 0;
-    flex-direction: row;
-    gap: var(--gap-md);
-    align-items: center;
-    padding: 1rem;
-    border: 1px solid var(--color-surface-a9);
-    border-radius: var(--radius-md);
-    background-color: var(--color-surface-a4);
-  }
-
-  .upload__source-split {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    gap: 2rem;
-    align-self: stretch;
-  }
-
-  .upload__source-split--spaced {
-    margin-top: 2rem;
-  }
-
-  /* When on mobile, collapse the split to column layout */
-  @media (width <= 800px) {
-    .upload__source-split {
-      flex-direction: column;
-    }
-    
-    .upload__source-divider {
-      height: 1px;
-      width: auto !important;
-    }
-  }
-
-  .upload__source-column {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    gap: 1rem;
-  }
-
-  .upload__source-field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .upload__source-field {
-    flex: 1;
-  }
-
-  .upload__source-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-  }
-
-  .upload__source-fetch-button {
-    display: flex;
-    align-items: flex-end;
-  }
-
-  .upload__source-fetch-button-inner {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .upload__source-preview-placeholder {
-    flex: 1;
-    border: 1px dashed var(--border-default);
-    border-radius: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 80px;
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
-    background-color: var(--color-surface-1);
-    margin-top: auto;
-  }
-
-  .upload__source-preview {
-    margin-top: auto;
-  }
-
-  .upload__source-divider {
-    background-color: var(--border-default);
-    width: 1px;
-    align-self: stretch;
-  }
-
-  .upload__dnd-file-details {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-  }
-
-  .upload__dnd-file-icon {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    border-radius: 0.5rem;
-    background-color: var(--color-surface-2);
-  }
-
-  .upload__dnd-file-icon-fallback {
-    font-size: 3rem;
-    color: var(--color-text-tertiary);
-  }
-
-  .upload__dnd-file-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .upload__dnd-file-name {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color-text-primary);
-    word-break: break-all;
-  }
-
-  .upload__dnd-file-meta {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-  }
-
-  .upload__dnd-file-desc {
-    font-size: 0.9rem;
-    color: var(--color-text-tertiary);
-    margin-top: 0.5rem;
-  }
-
-  .upload__dnd-file-actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
-    z-index: 10;
-  }
-
-  .upload__dnd-dependencies {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .upload__dnd-dependency-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0.5rem 0.5rem 1rem;
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-md);
-    background-color: var(--color-surface-1);
-  }
-
-  .upload__dnd-dependency-search {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1rem;
-    border: 1px dashed var(--border-default);
-    border-radius: var(--radius-sm);
-    background-color: var(--color-surface-2);
-    margin-top: 0.5rem;
-  }
-
-  .upload__mini-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background-color: var(--color-surface-1);
-    border: 1px solid var(--border-default);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    position: relative;
-    min-height: 80px;
-  }
-
-  .upload__mini-card-icon-wrapper {
-    width: 64px;
-    height: 64px;
-    flex-shrink: 0;
-    background-color: var(--color-surface-2);
-    border-radius: 0.25rem;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .upload__mini-card-icon {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  .upload__mini-card-icon-fallback {
-    font-size: 2rem;
-    color: var(--color-text-tertiary);
-  }
-
-  .upload__mini-card-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  .upload__mini-card-title {
-    margin: 0;
-    font-size: 1.1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .upload__mini-card-meta {
-    display: flex;
-    gap: 0.5rem;
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
-    margin-top: 0.25rem;
-  }
-
-  .upload__mini-card-desc {
-    font-size: 0.85rem;
-    color: var(--color-text-tertiary);
-    margin-top: 0.25rem;
-  }
-
   /* Added for standardizing inline styles */
   .upload__tabs-container {
     margin-bottom: 2rem;
@@ -612,12 +179,6 @@
 
   .upload__hidden-file-input {
     display: none;
-  }
-
-  .upload__dnd-dependency-search-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
   }
 
   .upload__communities-section {
@@ -630,76 +191,8 @@
     font-weight: 600;
   }
 
-  .virtual-zip-editor__controls {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .virtual-zip-editor__hidden-input {
-    display: none;
-  }
-
-  .virtual-zip-editor__file-tree {
-    border: 1px solid var(--border-color, #444);
-    padding: 1rem;
-    border-radius: var(--radius-md);
-  }
-
-  .virtual-zip-editor__list {
-    list-style-type: none;
-    padding-left: 0;
-    margin: 0;
-  }
-
-  .virtual-zip-editor__list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
-
-  .virtual-zip-editor__list-item-content {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .virtual-zip-editor__icon {
-    --icon-color: var(--color-text-tertiary);
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-
-  .virtual-zip-editor__actions {
-    display: flex;
-    gap: 0.5rem;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
-  .virtual-zip-editor__list-item:hover .virtual-zip-editor__actions {
-    opacity: 1;
-  }
-
-  .virtual-zip-editor__action-btn {
-    background: transparent;
-    border: none;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0.25rem;
-  }
-
-  .virtual-zip-editor__action-btn:hover {
-    color: var(--color-text-primary);
-  }
-
-  .virtual-zip-editor__action-btn--danger:hover {
-    color: var(--color-danger-5);
-  }
-
   .upload__step-container {
+
     background-color: var(--color-surface-2);
     border: 1px solid var(--border-default);
     border-radius: var(--radius-lg);
@@ -708,6 +201,7 @@
     flex-direction: column;
     gap: 1.5rem;
     width: 100%;
+    min-width: 0;
     position: relative;
   }
 
@@ -718,67 +212,5 @@
     color: var(--color-text-tertiary);
     height: 2rem;
     width: 2rem;
-  }
-
-  .upload__intent-switchers {
-    display: flex;
-    gap: 2rem;
-    width: 100%;
-    margin-bottom: 1rem;
-    position: relative;
-  }
-
-  .upload__intent-button {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 2rem;
-    background-color: var(--color-surface-1);
-    border: 2px solid var(--border-default);
-    border-radius: var(--radius-lg);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: var(--color-text-primary);
-  }
-
-  .upload__intent-button:hover,
-  .upload__intent-button--active {
-    background-color: var(--color-surface-a4);
-    border-color: var(--color-accent-green-6);
-  }
-
-  .upload__intent-button h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-  }
-
-  .upload__intent-button p {
-    margin: 0;
-    color: var(--color-text-secondary);
-    text-align: center;
-  }
-
-  .upload__intent-converge {
-    position: absolute;
-    bottom: -2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: var(--color-text-tertiary);
-  }
-
-  .upload__manifest-fieldset {
-    border: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
   }
 }

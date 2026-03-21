@@ -46,6 +46,9 @@ export interface UseUploadActionsProps {
   versionNumber: string;
   packageDescription: string;
   dependencies: { name: string; namespace: string; version: string }[];
+  setDependencies: (
+    deps: { name: string; namespace: string; version: string }[]
+  ) => void;
   setHandle: (handle: IBaseUploadHandle | undefined) => void;
   setUsermedia: (usermedia: UserMedia) => void;
   setIsDone: (done: boolean) => void;
@@ -79,6 +82,7 @@ export function useUploadActions({
   versionNumber,
   packageDescription,
   dependencies,
+  setDependencies,
   setHandle,
   setUsermedia,
   setIsDone,
@@ -102,6 +106,20 @@ export function useUploadActions({
       if (manifest.version_number) setVersionNumber(manifest.version_number);
       if (manifest.name) setPackageName(manifest.name);
       if (manifest.description) setPackageDescription(manifest.description);
+      if (manifest.dependencies && Array.isArray(manifest.dependencies)) {
+        const parsedDependencies = manifest.dependencies.reduce((acc, dep) => {
+          if (typeof dep !== "string") return acc;
+          const parts = dep.split("-");
+          if (parts.length >= 3) {
+            const version = parts.pop()!;
+            const name = parts.pop()!;
+            const namespace = parts.join("-");
+            acc.push({ namespace, name, version });
+          }
+          return acc;
+        }, [] as { namespace: string; name: string; version: string }[]);
+        setDependencies(parsedDependencies);
+      }
       if (iconPreviewUrl) setIconPreviewUrl(iconPreviewUrl);
     } catch (error) {
       toast.addToast({

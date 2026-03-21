@@ -11,6 +11,7 @@ export interface ExtractedPackageContents {
     version_number?: string;
     name?: string;
     description?: string;
+    dependencies?: string[];
   };
   iconPreviewUrl: string | null;
   virtualFiles: VirtualFile[];
@@ -21,7 +22,14 @@ export async function extractPackageContents(
 ): Promise<ExtractedPackageContents> {
   const buffer = await zipFile.arrayBuffer();
   const zip = new JSZip();
-  await zip.loadAsync(buffer);
+  try {
+    await zip.loadAsync(buffer);
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("Can't find end of central directory")) {
+      throw new Error("The imported file is not a ZIP.");
+    }
+    throw error;
+  }
 
   let readme = "";
   let changelog = "";
@@ -55,6 +63,9 @@ export async function extractPackageContents(
       }
       if (manifestJson.description) {
         manifest.description = manifestJson.description;
+      }
+      if (Array.isArray(manifestJson.dependencies)) {
+        manifest.dependencies = manifestJson.dependencies;
       }
     } catch (e) {
       console.error("Failed to parse manifest.json", e);

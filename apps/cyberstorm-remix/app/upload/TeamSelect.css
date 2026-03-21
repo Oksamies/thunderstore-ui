@@ -1,0 +1,14 @@
+@layer nimbus-layout {
+  .team-select__no-teams {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .team-select__no-teams-text {
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+
+    font-size: var(--font-size-body-md);
+  }
+}

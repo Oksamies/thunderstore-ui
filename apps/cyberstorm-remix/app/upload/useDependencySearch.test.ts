@@ -13,7 +13,7 @@ describe("useDependencySearch", () => {
   const mockPackageListing: PackageListing = {
     namespace: "TestNamespace",
     name: "TestPackage",
-    icon_url: "https://example.com/icon.png",
+    icon_url: "http://localhost/icon.png",
     is_deprecated: false,
     is_pinned: false,
     last_updated: "2024-01-01T00:00:00Z",
@@ -154,5 +154,86 @@ describe("useDependencySearch", () => {
     });
 
     consoleErrorSpy.mockRestore();
+  });
+
+  it("should handle unmount during API call gracefully", async () => {
+    let mockResolve: any;
+    const promise = new Promise((resolve) => {
+      mockResolve = resolve;
+    });
+    
+    (mockDapper.getPackageListings as unknown as ReturnType<typeof vi.fn>).mockReturnValue(promise);
+
+    const { result, unmount } = renderHook(() => useDependencySearch(mockDapper));
+
+    act(() => {
+      result.current.setDependencySourceCommunity("test-community");
+    });
+    
+    // Unmount before promise resolves
+    unmount();
+    
+    // Resolve it after unmount
+    await act(async () => {
+      mockResolve({ results: [mockPackageListing] });
+    });
+    
+    expect(result.current.dependencySearchResults).toEqual([]);
+  });
+
+  it("should handle unmount during API error gracefully", async () => {
+    let mockReject: any;
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const promise = new Promise((_, reject) => {
+      mockReject = reject;
+    });
+    
+    (mockDapper.getPackageListings as unknown as ReturnType<typeof vi.fn>).mockReturnValue(promise);
+
+    const { result, unmount } = renderHook(() => useDependencySearch(mockDapper));
+
+    act(() => {
+      result.current.setDependencySourceCommunity("test-community");
+    });
+    
+    // Unmount before promise rejects
+    unmount();
+    
+    // Reject it after unmount
+    await act(async () => {
+      // Catch unhandled rejection just in case test runner complains
+      try {
+        mockReject(new Error("Network error"));
+      } catch {}
+    });
+    
+    expect(result.current.dependencySearchResults).toEqual([]);
+    consoleErrorSpy.mockRestore();
+  });
+
+  it("should handle unmount when there is no community selected", () => {
+    const { result, unmount } = renderHook(() => useDependencySearch(mockDapper));
+    unmount();
+    expect(result.current.dependencySearchResults).toEqual([]);
+  });
+
+  it("should allow setting selected dependency and isAddingDependency statuses", () => {
+    const { result } = renderHook(() => useDependencySearch(mockDapper));
+
+    act(() => {
+      result.current.setSelectedDependency({
+        value: "TestNamespace-TestPackage",
+        label: "TestPackage by TestNamespace",
+        pkg: mockPackageListing,
+      });
+      result.current.setIsAddingDependency(true);
+    });
+
+    expect(result.current.selectedDependency).toEqual({
+      value: "TestNamespace-TestPackage",
+      label: "TestPackage by TestNamespace",
+      pkg: mockPackageListing,
+    });
+    expect(result.current.isAddingDependency).toBe(true);
   });
 });

@@ -1,11 +1,12 @@
 /* eslint-disable prettier/prettier, linebreak-style */
 // @ts-expect-error - testing module might be missing
-import { renderHook, waitFor } from "@testing-library/react";
+import { renderHook, waitFor, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useTeamPackages } from "./useTeamPackages";
 import type { DapperTs } from "@thunderstore/dapper-ts";
 
-describe("useTeamPackages", () => {
+describe("useTeamPackages", () =>
+  // Lines omitted ... {
   let mockDapper: { getPackageListings: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
@@ -83,5 +84,101 @@ describe("useTeamPackages", () => {
     // State should still be in error fallback defaults (empty lists)
     expect(result.current.teamPackages).toEqual([]);
     expect(result.current.teamPackageListings).toEqual([]);
+  });
+
+  it("updates searchPackageName correctly", () => {
+    const { result } = renderHook(() =>
+      useTeamPackages(mockDapper as unknown as DapperTs, "team1", "community1")
+    );
+
+    act(() => {
+      result.current.setSearchPackageName("newSearch");
+    });
+    
+    expect(result.current.searchPackageName).toBe("newSearch");
+  });
+
+  it("refetches when authorName changes", async () => {
+    const mockResults1 = [{ name: "Mod1", namespace: "team1" }];
+    const mockResults2 = [{ name: "Mod2", namespace: "team2" }];
+
+    mockDapper.getPackageListings.mockResolvedValueOnce({ results: mockResults1 });
+
+    const { result, rerender } = renderHook(
+      ({ author }) => useTeamPackages(mockDapper as unknown as DapperTs, author, "community1"),
+      { initialProps: { author: "team1" } }
+    );
+
+    // Initial fetch should occur
+    await waitFor(() => {
+      expect(result.current.teamPackageListings).toEqual(mockResults1);
+    });
+    
+    expect(mockDapper.getPackageListings).toHaveBeenCalledWith(expect.objectContaining({ namespaceId: "team1" }));
+
+    mockDapper.getPackageListings.mockResolvedValueOnce({ results: mockResults2 });
+
+    rerender({ author: "team2" });
+
+    // Second fetch should occur with new author name
+    await waitFor(() => {
+      expect(result.current.teamPackageListings).toEqual(mockResults2);
+    });
+
+    expect(mockDapper.getPackageListings).toHaveBeenCalledWith(expect.objectContaining({ namespaceId: "team2" }));
+  });
+
+  it("handles unmount safely (active = false) on success", async () => {
+    const mockResults = [{ name: "Mod1", namespace: "team1" }];
+    let resolvePromise: (value: any) => void;
+    
+    // We create a promise we can resolve AFTER unmounting
+    mockDapper.getPackageListings.mockImplementation(() => {
+      return new Promise((resolve) => {
+        resolvePromise = resolve;
+      });
+    });
+
+    const { result, unmount } = renderHook(() =>
+      useTeamPackages(mockDapper as unknown as DapperTs, "team1", "community1")
+    );
+
+    // Unmount the component before promise resolves
+    unmount();
+    
+    // Now resolve the promise
+    await act(async () => {
+      resolvePromise!({ results: mockResults });
+    });
+
+    // Make sure states were NOT updated since 'active' became false
+    expect(result.current.teamPackageListings).toEqual([]);
+    expect(result.current.teamPackages).toEqual([]);
+  });
+
+  it("handles unmount safely (active = false) on error", async () => {
+    let rejectPromise: (reason: any) => void;
+    
+    mockDapper.getPackageListings.mockImplementation(() => {
+      return new Promise((_, reject) => {
+        rejectPromise = reject;
+      });
+    });
+
+    const { result, unmount } = renderHook(() =>
+      useTeamPackages(mockDapper as unknown as DapperTs, "team1", "community1")
+    );
+
+    unmount();
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    await act(async () => {
+      rejectPromise!(new Error("Async Error"));
+    });
+
+    expect(consoleSpy).toHaveBeenCalledWith("Failed to fetch team packages", expect.any(Error));
+    // States should remain empty, unaffected by trailing catch set states because active is false
+    expect(result.current.teamPackageListings).toEqual([]);
+    expect(result.current.teamPackages).toEqual([]);
   });
 });

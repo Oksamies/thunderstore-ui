@@ -1,6 +1,7 @@
 import { NewAlert, NewButton, NewSelectSearch } from "@thunderstore/cyberstorm";
 
 import { MiniPackageCard } from "./SubmissionResult";
+import "./UpdateSourceSelect.css";
 
 interface UpdateSourceSelectProps {
   intent: "new" | "update";
@@ -38,9 +39,9 @@ export function UpdateSourceSelect({
 
   return (
     <div className="upload__source-column">
-      <div className="upload__source-field-group">
-        <div className="upload__source-field">
-          <label htmlFor="sourceCommunity" className="upload__source-label">
+      <div className="update-source-select__source-field-group">
+        <div className="update-source-select__source-field">
+          <label htmlFor="sourceCommunity" className="update-source-select__source-label">
             Source Community
           </label>
           <NewSelectSearch
@@ -62,8 +63,8 @@ export function UpdateSourceSelect({
             }
           />
         </div>
-        <div className="upload__source-field">
-          <label htmlFor="searchPackageName" className="upload__source-label">
+        <div className="update-source-select__source-field">
+          <label htmlFor="searchPackageName" className="update-source-select__source-label">
             Select Package
           </label>
           <NewSelectSearch
@@ -86,12 +87,12 @@ export function UpdateSourceSelect({
             }
           />
         </div>
-        <div className="upload__source-fetch-button">
+        <div className="update-source-select__source-fetch-button">
           <NewButton
             onClick={fetchExistingPackage}
-            csVariant="primary"
+            csVariant="secondary"
             csSize="medium"
-            rootClasses="upload__source-fetch-button-inner"
+            rootClasses="update-source-select__source-fetch-button-inner"
           >
             Import
           </NewButton>
