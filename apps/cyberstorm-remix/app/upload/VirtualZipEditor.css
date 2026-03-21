@@ -1,0 +1,78 @@
+.virtual-zip-editor {
+  display: flex;
+  flex-direction: column;
+}
+
+.virtual-zip-editor__file-tree {
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 4px;
+}
+
+.virtual-zip-editor__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.virtual-zip-editor__list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid var(--border-color, #eee);
+  background-color: var(--bg-color, transparent);
+  cursor: grab;
+}
+
+.virtual-zip-editor__list-item:active {
+  cursor: grabbing;
+}
+
+.virtual-zip-editor__list-item:last-child {
+  border-bottom: none;
+  cursor: default;
+}
+
+.virtual-zip-editor__list-item-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.virtual-zip-editor__actions {
+  display: flex;
+  gap: 4px;
+  /* Make actions visible by default, but distinct */
+  opacity: 0.7;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.virtual-zip-editor__list-item:hover .virtual-zip-editor__actions {
+  opacity: 1;
+}
+
+.virtual-zip-editor__action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--text-color, inherit);
+  opacity: 0.8;
+}
+
+.virtual-zip-editor__action-btn:hover {
+  background-color: var(--hover-bg, rgba(0,0,0,0.1));
+  opacity: 1;
+}
+
+.virtual-zip-editor__action-btn--danger:hover {
+  background-color: var(--danger-bg, rgba(255,0,0,0.1));
+  color: red;
+}
+
+.virtual-zip-editor__action-btn--add:hover {
+  background-color: var(--success-bg, rgba(0,255,0,0.1));
+  color: green;
+}

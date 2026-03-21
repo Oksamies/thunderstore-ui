@@ -229,7 +229,19 @@ export function useStrongForm<
           }
         })
         .catch((error) => {
-          if (error instanceof RequestBodyParseError) {
+          console.log(
+            "CATCH error",
+            error,
+            "instanceof RequestQueryParamsParseError?",
+            error instanceof RequestQueryParamsParseError,
+            "instanceof RequestBodyParseError?",
+            error instanceof RequestBodyParseError
+          );
+          if (
+            error instanceof RequestBodyParseError ||
+            (error instanceof Error &&
+              error.constructor.name === "RequestBodyParseError")
+          ) {
             setSubmitError(
               new Error(
                 "Some of the field values are invalid"
@@ -238,7 +250,11 @@ export function useStrongForm<
             setInputErrors(error.error.formErrors as InputErrors);
             return;
           }
-          if (error instanceof RequestQueryParamsParseError) {
+          if (
+            error instanceof RequestQueryParamsParseError ||
+            (error instanceof Error &&
+              error.constructor.name === "RequestQueryParamsParseError")
+          ) {
             setSubmitError(
               new Error(
                 "Some of the query parameters are invalid"
@@ -247,7 +263,10 @@ export function useStrongForm<
             setInputErrors(error.error.formErrors as InputErrors);
             return;
           }
-          if (error instanceof ParseError) {
+          if (
+            error instanceof ParseError ||
+            (error instanceof Error && error.constructor.name === "ParseError")
+          ) {
             setSubmitError(
               new Error(
                 "Request succeeded, but the response was invalid"
