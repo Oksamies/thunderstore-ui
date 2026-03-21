@@ -26,6 +26,7 @@ export type SelectSearchProps =
       onChange: (v: SelectOption<string> | undefined) => void;
       disabled?: boolean;
       placeholder?: string;
+      onInputChange?: (value: string) => void;
       csVariant?: SelectSearchVariants;
       csSize?: SelectSearchSizes;
       csModifiers?: SelectSearchModifiers[];
@@ -38,6 +39,7 @@ export type SelectSearchProps =
       onChange: (v: SelectOption<string>[] | undefined) => void;
       disabled?: boolean;
       placeholder?: string;
+      onInputChange?: (value: string) => void;
       csVariant?: SelectSearchVariants;
       csSize?: SelectSearchSizes;
       csModifiers?: SelectSearchModifiers[];
@@ -86,6 +88,7 @@ export const SelectSearch = React.forwardRef<
     csModifiers,
     disabled = false,
     defaultOpen = false,
+    onInputChange,
   } = props;
 
   const inputRef = React.useRef<HTMLInputElement | null>(null);
@@ -219,7 +222,13 @@ export const SelectSearch = React.forwardRef<
               )}
               value={search}
               onFocus={() => !disabled && setIsVisible(true)}
-              onChange={(e) => !disabled && setSearch(e.currentTarget.value)}
+              onChange={(e) => {
+                if (disabled) return;
+                setSearch(e.currentTarget.value);
+                if (onInputChange) {
+                  onInputChange(e.currentTarget.value);
+                }
+              }}
               ref={inputRef}
               placeholder={selectedValue ? undefined : placeholder}
               disabled={disabled}

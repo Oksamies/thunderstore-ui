@@ -1,0 +1,68 @@
+.markdown-editor {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+  overflow: hidden;
+  width: 100%;
+}
+
+.markdown-editor__tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-default);
+  background: var(--color-surface-1);
+}
+
+.markdown-editor__tab {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.markdown-editor__tab:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+}
+
+.markdown-editor__tab--active {
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.markdown-editor__content {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  min-height: 200px;
+}
+
+.markdown-editor__textarea {
+  width: 100%;
+  height: 100%;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 1rem;
+  font-family: monospace;
+  resize: vertical;
+}
+
+.markdown-editor__textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.markdown-editor__preview {
+  padding: 1rem;
+  color: var(--color-text-primary);
+  overflow-y: auto;
+  flex: 1;
+}
