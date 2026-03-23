@@ -1,4 +1,3 @@
-// @ts-expect-error missing types
 import JSZip from "jszip";
 
 import type { VirtualFile } from "./VirtualZipEditor";

@@ -1,25 +1,29 @@
-import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { IBaseUploadHandle } from "@thunderstore/ts-uploader";
+import type { IBaseUploadHandle } from "@thunderstore/ts-uploader";
 
 import { UploadDropzone } from "./UploadDropzone";
 
-vi.mock("@thunderstore/cyberstorm", () => ({
-  NewButton: ({ children, onClick, ...props }: any) => (
-    <button data-testid="mock-new-button" onClick={onClick} {...props}>
-      {children}
-    </button>
-  ),
-  NewAlert: ({ children }: any) => (
-    <div data-testid="mock-new-alert">{children}</div>
-  ),
-  NewIcon: ({ children }: any) => (
-    <div data-testid="mock-new-icon">{children}</div>
-  ),
-  classnames: (...args: any[]) => args.filter(Boolean).join(" "),
-}));
+vi.mock("@thunderstore/cyberstorm", async (importActual) => {
+  const actual =
+    await importActual<typeof import("@thunderstore/cyberstorm")>();
+  return {
+    ...actual,
+    NewButton: ({ children, onClick, ...props }: any) => (
+      <button data-testid="mock-new-button" onClick={onClick} {...props}>
+        {children}
+      </button>
+    ),
+    NewAlert: ({ children }: any) => (
+      <div data-testid="mock-new-alert">{children}</div>
+    ),
+    NewIcon: ({ children }: any) => (
+      <div data-testid="mock-new-icon">{children}</div>
+    ),
+    classnames: (...args: any[]) => args.filter(Boolean).join(" "),
+  };
+});
 
 vi.mock("@thunderstore/react-dnd", () => ({
   DnDFileInput: ({ baseState, dragState, onChange, name }: any) => (
@@ -42,12 +46,16 @@ vi.mock("@thunderstore/react-dnd", () => ({
         data-testid="mock-dnd-trigger-empty"
         onClick={() => onChange({ length: 0 })}
       />
+      <button
+        data-testid="mock-dnd-trigger-null-item"
+        onClick={() => onChange({ length: 1, item: () => null })}
+      />
     </div>
   ),
 }));
 
 // Mock URL.createObjectURL
-global.URL.createObjectURL = vi.fn(() => "mock-url");
+globalThis.URL.createObjectURL = vi.fn(() => "mock-url");
 
 describe("UploadDropzone", () => {
   const defaultProps = {
@@ -96,7 +104,7 @@ describe("UploadDropzone", () => {
       <UploadDropzone
         {...defaultProps}
         file={file}
-        iconPreviewUrl="http://example.com/icon.png"
+        iconPreviewUrl="http://localhost/icon.png"
         packageName="TestPackage"
         authorName="TestAuthor"
         versionNumber="1.0.0"
@@ -107,11 +115,11 @@ describe("UploadDropzone", () => {
     expect(screen.getByText("TestPackage")).toBeInTheDocument();
     expect(screen.getByText("TestAuthor")).toBeInTheDocument();
     expect(screen.getByText("1.0.0")).toBeInTheDocument();
-    expect(screen.getByText("1.00 MB")).toBeInTheDocument(); // Output of formatBytes for 1048576
+    expect(screen.getByText("1 MiB")).toBeInTheDocument(); // Output of formatBytes for 1048576
     expect(screen.getByText("Test description")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "icon" })).toHaveAttribute(
       "src",
-      "http://example.com/icon.png"
+      "http://localhost/icon.png"
     );
   });
 
@@ -121,7 +129,7 @@ describe("UploadDropzone", () => {
 
     render(<UploadDropzone {...defaultProps} file={file} />);
 
-    expect(screen.getByText("empty.zip")).toBeInTheDocument();
+    expect(screen.getAllByText("empty.zip")[0]).toBeInTheDocument();
     expect(screen.getByText("Unknown Author")).toBeInTheDocument();
     expect(screen.getByText("Unknown Version")).toBeInTheDocument();
     expect(screen.getByText("0 Bytes")).toBeInTheDocument();
@@ -223,6 +231,9 @@ describe("UploadDropzone", () => {
 
     // Test empty
     fireEvent.click(screen.getByTestId("mock-dnd-trigger-empty"));
+
+    // Test null item
+    fireEvent.click(screen.getByTestId("mock-dnd-trigger-null-item"));
 
     await waitFor(() => {
       expect(defaultProps.setFile).not.toHaveBeenCalled();

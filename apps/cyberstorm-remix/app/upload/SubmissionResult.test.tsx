@@ -1,6 +1,6 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { PackageSubmissionResult } from "@thunderstore/dapper/types";
 
@@ -9,6 +9,8 @@ import {
   SubmissionResult,
   formatBytes,
 } from "./SubmissionResult";
+
+afterEach(cleanup);
 
 describe("formatBytes", () => {
   it("returns 0 Bytes for 0", () => {
@@ -74,7 +76,19 @@ describe("MiniPackageCard", () => {
     fireEvent.click(btn);
     expect(handleAction).toHaveBeenCalled();
   });
-});
+  it("renders default primary button when actionVariant is empty", () => {
+    render(
+      <MiniPackageCard
+        name="Test"
+        author="Test"
+        actionText="Default Action"
+        onAction={vi.fn()}
+      />
+    );
+    // Button is rendered and defaults to primary variant
+    const btn = screen.getByText("Default Action");
+    expect(btn.className).toContain("button--variant--primary");
+  });});
 
 describe("SubmissionResult", () => {
   const mockResult: PackageSubmissionResult = {

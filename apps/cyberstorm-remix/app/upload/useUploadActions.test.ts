@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
-// @ts-expect-error testing-library not strictly found
-import { act, renderHook } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useUploadActions, type UseUploadActionsProps } from "./useUploadActions";
@@ -21,15 +20,19 @@ const mockJSZipLoadAsync = vi.fn();
 const mockJSZipGenerateAsync = vi.fn();
 const mockJSZipFile = vi.fn();
 const mockJSZipFolder = vi.fn();
+const mockJSZipForEach = vi.fn();
 
 vi.mock("jszip", () => {
+  const JSZipMock = class {
+    loadAsync = mockJSZipLoadAsync;
+    file = mockJSZipFile;
+    folder = mockJSZipFolder;
+    generateAsync = mockJSZipGenerateAsync;
+    forEach = mockJSZipForEach;
+  };
   return {
-    default: vi.fn(() => ({
-      loadAsync: mockJSZipLoadAsync,
-      file: mockJSZipFile,
-      folder: mockJSZipFolder,
-      generateAsync: mockJSZipGenerateAsync,
-    })),
+    __esModule: true,
+    default: JSZipMock,
   };
 });
 
@@ -46,7 +49,7 @@ vi.mock("@thunderstore/ts-uploader", () => {
 
 // --- Mock globals --- //
 const mockCreateObjectURL = vi.fn(() => "blob:mock-url");
-global.URL.createObjectURL = mockCreateObjectURL;
+globalThis.URL.createObjectURL = mockCreateObjectURL;
 
 describe("useUploadActions", () => {
   const mockDapper = {
@@ -117,6 +120,10 @@ describe("useUploadActions", () => {
   describe("extractFilesFromZip", () => {
     it("should successfully extract files and update state hooks", async () => {
       mockJSZipLoadAsync.mockResolvedValueOnce(undefined);
+      mockJSZipForEach.mockImplementationOnce((callback: any) => {
+        // Mock some virtual files
+        callback("plugins/mod.dll", { dir: false, async: vi.fn().mockResolvedValue(new Blob()) });
+      });
       mockJSZipFile.mockImplementation((name: string) => {
         if (
           name === "README.md" ||
@@ -158,7 +165,9 @@ describe("useUploadActions", () => {
         await result.current.extractFilesFromZip(mockFile);
       });
 
-      expect(setOriginalZipBuffer).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(setOriginalZipBuffer).toHaveBeenCalled();
+      });
       expect(setVirtualFiles).toHaveBeenCalled();
       expect(mockJSZipLoadAsync).toHaveBeenCalled();
       expect(setReadmeContent).toHaveBeenCalledWith("# Readme");
@@ -175,6 +184,9 @@ describe("useUploadActions", () => {
         .spyOn(console, "error")
         .mockImplementation(() => {});
       mockJSZipLoadAsync.mockResolvedValueOnce(undefined);
+      mockJSZipForEach.mockImplementationOnce((callback: any) => {
+        // Iterate nothing
+      });
 
       mockJSZipFile.mockImplementation((name: string) => {
         if (name === "manifest.json" || name === "icon.png")
@@ -271,10 +283,10 @@ describe("useUploadActions", () => {
         { version_number: "1.0.0", download_url: "http://localhost:8000/mock.download.url" },
       ]);
 
-      global.fetch = vi.fn().mockResolvedValueOnce({
+      globalThis.fetch = vi.fn().mockResolvedValueOnce({
         ok: true,
         blob: () => Promise.resolve(new Blob(["mock-blob-content"])),
-      });
+      }) as unknown as typeof fetch;
 
       const { result } = renderHook(() => useUploadActions(defaultProps));
 
@@ -285,7 +297,7 @@ describe("useUploadActions", () => {
       expect(mockToast.addToast).toHaveBeenCalledWith(
         expect.objectContaining({ children: "Fetching package details..." })
       );
-      expect(global.fetch).toHaveBeenCalledWith("http://localhost:8000/mock.download.url");
+      expect(globalThis.fetch).toHaveBeenCalledWith("http://localhost:8000/mock.download.url");
       expect(setFile).toHaveBeenCalled();
       expect(mockToast.addToast).toHaveBeenCalledWith(
         expect.objectContaining({ csVariant: "success" })

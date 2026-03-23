@@ -1,23 +1,20 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-import { UpdateSourceSelect } from "../UpdateSourceSelect";
+import { UpdateSourceSelect } from "./UpdateSourceSelect";
 
 vi.mock("@thunderstore/cyberstorm", async () => {
   const actual = await vi.importActual("@thunderstore/cyberstorm");
   return {
     ...actual,
-    NewSelectSearch: ({
-      options,
-      onChange,
-      value,
-      placeholder,
-    }: any) => {
+    NewSelectSearch: ({ options, onChange, value, placeholder }: any) => {
       return (
         <select
           data-testid={`mock-select-${placeholder}`}
           onChange={(e) => {
-            const selected = options.find((o: any) => o.value === e.target.value);
+            const selected = options.find(
+              (o: any) => o.value === e.target.value
+            );
             if (e.target.value === "") {
               onChange(undefined);
             } else {
@@ -27,6 +24,10 @@ vi.mock("@thunderstore/cyberstorm", async () => {
           value={value?.value || ""}
         >
           <option value="">Choose...</option>
+          {value?.value &&
+            !options.find((o: any) => o.value === value.value) && (
+              <option value={value.value}>{value.label}</option>
+            )}
           {options.map((opt: any) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
@@ -38,7 +39,7 @@ vi.mock("@thunderstore/cyberstorm", async () => {
   };
 });
 
-vi.mock("../SubmissionResult", () => ({
+vi.mock("./SubmissionResult", () => ({
   MiniPackageCard: ({ name, author }: any) => (
     <div data-testid="mini-package-card">
       {name} by {author}
@@ -117,7 +118,7 @@ describe("UpdateSourceSelect", () => {
       <UpdateSourceSelect
         {...defaultProps}
         sourceCommunity="com-missing"
-        communityOptions={[]} 
+        communityOptions={[]}
       />
     );
     const select = screen.getByTestId("mock-select-Filter by community...");
@@ -160,12 +161,7 @@ describe("UpdateSourceSelect", () => {
   });
 
   it("renders MiniPackageCard when a remote package is selected", () => {
-    render(
-      <UpdateSourceSelect
-        {...defaultProps}
-        searchPackageName="pkg1"
-      />
-    );
+    render(<UpdateSourceSelect {...defaultProps} searchPackageName="pkg1" />);
 
     const miniCard = screen.getByTestId("mini-package-card");
     expect(miniCard).toBeInTheDocument();
@@ -174,10 +170,7 @@ describe("UpdateSourceSelect", () => {
 
   it("does not render MiniPackageCard when searchPackageName does not match", () => {
     render(
-      <UpdateSourceSelect
-        {...defaultProps}
-        searchPackageName="non-existent"
-      />
+      <UpdateSourceSelect {...defaultProps} searchPackageName="non-existent" />
     );
 
     expect(screen.queryByTestId("mini-package-card")).not.toBeInTheDocument();

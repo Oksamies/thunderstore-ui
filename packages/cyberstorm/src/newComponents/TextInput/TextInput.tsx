@@ -55,6 +55,9 @@ export const TextInput = memo(function TextInput(props: TextInputProps) {
     if (fProps.value && enterHook && e.key === "Enter") {
       enterHook(fProps.value);
     }
+    if (fProps.onKeyDown) {
+      fProps.onKeyDown(e);
+    }
   };
   // Use correct ref type for input or textarea
   const inputRef = ref as React.Ref<HTMLInputElement> | undefined;

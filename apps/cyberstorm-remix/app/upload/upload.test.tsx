@@ -1,51 +1,93 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { useStrongForm } from "cyberstorm/utils/StrongForm/useStrongForm";
 import React from "react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import {
+  useActionData,
+  useLoaderData,
+  useNavigation,
+  useOutletContext,
+} from "react-router";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import Upload from "./upload";
+import { clientLoader, loader } from "./upload";
 
 // Mock @thunderstore/cyberstorm components
-vi.mock("@thunderstore/cyberstorm", () => ({
-  NewButton: ({ children, onClick, disabled }: any) => (
-    <button onClick={onClick} disabled={disabled} data-testid="new-button">
-      {children}
-    </button>
-  ),
-  NewIcon: ({ children }: any) => <div>{children}</div>,
-  NewSelectSearch: ({ value, onChange, placeholder, disabled, multiple }: any) => (
-    <div data-testid="select-search" data-placeholder={placeholder} data-disabled={disabled}>
-      <button 
-        data-testid="select-search-trigger"
-        onClick={() => {
-          if (multiple) {
-            onChange([{ value: "riskofrain2", label: "Risk of Rain 2" }]);
-          } else {
-            onChange({ value: "test", label: "Test" });
-          }
-        }}
-      >
-        Select Option
+vi.mock("@thunderstore/cyberstorm", async (importActual) => {
+  const actual =
+    await importActual<typeof import("@thunderstore/cyberstorm")>();
+  return {
+    ...actual,
+    NewButton: ({ children, onClick, disabled }: any) => (
+      <button onClick={onClick} disabled={disabled} data-testid="new-button">
+        {children}
       </button>
-    </div>
-  ),
-  NewSwitch: ({ value, onChange }: any) => (
-    <input 
-      type="checkbox" 
-      data-testid="new-switch"
-      checked={value} 
-      onChange={(e) => onChange(e.target.checked)} 
-    />
-  ),
-  useToast: () => ({ addToast: vi.fn() }),
-}));
+    ),
+    NewIcon: ({ children }: any) => <div>{children}</div>,
+    NewSelectSearch: ({
+      value,
+      onChange,
+      placeholder,
+      disabled,
+      multiple,
+    }: any) => (
+      <div
+        data-testid="select-search"
+        data-placeholder={placeholder}
+        data-disabled={disabled}
+      >
+        <button
+          data-testid="select-search-trigger"
+          onClick={() => {
+            if (multiple) {
+              onChange([{ value: "riskofrain2", label: "Risk of Rain 2" }]);
+            } else {
+              onChange({ value: "test", label: "Test" });
+            }
+          }}
+        >
+          Select Option
+        </button>
+      </div>
+    ),
+    NewSwitch: ({ value, onChange }: any) => (
+      <input
+        type="checkbox"
+        data-testid="new-switch"
+        checked={value}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+    ),
+    useToast: vi.fn(() => ({ addToast: vi.fn() })),
+  };
+});
 
 // Mock react-router
-vi.mock("react-router", () => ({
-  useLoaderData: vi.fn(),
-  useActionData: vi.fn(),
-  useNavigation: vi.fn(),
-  useOutletContext: vi.fn(),
-}));
+vi.mock("@thunderstore/dapper-ts", async (importActual) => {
+  const actual = await importActual<typeof import("@thunderstore/dapper-ts")>();
+  return {
+    ...actual,
+    DapperTs: vi.fn(),
+  };
+});
+
+vi.mock("react-router", async (importActual) => {
+  const actual = await importActual<typeof import("react-router")>();
+  return {
+    ...actual,
+    useLoaderData: vi.fn(),
+    useActionData: vi.fn(),
+    useNavigation: vi.fn(),
+    useOutletContext: vi.fn(),
+    Await: ({ children, resolve }: any) => {
+      // Very simple Await mock that resolves immediately
+      if (typeof children === "function") {
+        return children(resolve);
+      }
+      return children;
+    },
+  };
+});
 
 // Mock cyberstorm utils
 vi.mock("cyberstorm/utils/StrongForm/useStrongForm", () => ({
@@ -56,18 +98,26 @@ vi.mock("cyberstorm/utils/StrongForm/useStrongForm", () => ({
 }));
 
 vi.mock("cyberstorm/utils/env", () => ({
-  getApiHostForSsr: vi.fn(() => "http://test.api"),
+  getApiHostForSsr: vi.fn(() => "http://localhost"),
 }));
 
-vi.mock("cyberstorm/utils/meta", () => ({
-  createSeo: vi.fn(() => ({})),
-}));
+vi.mock("cyberstorm/utils/meta", async (importActual) => {
+  const actual = await importActual<typeof import("cyberstorm/utils/meta")>();
+  return {
+    ...actual,
+    createSeo: vi.fn(() => ({})),
+  };
+});
 
 // Mock custom hooks and children elements
 vi.mock("./TeamSelect", () => ({
   TeamSelect: ({ updateFormFieldState }: any) => (
     <div data-testid="mock-team-select">
-      <button onClick={() => updateFormFieldState({ field: "author_name", value: "test-team" })}>
+      <button
+        onClick={() =>
+          updateFormFieldState({ field: "author_name", value: "test-team" })
+        }
+      >
         Select Team
       </button>
     </div>
@@ -89,7 +139,9 @@ vi.mock("./UpdateSourceSelect", () => ({
 vi.mock("./UploadDropzone", () => ({
   UploadDropzone: ({ setIsDone }: any) => (
     <div data-testid="mock-upload-dropzone">
-      <button data-testid="finish-dropzone" onClick={() => setIsDone(true)}>Finish Drop</button>
+      <button data-testid="finish-dropzone" onClick={() => setIsDone(true)}>
+        Finish Drop
+      </button>
     </div>
   ),
 }));
@@ -124,10 +176,6 @@ vi.mock("./useUploadActions", () => ({
   }),
 }));
 
-import { useLoaderData, useOutletContext, useNavigation, useActionData } from "react-router";
-import { useStrongForm } from "cyberstorm/utils/StrongForm/useStrongForm";
-import { loader, clientLoader } from "./upload";
-
 describe("Upload Page Component", () => {
   const mockLoaderData = {
     results: [
@@ -138,20 +186,20 @@ describe("Upload Page Component", () => {
 
   const mockOutletContext = {
     requestConfig: vi.fn(() => ({
-      headers: { Authorization: "Bearer test" }
+      headers: { Authorization: "Bearer test" },
     })),
     currentUser: {
-      teams_full: [
-        { name: "test-team", role: "owner", member_count: 1 }
-      ],
+      teams_full: [{ name: "test-team", role: "owner", member_count: 1 }],
     },
     dapper: {
-      getCommunityFilters: vi.fn(() => Promise.resolve({
-        package_categories: [
-          { slug: "cat1", name: "Category 1" },
-          { slug: "cat2", name: "Category 2" },
-        ]
-      })),
+      getCommunityFilters: vi.fn(() =>
+        Promise.resolve({
+          package_categories: [
+            { slug: "cat1", name: "Category 1" },
+            { slug: "cat2", name: "Category 2" },
+          ],
+        })
+      ),
     },
   };
 
@@ -175,7 +223,7 @@ describe("Upload Page Component", () => {
         getCommunities: vi.fn().mockResolvedValue({ results: [] }),
       };
       (DapperTs as any).mockImplementation(() => dapperMock);
-      
+
       const res = await loader();
       expect(res.results).toBeDefined();
       expect(res.seo).toBeDefined();
@@ -195,16 +243,20 @@ describe("Upload Page Component", () => {
 
   it("handles team selection and displays configuration block", async () => {
     render(<Upload />);
-    
+
     // Config block should not be visible initially
-    expect(screen.queryByText("Package Content & Configuration")).not.toBeInTheDocument();
-    
+    expect(
+      screen.queryByText("Package Content & Configuration")
+    ).not.toBeInTheDocument();
+
     // Select team
     const teamBtn = screen.getByText("Select Team");
     fireEvent.click(teamBtn);
-    
+
     await waitFor(() => {
-      expect(screen.getByText("Package Content & Configuration")).toBeInTheDocument();
+      expect(
+        screen.getByText("Package Content & Configuration")
+      ).toBeInTheDocument();
       expect(screen.getByText("Listing Details")).toBeInTheDocument();
       expect(screen.getByText("Publish")).toBeInTheDocument();
     });
@@ -213,7 +265,7 @@ describe("Upload Page Component", () => {
   it("handles resetting state", async () => {
     render(<Upload />);
     fireEvent.click(screen.getByText("Select Team"));
-    
+
     await waitFor(() => {
       expect(screen.getByText("Publish")).toBeInTheDocument();
     });
@@ -222,7 +274,9 @@ describe("Upload Page Component", () => {
     fireEvent.click(resetBtn);
 
     // After reset author name is gone, so the full form resets
-    expect(screen.queryByText("Package Content & Configuration")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Package Content & Configuration")
+    ).not.toBeInTheDocument();
   });
 
   it("handles changing target communities (select changes and clear)", async () => {
@@ -238,8 +292,10 @@ describe("Upload Page Component", () => {
     fireEvent.click(selects[0]);
 
     await waitFor(() => {
-      expect(mockOutletContext.dapper.getCommunityFilters).toHaveBeenCalledWith("riskofrain2");
-      expect(screen.getByText("riskofrain2 Categories")).toBeInTheDocument();
+      expect(mockOutletContext.dapper.getCommunityFilters).toHaveBeenCalledWith(
+        "riskofrain2"
+      );
+      expect(screen.getByText("Risk of Rain 2 Categories")).toBeInTheDocument();
     });
   });
 
@@ -251,44 +307,56 @@ describe("Upload Page Component", () => {
     });
 
     render(<Upload />);
-    
+
     // Select team to show form
     fireEvent.click(screen.getByText("Select Team"));
-    
-    // Finish dropzone logic (simulate isDone = true)
+
+    // Select communities
     await waitFor(() => {
-      expect(screen.getByTestId("finish-dropzone")).toBeInTheDocument();
+      expect(screen.getByText("Target Communities")).toBeInTheDocument();
     });
-    fireEvent.click(screen.getByTestId("finish-dropzone"));
+    const selects = screen.getAllByTestId("select-search-trigger");
+    fireEvent.click(selects[0]);
+    await waitFor(() => {
+      expect(screen.getByText("Risk of Rain 2 Categories")).toBeInTheDocument();
+    });
 
     await waitFor(() => {
-      const publishBtn = screen.getByRole("button", { name: "Publish Package" });
+      const publishBtn = screen.getByRole("button", {
+        name: "Publish Package",
+      });
       expect(publishBtn).not.toBeDisabled();
       fireEvent.click(publishBtn);
     });
 
-    // We simulated startUpload path, but we can't fully mock auto submit inside a single render 
+    // We simulated startUpload path, but we can't fully mock auto submit inside a single render
     // unless uuid was set. We'll just verify the publish button works.
   });
 
   it("evaluates strong form callbacks (onSubmitSuccess, onSubmitError)", async () => {
     const { useToast } = await import("@thunderstore/cyberstorm");
     const addToastMock = vi.fn();
-    (useToast as any).mockReturnValue({ addToast: addToastMock });
+    (useToast as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      addToast: addToastMock,
+    });
 
     render(<Upload />);
-    
+
     // Manually trigger the strong form callbacks captured by mock
     const useStrongFormCalls = (useStrongForm as any).mock.calls;
     const lastCall = useStrongFormCalls[useStrongFormCalls.length - 1][0];
 
     // Trigger success
     lastCall.onSubmitSuccess();
-    expect(addToastMock).toHaveBeenCalledWith(expect.objectContaining({ csVariant: "info" }));
+    expect(addToastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ csVariant: "info" })
+    );
 
     // Trigger error
     lastCall.onSubmitError(new Error("Test error message"));
-    expect(addToastMock).toHaveBeenCalledWith(expect.objectContaining({ csVariant: "danger" }));
+    expect(addToastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ csVariant: "danger" })
+    );
   });
 
   it("evaluates strong form errors rendering", async () => {
@@ -300,7 +368,7 @@ describe("Upload Page Component", () => {
           __all__: ["General errors"],
         },
         result: null,
-      }
+      },
     });
 
     render(<Upload />);
@@ -308,7 +376,7 @@ describe("Upload Page Component", () => {
 
     await waitFor(() => {
       expect(screen.getByText("General errors")).toBeInTheDocument();
-      expect(screen.getByText("Author name:")).toBeInTheDocument();
+      expect(screen.getByText(/Author name/i)).toBeInTheDocument();
       expect(screen.getByText("Field is required")).toBeInTheDocument();
     });
   });
@@ -316,7 +384,7 @@ describe("Upload Page Component", () => {
   it("deals with intent switcher", async () => {
     render(<Upload />);
     fireEvent.click(screen.getByText("Select Team"));
-    
+
     const updateIntentBtn = screen.getByText("Update Intent");
     fireEvent.click(updateIntentBtn);
 

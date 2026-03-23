@@ -1,7 +1,9 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { TeamSelect } from "./TeamSelect";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import { NewSelectSearch } from "@thunderstore/cyberstorm";
+
+import { TeamSelect } from "./TeamSelect";
 
 // Mock the components from cyberstorm UI library to avoid rendering complex interactable components
 vi.mock("@thunderstore/cyberstorm", () => {
@@ -30,7 +32,7 @@ vi.mock("@thunderstore/cyberstorm", () => {
 
 describe("TeamSelect", () => {
   const mockUpdateFormFieldState = vi.fn();
-  
+
   const mockAvailableTeams = [
     { name: "TeamAlpha", role: "Owner", member_count: 5 },
     { name: "TeamBeta", role: "Manager", member_count: 2 },
@@ -50,7 +52,9 @@ describe("TeamSelect", () => {
     );
 
     expect(screen.getByText("Team")).toBeInTheDocument();
-    expect(screen.getByTestId("mock-new-link")).toHaveTextContent("Create team");
+    expect(screen.getByTestId("mock-new-link")).toHaveTextContent(
+      "Create team"
+    );
     expect(screen.getByTestId("select-value")).toHaveTextContent("");
   });
 
@@ -62,7 +66,7 @@ describe("TeamSelect", () => {
         updateFormFieldState={mockUpdateFormFieldState}
       />
     );
-    
+
     // Check if the currently selected value is rendered by the mock
     expect(screen.getByTestId("select-value")).toHaveTextContent("TeamBeta");
 
@@ -76,7 +80,7 @@ describe("TeamSelect", () => {
           { value: "TeamBeta", label: "TeamBeta" },
         ],
       }),
-      {}
+      undefined
     );
   });
 

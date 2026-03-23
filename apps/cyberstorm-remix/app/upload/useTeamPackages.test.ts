@@ -1,12 +1,10 @@
 /* eslint-disable prettier/prettier, linebreak-style */
-// @ts-expect-error - testing module might be missing
 import { renderHook, waitFor, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useTeamPackages } from "./useTeamPackages";
 import type { DapperTs } from "@thunderstore/dapper-ts";
 
-describe("useTeamPackages", () =>
-  // Lines omitted ... {
+describe("useTeamPackages", () => {
   let mockDapper: { getPackageListings: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
@@ -102,10 +100,15 @@ describe("useTeamPackages", () =>
     const mockResults1 = [{ name: "Mod1", namespace: "team1" }];
     const mockResults2 = [{ name: "Mod2", namespace: "team2" }];
 
-    mockDapper.getPackageListings.mockResolvedValueOnce({ results: mockResults1 });
+    mockDapper.getPackageListings.mockImplementation((args: any) => {
+      if (args.namespaceId === "team1") {
+        return Promise.resolve({ results: mockResults1 });
+      }
+      return Promise.resolve({ results: mockResults2 });
+    });
 
     const { result, rerender } = renderHook(
-      ({ author }) => useTeamPackages(mockDapper as unknown as DapperTs, author, "community1"),
+      ({ author }: { author: string }) => useTeamPackages(mockDapper as unknown as DapperTs, author, "community1"),
       { initialProps: { author: "team1" } }
     );
 
@@ -116,9 +119,9 @@ describe("useTeamPackages", () =>
     
     expect(mockDapper.getPackageListings).toHaveBeenCalledWith(expect.objectContaining({ namespaceId: "team1" }));
 
-    mockDapper.getPackageListings.mockResolvedValueOnce({ results: mockResults2 });
-
-    rerender({ author: "team2" });
+    await act(async () => {
+      rerender({ author: "team2" });
+    });
 
     // Second fetch should occur with new author name
     await waitFor(() => {

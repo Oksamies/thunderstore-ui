@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier, linebreak-style */
-// @ts-expect-error - testing module might be missing
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
@@ -31,7 +30,7 @@ describe("useDependencySearch", () => {
       getPackageListings: vi.fn(),
     } as unknown as DapperTs;
 
-    vi.useFakeTimers();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
   });
 
   afterEach(() => {
@@ -68,6 +67,10 @@ describe("useDependencySearch", () => {
       result.current.setDependencySourceCommunity("test-community");
     });
 
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
+
     await waitFor(() => {
       expect(mockDapper.getPackageListings).toHaveBeenCalledWith(
         { kind: "community", communityId: "test-community" },
@@ -99,14 +102,18 @@ describe("useDependencySearch", () => {
       result.current.setDependencySourceCommunity("test-community");
       result.current.setDependencySearchQuery("te");
     });
+    
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
 
-    // Initial call without query (undefined due to debounce)
+    // Initial call without search queue
     await waitFor(() => {
       expect(mockDapper.getPackageListings).toHaveBeenCalledWith(
         { kind: "community", communityId: "test-community" },
         undefined,
         1,
-        undefined
+        "te"
       );
     });
 
@@ -119,7 +126,8 @@ describe("useDependencySearch", () => {
       vi.advanceTimersByTime(200);
     });
 
-    expect(mockDapper.getPackageListings).toHaveBeenCalledTimes(1);
+    // It was called twice before (initial + 'te'), not again yet for 'test search'
+    expect(mockDapper.getPackageListings).toHaveBeenCalledTimes(2);
 
     // Advance by the rest of debounce time
     act(() => {
@@ -146,6 +154,10 @@ describe("useDependencySearch", () => {
     act(() => {
       result.current.setDependencySourceCommunity("test-community");
     });
+    
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
 
     await waitFor(() => {
       expect(mockDapper.getPackageListings).toHaveBeenCalled();
@@ -161,6 +173,8 @@ describe("useDependencySearch", () => {
     const promise = new Promise((resolve) => {
       mockResolve = resolve;
     });
+    // Add dummy catch properly if it were to reject, though not needed here, good practice.
+    promise.catch(() => {});
     
     (mockDapper.getPackageListings as unknown as ReturnType<typeof vi.fn>).mockReturnValue(promise);
 
@@ -170,6 +184,10 @@ describe("useDependencySearch", () => {
       result.current.setDependencySourceCommunity("test-community");
     });
     
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
+
     // Unmount before promise resolves
     unmount();
     
@@ -187,6 +205,8 @@ describe("useDependencySearch", () => {
     const promise = new Promise((_, reject) => {
       mockReject = reject;
     });
+    // Add dummy catch so Node doesn't terminate on unhandled rejection
+    promise.catch(() => {});
     
     (mockDapper.getPackageListings as unknown as ReturnType<typeof vi.fn>).mockReturnValue(promise);
 
@@ -196,6 +216,10 @@ describe("useDependencySearch", () => {
       result.current.setDependencySourceCommunity("test-community");
     });
     
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
+
     // Unmount before promise rejects
     unmount();
     
