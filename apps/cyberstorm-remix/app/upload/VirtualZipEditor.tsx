@@ -268,7 +268,9 @@ export function VirtualZipEditor({
                         onKeyDown={(
                           e: React.KeyboardEvent<HTMLInputElement>
                         ) => {
+                          console.log("Key pressed:", e.key);
                           if (e.key === "Escape") {
+                            console.log("Escape recognized");
                             isRenamingCancelled.current = true;
                             cancelRename();
                           }

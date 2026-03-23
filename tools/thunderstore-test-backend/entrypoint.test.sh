@@ -84,7 +84,7 @@ mkdir -p \
   /usr/local/share/.cache/yarn
 
 # Install JS deps if missing
-if [ -z "$(ls -A /workspace/node_modules 2>/dev/null || true)" ] || [ ! -x /workspace/node_modules/.bin/vitest ]; then
+if true || [ -z "$(ls -A /workspace/node_modules 2>/dev/null || true)" ] || [ ! -x /workspace/node_modules/.bin/vitest ]; then
   echo "Installing dependencies..."
   if ! command -v yarn >/dev/null 2>&1; then
     echo "ERROR: yarn is required but was not found in PATH" >&2

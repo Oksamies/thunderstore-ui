@@ -30,7 +30,8 @@ describe("VirtualZipEditor", () => {
   beforeEach(() => {
     initialFiles = [
       { path: "test.txt", content: new File(["hello"], "test.txt") },
-      { path: "folder/", content: null },
+      { path: "folder/", content: null as any },
+      { path: "folder/subfolder/", content: null as any },
       { path: "folder/sub.txt", content: new File(["sub"], "sub.txt") },
     ];
     vi.clearAllMocks();
@@ -250,8 +251,9 @@ describe("VirtualZipEditor", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    const renameBtns = screen.getAllByRole("button", { name: "Rename" });
-    await user.click(renameBtns[2]); // rename test.txt
+    const fileEl = screen.getByText("test.txt").closest("li")!;
+    const renameBtn = fileEl.querySelector('button[title="Rename"]')!;
+    await user.click(renameBtn);
 
     const renameInput = screen.getByDisplayValue("test.txt");
     await user.clear(renameInput);
@@ -273,8 +275,9 @@ describe("VirtualZipEditor", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    const renameBtns = screen.getAllByRole("button", { name: "Rename" });
-    await user.click(renameBtns[0]); // rename folder/
+    const folderEl = screen.getByText("folder/").closest("li")!;
+    const renameBtn = folderEl.querySelector('button[title="Rename"]')!;
+    await user.click(renameBtn); // rename folder/
 
     const renameInput = screen.getByDisplayValue("folder/");
     await user.clear(renameInput);
@@ -301,19 +304,17 @@ describe("VirtualZipEditor", () => {
     // Test that the initial file exists before we even touch it
     expect(screen.getByText("test.txt")).toBeInTheDocument();
 
-    const renameBtns = screen.getAllByRole("button", { name: "Rename" });
-    await user.click(renameBtns[2]);
+    const fileEl = screen.getByText("test.txt").closest("li")!;
+    const renameBtn = fileEl.querySelector('button[title="Rename"]')!;
+    await user.click(renameBtn);
 
     const renameInput = screen.getByDisplayValue("test.txt");
     await user.clear(renameInput);
     await user.type(renameInput, "abc");
 
-    fireEvent.keyDown(renameInput, {
-      key: "Escape",
-      code: "Escape",
-      keyCode: 27,
-      charCode: 27,
-    });
+    // Make sure we focus and then press Escape
+    renameInput.focus();
+    await user.keyboard("{Escape}");
 
     // wait for the input to be removed, meaning escape successfully cancelled or committed it
     await waitFor(() => {
@@ -328,8 +329,9 @@ describe("VirtualZipEditor", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    const removeBtns = screen.getAllByRole("button", { name: "Remove" });
-    await user.click(removeBtns[2]); // remove test.txt
+    const fileEl = screen.getByText("test.txt").closest("li")!;
+    const removeBtn = fileEl.querySelector('button[title="Remove"]')!;
+    await user.click(removeBtn);
 
     const setterFn = setFilesMock.mock.calls[0][0];
     const newFiles = setterFn(initialFiles);
@@ -340,8 +342,9 @@ describe("VirtualZipEditor", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    const removeBtns = screen.getAllByRole("button", { name: "Remove" });
-    await user.click(removeBtns[0]); // remove folder/
+    const folderEl = screen.getByText("folder/").closest("li")!;
+    const removeBtn = folderEl.querySelector('button[title="Remove"]')!;
+    await user.click(removeBtn); // remove folder/
 
     const setterFn = setFilesMock.mock.calls[0][0];
     const newFiles = setterFn(initialFiles);
@@ -383,6 +386,19 @@ describe("VirtualZipEditor", () => {
 
     // Drop on self
     fireEvent.drop(folderEl);
+    expect(setFilesMock).not.toHaveBeenCalled();
+
+    // Open the folder
+    const folderLabel = screen.getByText("folder/");
+    fireEvent.click(folderLabel);
+
+    // Drag folder
+    fireEvent.dragStart(folderEl);
+
+    // Drop on subfolder path to trigger StartsWith condition
+    const subFolderEl = screen.getByText("subfolder/").closest("li")!;
+    fireEvent.drop(subFolderEl);
+
     expect(setFilesMock).not.toHaveBeenCalled();
 
     // Drag folder
