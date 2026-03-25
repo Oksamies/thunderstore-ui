@@ -241,34 +241,41 @@ describe("Upload Page Component", () => {
     expect(screen.getByText("Upload package")).toBeInTheDocument();
   });
 
-  it("handles team selection and displays configuration block", async () => {
+  it("handles team selection and navigation to step 2", async () => {
     render(<Upload />);
-
-    // Config block should not be visible initially
-    expect(
-      screen.queryByText("Package Content & Configuration")
-    ).not.toBeInTheDocument();
 
     // Select team
     const teamBtn = screen.getByText("Select Team");
     fireEvent.click(teamBtn);
 
+    const nextBtn = await screen.findByRole("button", { name: "Next" });
+    fireEvent.click(nextBtn);
+
     await waitFor(() => {
-      expect(
-        screen.getByText("Package Content & Configuration")
-      ).toBeInTheDocument();
       expect(screen.getByText("Listing Details")).toBeInTheDocument();
-      expect(screen.getByText("Publish")).toBeInTheDocument();
     });
   });
 
-  it("handles resetting state", async () => {
+  it("handles resetting state from step 4", async () => {
     render(<Upload />);
     fireEvent.click(screen.getByText("Select Team"));
 
-    await waitFor(() => {
-      expect(screen.getByText("Publish")).toBeInTheDocument();
-    });
+    // Step 2
+    fireEvent.click(await screen.findByRole("button", { name: "Next" }));
+    
+    // Select community
+    const selects = await screen.findAllByTestId("select-search-trigger");
+    fireEvent.click(selects[0]);
+
+    // Step 3
+    fireEvent.click(await screen.findByRole("button", { name: "Next" }));
+
+    // Mock file to enable review and publish
+    const fileInput = await screen.findByText("Set File");
+    fireEvent.click(fileInput);
+    
+    // Step 4
+    fireEvent.click(await screen.findByRole("button", { name: "Review & Publish" }));
 
     const resetBtn = screen.getByRole("button", { name: "Reset" });
     fireEvent.click(resetBtn);
