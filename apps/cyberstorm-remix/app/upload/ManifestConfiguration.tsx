@@ -12,6 +12,8 @@ import { useDependencySearch } from "./useDependencySearch";
 export interface ManifestConfigurationProps {
   versionNumber: string;
   setVersionNumber: (val: string) => void;
+  packageName: string;
+  setPackageName: (val: string) => void;
   packageDescription: string;
   setPackageDescription: (val: string) => void;
   dependencies: { name: string; namespace: string; version: string }[];
@@ -25,6 +27,8 @@ export interface ManifestConfigurationProps {
 export function ManifestConfiguration({
   versionNumber,
   setVersionNumber,
+  packageName,
+  setPackageName,
   packageDescription,
   setPackageDescription,
   dependencies,
@@ -62,6 +66,19 @@ export function ManifestConfiguration({
               value={versionNumber}
               onChange={(e) => setVersionNumber(e.target.value)}
               placeholder="e.g. 1.0.0"
+              className="upload__input"
+            />
+          </div>
+
+          <div className="upload__field">
+            <label htmlFor="packageName" className="upload__label">
+              Package Name
+            </label>
+            <NewTextInput
+              id="packageName"
+              value={packageName}
+              onChange={(e) => setPackageName(e.target.value)}
+              placeholder="e.g. MyAwesomeMod"
               className="upload__input"
             />
           </div>

@@ -163,7 +163,6 @@ export default function Upload() {
 
   const [usermedia, setUsermedia] = useState<UserMedia>();
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
-  const [currentStep, setCurrentStep] = useState<number>(1);
 
   // Intent: "new" or "update"
   const [intent, setIntent] = useState<"new" | "update">("new");
@@ -316,11 +315,6 @@ export default function Upload() {
       });
     }
 
-    if (currentStep < 4) {
-      setCurrentStep(4);
-      return;
-    }
-
     // If we've already uploaded the file for some reason, just submit.
     if (usermedia?.uuid && isDone) {
       strongForm.submit();
@@ -344,58 +338,144 @@ export default function Upload() {
         Upload package
       </PageHeader>
       <section className="container container--y container--full upload">
-        {currentStep === 1 && (
+        <TeamSelect
+          availableTeams={availableTeams}
+          authorName={formInputs.author_name}
+          updateFormFieldState={updateFormFieldState}
+        />
+        {formInputs.author_name && (
           <>
-            <TeamSelect
-              availableTeams={availableTeams}
-              authorName={formInputs.author_name}
-              updateFormFieldState={updateFormFieldState}
-            />
-            {formInputs.author_name && (
-              <>
-                <div className="container container--x container--full upload__row">
-                  <div className="upload__meta">
-                    <p className="upload__title">Intent</p>
-                    <p className="upload__description">
-                      Are you uploading a completely new package, or updating an existing one?
-                    </p>
-                  </div>
-                  <div className="upload__content">
-                    <IntentSwitcher
+            <div className="container container--x container--full upload__row">
+              <div className="upload__meta">
+                <p className="upload__title">Intent</p>
+                <p className="upload__description">
+                  Are you uploading a completely new package, or updating an
+                  existing one?
+                </p>
+              </div>
+              <div className="upload__content">
+                <IntentSwitcher
+                  intent={intent}
+                  setIntent={setIntent}
+                  onNewIntent={() => {
+                    setFile(null);
+                    setReadmeContent("");
+                    setChangelogContent("");
+                    setVersionNumber("");
+                    setPackageName("");
+                    setPackageDescription("");
+                    setSearchPackageName("");
+                    setSourceCommunity("");
+                    setIconPreviewUrl("");
+                    setNewIconFile(null);
+                    setOriginalZipBuffer(null);
+                    setVirtualFiles([]);
+                    setDependencies([]);
+                  }}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {formInputs.author_name && (
+          <>
+            <div className="container container--x container--full upload__row">
+              <div className="upload__meta">
+                <p className="upload__title">Package Content & Configuration</p>
+                <p className="upload__description">
+                  Upload a new package zip, fetch an existing one to update, or
+                  create a new package. Review and edit details like your
+                  version number, README.md, and CHANGELOG.md before uploading.
+                </p>
+              </div>
+              <div className="upload__content">
+                <div className="upload__step-container">
+                  <div className="upload__source-split">
+                    <UpdateSourceSelect
                       intent={intent}
-                      setIntent={setIntent}
-                      onNewIntent={() => {
-                        setFile(null);
-                        setReadmeContent("");
-                        setChangelogContent("");
-                        setVersionNumber("");
-                        setPackageName("");
-                        setPackageDescription("");
-                        setSearchPackageName("");
-                        setSourceCommunity("");
-                        setIconPreviewUrl("");
-                        setNewIconFile(null);
-                        setOriginalZipBuffer(null);
-                        setVirtualFiles([]);
-                        setDependencies([]);
-                      }}
+                      sourceCommunity={sourceCommunity}
+                      setSourceCommunity={setSourceCommunity}
+                      communityOptions={communityOptions}
+                      searchPackageName={searchPackageName}
+                      setSearchPackageName={setSearchPackageName}
+                      teamPackages={teamPackages}
+                      fetchExistingPackage={fetchExistingPackage}
+                      teamPackageListings={teamPackageListings}
+                    />
+
+                    <UploadDropzone
+                      file={file}
+                      setFile={setFile}
+                      iconPreviewUrl={iconPreviewUrl}
+                      packageName={packageName}
+                      authorName={formInputs.author_name}
+                      versionNumber={versionNumber}
+                      packageDescription={packageDescription}
+                      fileInputRef={fileInputRef}
+                      setReadmeContent={setReadmeContent}
+                      setChangelogContent={setChangelogContent}
+                      setVersionNumber={setVersionNumber}
+                      setPackageName={setPackageName}
+                      setPackageDescription={setPackageDescription}
+                      setIconPreviewUrl={setIconPreviewUrl}
+                      setNewIconFile={setNewIconFile}
+                      setOriginalZipBuffer={setOriginalZipBuffer}
+                      handle={handle}
+                      setHandle={setHandle}
+                      setUsermedia={setUsermedia}
+                      setIsDone={setIsDone}
+                      extractFilesFromZip={extractFilesFromZip}
                     />
                   </div>
                 </div>
-                <NewButton onClick={() => setCurrentStep(2)}>Next</NewButton>
-              </>
-            )}
+
+                <ManifestConfiguration
+                  versionNumber={versionNumber}
+                  setVersionNumber={setVersionNumber}
+                  packageName={packageName}
+                  setPackageName={setPackageName}
+                  packageDescription={packageDescription}
+                  setPackageDescription={setPackageDescription}
+                  dependencies={dependencies}
+                  setDependencies={setDependencies}
+                  communityOptions={communityOptions}
+                  dapper={dapper}
+                />
+
+                <div className="upload__step-container">
+                  <div className="upload__field">
+                    <span className="upload__label">
+                      <h2>Files</h2>
+                    </span>
+                    <VirtualZipEditor
+                      files={virtualFiles}
+                      setFiles={setVirtualFiles}
+                      onReadmeChange={setReadmeContent}
+                      onChangelogChange={setChangelogContent}
+                    />
+                  </div>
+                </div>
+
+                <MarkdownConfiguration
+                  readmeContent={readmeContent}
+                  setReadmeContent={setReadmeContent}
+                  changelogContent={changelogContent}
+                  setChangelogContent={setChangelogContent}
+                />
+              </div>
+            </div>
           </>
         )}
-        {formInputs.author_name && currentStep === 2 && (
+
+        {formInputs.author_name && (
           <>
             <div className="container container--x container--full upload__row">
               <div className="upload__meta">
                 <p className="upload__title">Listing Details</p>
                 <p className="upload__description">
-                  Select communities you want your package to be listed
-                  under, choose categories, and indicate if it contains NSFW
-                  material.
+                  Select communities you want your package to be listed under,
+                  choose categories, and indicate if it contains NSFW material.
                 </p>
               </div>
               <div className="upload__content">
@@ -522,109 +602,10 @@ export default function Upload() {
                 </div>
               </div>
             </div>
-            <div className="upload__divider" />
-            <div className="upload__buttons" style={{ marginTop: "1rem" }}>
-              <NewButton onClick={() => setCurrentStep(1)} csVariant="secondary">Back</NewButton>
-              <NewButton onClick={() => setCurrentStep(3)} disabled={formInputs.communities.length === 0}>Next</NewButton>
-            </div>
           </>
         )}
 
-        {formInputs.author_name && currentStep === 3 && (
-          <>
-            <div className="container container--x container--full upload__row">
-              <div className="upload__meta">
-                <p className="upload__title">Package Content & Configuration</p>
-                <p className="upload__description">
-                  Upload a new package zip, fetch an existing one to update, or
-                  create a new package. Review and edit details like your
-                  version number, README.md, and CHANGELOG.md before uploading.
-                </p>
-              </div>
-              <div className="upload__content">
-                <div className="upload__step-container">
-                  <div className="upload__source-split">
-                    <UpdateSourceSelect
-                      intent={intent}
-                      sourceCommunity={sourceCommunity}
-                      setSourceCommunity={setSourceCommunity}
-                      communityOptions={communityOptions}
-                      searchPackageName={searchPackageName}
-                      setSearchPackageName={setSearchPackageName}
-                      teamPackages={teamPackages}
-                      fetchExistingPackage={fetchExistingPackage}
-                      teamPackageListings={teamPackageListings}
-                    />
-
-                    <UploadDropzone
-                      file={file}
-                      setFile={setFile}
-                      iconPreviewUrl={iconPreviewUrl}
-                      packageName={packageName}
-                      authorName={formInputs.author_name}
-                      versionNumber={versionNumber}
-                      packageDescription={packageDescription}
-                      fileInputRef={fileInputRef}
-                      setReadmeContent={setReadmeContent}
-                      setChangelogContent={setChangelogContent}
-                      setVersionNumber={setVersionNumber}
-                      setPackageName={setPackageName}
-                      setPackageDescription={setPackageDescription}
-                      setIconPreviewUrl={setIconPreviewUrl}
-                      setNewIconFile={setNewIconFile}
-                      setOriginalZipBuffer={setOriginalZipBuffer}
-                      handle={handle}
-                      setHandle={setHandle}
-                      setUsermedia={setUsermedia}
-                      setIsDone={setIsDone}
-                      extractFilesFromZip={extractFilesFromZip}
-                    />
-                  </div>
-                </div>
-
-                <ManifestConfiguration
-                  versionNumber={versionNumber}
-                  setVersionNumber={setVersionNumber}
-                  packageDescription={packageDescription}
-                  setPackageDescription={setPackageDescription}
-                  dependencies={dependencies}
-                  setDependencies={setDependencies}
-                  communityOptions={communityOptions}
-                  dapper={dapper}
-                />
-
-                <div className="upload__step-container">
-                  <div className="upload__field">
-                    <span className="upload__label">
-                      <h2>Files</h2>
-                    </span>
-                    <VirtualZipEditor
-                      files={virtualFiles}
-                      setFiles={setVirtualFiles}
-                      onReadmeChange={setReadmeContent}
-                      onChangelogChange={setChangelogContent}
-                    />
-                  </div>
-                </div>
-
-                <MarkdownConfiguration
-                  readmeContent={readmeContent}
-                  setReadmeContent={setReadmeContent}
-                  changelogContent={changelogContent}
-                  setChangelogContent={setChangelogContent}
-                />
-              </div>
-            </div>
-            <div className="upload__divider" />
-            
-            <div className="upload__buttons" style={{ marginTop: "1rem" }}>
-              <NewButton onClick={() => setCurrentStep(2)} csVariant="secondary">Back</NewButton>
-              <NewButton onClick={() => setCurrentStep(4)} disabled={!file && intent === "new"}>Review & Publish</NewButton>
-            </div>
-          </>
-        )}
-
-        {formInputs.author_name && currentStep === 4 && (
+        {formInputs.author_name && (
           <>
             <div className="container container--x container--full upload__row">
               <div className="upload__meta">
@@ -635,34 +616,38 @@ export default function Upload() {
               </div>
               <div className="upload__content">
                 <div className="upload__field--margin">
-                  <strong>Action:</strong> {intent === "new" ? "Creating New Package" : "Updating Existing Package"}
+                  <strong>Action:</strong>{" "}
+                  {intent === "new"
+                    ? "Creating New Package"
+                    : "Updating Existing Package"}
                 </div>
                 <div className="upload__field--margin">
                   <strong>Target Team:</strong> {formInputs.author_name}
                 </div>
                 <div className="upload__field--margin">
-                  <strong>Package Name:</strong> {packageName || "(Extracted from manifest)"}
+                  <strong>Package Name:</strong>{" "}
+                  {packageName || "(Extracted from manifest)"}
                 </div>
                 <div className="upload__field--margin">
                   <strong>Version:</strong> {versionNumber}
                 </div>
                 <div className="upload__field--margin">
-                  <strong>Target Communities:</strong> {formInputs.communities.length > 0 ? formInputs.communities.join(", ") : "None Selected"}
+                  <strong>Target Communities:</strong>{" "}
+                  {formInputs.communities.length > 0
+                    ? formInputs.communities.join(", ")
+                    : "None Selected"}
                 </div>
 
                 <div className="upload__divider" />
-                
+
                 <div className="upload__buttons">
                   <NewButton
-                    onClick={() => setCurrentStep(3)}
-                    csVariant="secondary"
-                    csSize="big"
-                    disabled={isDone || !!handle}
-                  >
-                    Back to Edit
-                  </NewButton>
-                  <NewButton
-                    disabled={formInputs.communities.length === 0 || !!handle || isDone}
+                    disabled={
+                      formInputs.communities.length === 0 ||
+                      !!handle ||
+                      isDone ||
+                      (!file && intent === "new")
+                    }
                     onClick={handlePublishPackage}
                     csVariant="primary"
                     csSize="big"
