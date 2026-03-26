@@ -1,6 +1,10 @@
-import { faFileZip, faTreasureChest } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faFileZip,
+  faImage,
+  faTreasureChest,
+} from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { MutableRefObject } from "react";
+import { type MutableRefObject, useRef } from "react";
 
 import {
   NewAlert,
@@ -26,6 +30,7 @@ interface UploadDropzoneProps {
   setReadmeContent: (content: string) => void;
   setChangelogContent: (content: string) => void;
   setVersionNumber: (version: string) => void;
+  setWebsiteUrl: (url: string) => void;
   setPackageName: (name: string) => void;
   setPackageDescription: (desc: string) => void;
   setIconPreviewUrl: (url: string) => void;
@@ -50,6 +55,7 @@ export function UploadDropzone({
   setReadmeContent,
   setChangelogContent,
   setVersionNumber,
+  setWebsiteUrl,
   setPackageName,
   setPackageDescription,
   setIconPreviewUrl,
@@ -61,6 +67,8 @@ export function UploadDropzone({
   setIsDone,
   extractFilesFromZip,
 }: UploadDropzoneProps) {
+  const iconInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="upload__source-column">
       <NewAlert csVariant="info">
@@ -129,6 +137,7 @@ export function UploadDropzone({
                     setReadmeContent("");
                     setChangelogContent("");
                     setVersionNumber("");
+                    setWebsiteUrl("");
                     setPackageName("");
                     setPackageDescription("");
                     setIconPreviewUrl("");
@@ -204,6 +213,52 @@ export function UploadDropzone({
         readonly={!!handle}
         fileInputRef={fileInputRef}
       />
+      {!file && (
+        <div
+          style={{
+            marginTop: "1rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+          }}
+        >
+          <input
+            ref={iconInputRef}
+            type="file"
+            accept="image/png"
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const selectedFile = e.target.files?.[0];
+              if (selectedFile) {
+                setNewIconFile(selectedFile);
+                setIconPreviewUrl(URL.createObjectURL(selectedFile));
+              }
+            }}
+          />
+          <NewButton
+            csVariant="primary"
+            onClick={(e) => {
+              e.preventDefault();
+              iconInputRef.current?.click();
+            }}
+          >
+            <FontAwesomeIcon icon={faImage} style={{ marginRight: "0.5rem" }} />
+            {iconPreviewUrl ? "Change Icon" : "Upload Icon"}
+          </NewButton>
+          {iconPreviewUrl && (
+            <img
+              src={iconPreviewUrl}
+              alt="Uploaded icon"
+              style={{
+                width: "48px",
+                height: "48px",
+                borderRadius: "8px",
+                objectFit: "cover",
+              }}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }

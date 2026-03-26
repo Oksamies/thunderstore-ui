@@ -2,7 +2,10 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useUploadActions, type UseUploadActionsProps } from "./useUploadActions";
+import {
+  type UseUploadActionsProps,
+  useUploadActions,
+} from "./useUploadActions";
 
 // --- Mock JSZip --- //
 const mockFileAsyncText = vi.fn();
@@ -66,6 +69,7 @@ describe("useUploadActions", () => {
   const setVirtualFiles = vi.fn();
   const setVersionNumber = vi.fn();
   const setPackageName = vi.fn();
+  const setWebsiteUrl = vi.fn();
   const setPackageDescription = vi.fn();
   const setIconPreviewUrl = vi.fn();
   const setReadmeContent = vi.fn();
@@ -87,6 +91,7 @@ describe("useUploadActions", () => {
     setVirtualFiles,
     setVersionNumber,
     setPackageName,
+    setWebsiteUrl,
     setPackageDescription,
     setIconPreviewUrl,
     setReadmeContent,
@@ -102,6 +107,7 @@ describe("useUploadActions", () => {
     changelogContent: "",
     newIconFile: null,
     packageName: "",
+    websiteUrl: "",
     versionNumber: "",
     packageDescription: "",
     dependencies: [],
@@ -122,7 +128,10 @@ describe("useUploadActions", () => {
       mockJSZipLoadAsync.mockResolvedValueOnce(undefined);
       mockJSZipForEach.mockImplementationOnce((callback: any) => {
         // Mock some virtual files
-        callback("plugins/mod.dll", { dir: false, async: vi.fn().mockResolvedValue(new Blob()) });
+        callback("plugins/mod.dll", {
+          dir: false,
+          async: vi.fn().mockResolvedValue(new Blob()),
+        });
       });
       mockJSZipFile.mockImplementation((name: string) => {
         if (
@@ -175,7 +184,9 @@ describe("useUploadActions", () => {
       expect(setPackageName).toHaveBeenCalledWith("TestPack");
       expect(setVersionNumber).toHaveBeenCalledWith("2.0.0");
       expect(setPackageDescription).toHaveBeenCalledWith("Test Desc");
-      expect(setDependencies).toHaveBeenCalledWith([{ namespace: "Devs", name: "Dep1", version: "1.0.0" }]);
+      expect(setDependencies).toHaveBeenCalledWith([
+        { namespace: "Devs", name: "Dep1", version: "1.0.0" },
+      ]);
       expect(setIconPreviewUrl).toHaveBeenCalledWith("blob:mock-url");
     });
 
@@ -247,7 +258,9 @@ describe("useUploadActions", () => {
   describe("fetchExistingPackage", () => {
     it("should show warning toast if author name or package name are missing", async () => {
       const props = { ...defaultProps, formInputs: {}, searchPackageName: "" };
-      const { result } = renderHook(() => useUploadActions(props as unknown as UseUploadActionsProps));
+      const { result } = renderHook(() =>
+        useUploadActions(props as unknown as UseUploadActionsProps)
+      );
 
       await act(async () => {
         await result.current.fetchExistingPackage();
@@ -280,7 +293,10 @@ describe("useUploadActions", () => {
 
     it("should fetch versions, download blob, and start extraction", async () => {
       mockDapper.getPackageVersions.mockResolvedValueOnce([
-        { version_number: "1.0.0", download_url: "http://localhost:8000/mock.download.url" },
+        {
+          version_number: "1.0.0",
+          download_url: "http://localhost:8000/mock.download.url",
+        },
       ]);
 
       globalThis.fetch = vi.fn().mockResolvedValueOnce({
@@ -297,7 +313,9 @@ describe("useUploadActions", () => {
       expect(mockToast.addToast).toHaveBeenCalledWith(
         expect.objectContaining({ children: "Fetching package details..." })
       );
-      expect(globalThis.fetch).toHaveBeenCalledWith("http://localhost:8000/mock.download.url");
+      expect(globalThis.fetch).toHaveBeenCalledWith(
+        "http://localhost:8000/mock.download.url"
+      );
       expect(setFile).toHaveBeenCalled();
       expect(mockToast.addToast).toHaveBeenCalledWith(
         expect.objectContaining({ csVariant: "success" })
@@ -334,7 +352,9 @@ describe("useUploadActions", () => {
       mockJSZipGenerateAsync.mockResolvedValueOnce(new Blob(["compiled"]));
       mockUploadStart.mockResolvedValueOnce(undefined);
 
-      const { result } = renderHook(() => useUploadActions(props as unknown as UseUploadActionsProps));
+      const { result } = renderHook(() =>
+        useUploadActions(props as unknown as UseUploadActionsProps)
+      );
 
       await act(async () => {
         await result.current.startUpload();
@@ -357,7 +377,9 @@ describe("useUploadActions", () => {
       };
       mockJSZipGenerateAsync.mockResolvedValueOnce(new Blob(["compiled"]));
 
-      const { result } = renderHook(() => useUploadActions(props as unknown as UseUploadActionsProps));
+      const { result } = renderHook(() =>
+        useUploadActions(props as unknown as UseUploadActionsProps)
+      );
 
       await act(async () => {
         await result.current.startUpload();
@@ -383,7 +405,9 @@ describe("useUploadActions", () => {
         new Error("Multipart processing error")
       );
 
-      const { result } = renderHook(() => useUploadActions(props as unknown as UseUploadActionsProps));
+      const { result } = renderHook(() =>
+        useUploadActions(props as unknown as UseUploadActionsProps)
+      );
 
       await act(async () => {
         await result.current.startUpload();

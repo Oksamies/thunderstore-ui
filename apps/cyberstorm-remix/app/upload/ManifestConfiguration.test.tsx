@@ -22,6 +22,8 @@ vi.mock("./useDependencySearch", () => ({
 describe("ManifestConfiguration", () => {
   afterEach(cleanup);
   const mockSetVersionNumber = vi.fn();
+  const mockSetWebsiteUrl = vi.fn();
+  const mockSetPackageName = vi.fn();
   const mockSetPackageDescription = vi.fn();
   const mockSetDependencies = vi.fn();
   const mockAddToast = vi.fn();
@@ -33,6 +35,10 @@ describe("ManifestConfiguration", () => {
   const defaultProps = {
     versionNumber: "1.0.0",
     setVersionNumber: mockSetVersionNumber,
+    websiteUrl: "https://example.com",
+    setWebsiteUrl: mockSetWebsiteUrl,
+    packageName: "TestMod",
+    setPackageName: mockSetPackageName,
     packageDescription: "A great package",
     setPackageDescription: mockSetPackageDescription,
     dependencies: [],

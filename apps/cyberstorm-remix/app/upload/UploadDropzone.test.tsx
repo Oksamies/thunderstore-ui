@@ -70,6 +70,7 @@ describe("UploadDropzone", () => {
     setReadmeContent: vi.fn(),
     setChangelogContent: vi.fn(),
     setVersionNumber: vi.fn(),
+    setWebsiteUrl: vi.fn(),
     setPackageName: vi.fn(),
     setPackageDescription: vi.fn(),
     setIconPreviewUrl: vi.fn(),
@@ -162,6 +163,7 @@ describe("UploadDropzone", () => {
     expect(defaultProps.setReadmeContent).toHaveBeenCalledWith("");
     expect(defaultProps.setChangelogContent).toHaveBeenCalledWith("");
     expect(defaultProps.setVersionNumber).toHaveBeenCalledWith("");
+    expect(defaultProps.setWebsiteUrl).toHaveBeenCalledWith("");
     expect(defaultProps.setPackageName).toHaveBeenCalledWith("");
     expect(defaultProps.setPackageDescription).toHaveBeenCalledWith("");
     expect(defaultProps.setIconPreviewUrl).toHaveBeenCalledWith("");

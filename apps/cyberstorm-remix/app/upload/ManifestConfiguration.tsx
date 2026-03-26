@@ -12,6 +12,8 @@ import { useDependencySearch } from "./useDependencySearch";
 export interface ManifestConfigurationProps {
   versionNumber: string;
   setVersionNumber: (val: string) => void;
+  websiteUrl: string;
+  setWebsiteUrl: (val: string) => void;
   packageName: string;
   setPackageName: (val: string) => void;
   packageDescription: string;
@@ -27,6 +29,8 @@ export interface ManifestConfigurationProps {
 export function ManifestConfiguration({
   versionNumber,
   setVersionNumber,
+  websiteUrl,
+  setWebsiteUrl,
   packageName,
   setPackageName,
   packageDescription,
@@ -79,6 +83,19 @@ export function ManifestConfiguration({
               value={packageName}
               onChange={(e) => setPackageName(e.target.value)}
               placeholder="e.g. MyAwesomeMod"
+              className="upload__input"
+            />
+          </div>
+
+          <div className="upload__field">
+            <label htmlFor="websiteUrl" className="upload__label">
+              Website URL
+            </label>
+            <NewTextInput
+              id="websiteUrl"
+              value={websiteUrl}
+              onChange={(e) => setWebsiteUrl(e.target.value)}
+              placeholder="e.g. https://github.com/my-name/my-mod"
               className="upload__input"
             />
           </div>

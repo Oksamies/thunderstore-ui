@@ -8,6 +8,7 @@ export interface ExtractedPackageContents {
   changelog: string;
   manifest: {
     version_number?: string;
+    website_url?: string;
     name?: string;
     description?: string;
     dependencies?: string[];
@@ -24,7 +25,10 @@ export async function extractPackageContents(
   try {
     await zip.loadAsync(buffer);
   } catch (error) {
-    if (error instanceof Error && error.message.includes("Can't find end of central directory")) {
+    if (
+      error instanceof Error &&
+      error.message.includes("Can't find end of central directory")
+    ) {
       throw new Error("The imported file is not a ZIP.");
     }
     throw error;
@@ -56,6 +60,9 @@ export async function extractPackageContents(
       const manifestJson = JSON.parse(manifestRaw);
       if (manifestJson.version_number) {
         manifest.version_number = manifestJson.version_number;
+      }
+      if (manifestJson.website_url) {
+        manifest.website_url = manifestJson.website_url;
       }
       if (manifestJson.name) {
         manifest.name = manifestJson.name;
@@ -122,6 +129,7 @@ export interface CreatePackageParams {
   virtualFiles: VirtualFile[];
   readmeContent: string;
   changelogContent: string;
+  websiteUrl: string;
   newIconFile: File | null;
   packageName: string;
   versionNumber: string;
@@ -139,6 +147,7 @@ export async function createNewPackageZip(
     changelogContent,
     newIconFile,
     packageName,
+    websiteUrl,
     versionNumber,
     packageDescription,
     dependencies,
@@ -164,6 +173,7 @@ export async function createNewPackageZip(
   const manifestObj: Record<string, unknown> = {};
   manifestObj["name"] = packageName || authorName || "NewPackage";
   manifestObj["version_number"] = versionNumber || "1.0.0";
+  manifestObj["website_url"] = websiteUrl || "";
   manifestObj["description"] = packageDescription || "";
 
   const depStrings = dependencies.map(
@@ -192,6 +202,7 @@ export interface RepackageParams {
   newIconFile: File | null;
   packageName: string;
   versionNumber: string;
+  websiteUrl: string;
   packageDescription: string;
   dependencies: { name: string; namespace: string; version: string }[];
   authorName: string;
@@ -208,6 +219,7 @@ export async function repackageExistingZip(
     changelogContent,
     newIconFile,
     packageName,
+    websiteUrl,
     versionNumber,
     packageDescription,
     dependencies,
@@ -236,6 +248,9 @@ export async function repackageExistingZip(
       const manifestJson = JSON.parse(manifestRaw);
       if (versionNumber) {
         manifestJson.version_number = versionNumber;
+      }
+      if (websiteUrl) {
+        manifestJson.website_url = websiteUrl;
       }
       if (packageName) {
         manifestJson.name = packageName;

@@ -1,5 +1,3 @@
-import { faArrowDown } from "@fortawesome/pro-light-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useStrongForm } from "cyberstorm/utils/StrongForm/useStrongForm";
 import { getApiHostForSsr } from "cyberstorm/utils/env";
 import { createSeo } from "cyberstorm/utils/meta";
@@ -8,7 +6,6 @@ import { useLoaderData, useOutletContext } from "react-router";
 
 import {
   NewButton,
-  NewIcon,
   NewSelectSearch,
   NewSwitch,
   useToast,
@@ -153,6 +150,7 @@ export default function Upload() {
   const [readmeContent, setReadmeContent] = useState<string>("");
   const [changelogContent, setChangelogContent] = useState<string>("");
   const [versionNumber, setVersionNumber] = useState<string>("");
+  const [websiteUrl, setWebsiteUrl] = useState<string>("");
   const [packageName, setPackageName] = useState<string>("");
   const [packageDescription, setPackageDescription] = useState<string>("");
   const [sourceCommunity, setSourceCommunity] = useState<string>("");
@@ -191,6 +189,7 @@ export default function Upload() {
     setOriginalZipBuffer,
     setVirtualFiles,
     setVersionNumber,
+    setWebsiteUrl,
     setPackageName,
     setPackageDescription,
     setIconPreviewUrl,
@@ -207,6 +206,7 @@ export default function Upload() {
     changelogContent,
     newIconFile,
     packageName,
+    websiteUrl,
     versionNumber,
     packageDescription,
     dependencies,
@@ -305,7 +305,7 @@ export default function Upload() {
     // Cross-team duplicate check warning logic (I-003)
     const activeTeam = formInputs.author_name;
     const isDuplicateOtherTeam = teamPackageListings.some(
-      (pkg) => pkg.namespace !== activeTeam && pkg.package_name === packageName
+      (pkg) => pkg.namespace !== activeTeam && pkg.name === packageName
     );
     if (isDuplicateOtherTeam && intent === "new") {
       toast.addToast({
@@ -361,6 +361,7 @@ export default function Upload() {
                     setFile(null);
                     setReadmeContent("");
                     setChangelogContent("");
+                    setWebsiteUrl("");
                     setVersionNumber("");
                     setPackageName("");
                     setPackageDescription("");
@@ -416,6 +417,7 @@ export default function Upload() {
                       setReadmeContent={setReadmeContent}
                       setChangelogContent={setChangelogContent}
                       setVersionNumber={setVersionNumber}
+                      setWebsiteUrl={setWebsiteUrl}
                       setPackageName={setPackageName}
                       setPackageDescription={setPackageDescription}
                       setIconPreviewUrl={setIconPreviewUrl}
@@ -433,6 +435,8 @@ export default function Upload() {
                 <ManifestConfiguration
                   versionNumber={versionNumber}
                   setVersionNumber={setVersionNumber}
+                  websiteUrl={websiteUrl}
+                  setWebsiteUrl={setWebsiteUrl}
                   packageName={packageName}
                   setPackageName={setPackageName}
                   packageDescription={packageDescription}
@@ -646,7 +650,8 @@ export default function Upload() {
                       formInputs.communities.length === 0 ||
                       !!handle ||
                       isDone ||
-                      (!file && intent === "new")
+                      (!file &&
+                        (!packageName || !versionNumber || !packageDescription))
                     }
                     onClick={handlePublishPackage}
                     csVariant="primary"

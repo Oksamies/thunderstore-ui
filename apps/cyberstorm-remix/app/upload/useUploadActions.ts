@@ -28,6 +28,7 @@ export interface UseUploadActionsProps {
   setVirtualFiles: (virtualFiles: VirtualFile[]) => void;
   setVersionNumber: (version: string) => void;
   setPackageName: (name: string) => void;
+  setWebsiteUrl: (url: string) => void;
   setPackageDescription: (desc: string) => void;
   setIconPreviewUrl: (url: string) => void;
   setReadmeContent: (content: string) => void;
@@ -44,6 +45,7 @@ export interface UseUploadActionsProps {
   newIconFile: File | null;
   packageName: string;
   versionNumber: string;
+  websiteUrl: string;
   packageDescription: string;
   dependencies: { name: string; namespace: string; version: string }[];
   setDependencies: (
@@ -63,6 +65,7 @@ export function useUploadActions({
   setOriginalZipBuffer,
   setVirtualFiles,
   setVersionNumber,
+  setWebsiteUrl,
   setPackageName,
   setPackageDescription,
   setIconPreviewUrl,
@@ -79,6 +82,7 @@ export function useUploadActions({
   changelogContent,
   newIconFile,
   packageName,
+  websiteUrl,
   versionNumber,
   packageDescription,
   dependencies,
@@ -104,20 +108,24 @@ export function useUploadActions({
       setReadmeContent(readme);
       setChangelogContent(changelog);
       if (manifest.version_number) setVersionNumber(manifest.version_number);
+      if (manifest.website_url) setWebsiteUrl(manifest.website_url);
       if (manifest.name) setPackageName(manifest.name);
       if (manifest.description) setPackageDescription(manifest.description);
       if (manifest.dependencies && Array.isArray(manifest.dependencies)) {
-        const parsedDependencies = manifest.dependencies.reduce((acc, dep) => {
-          if (typeof dep !== "string") return acc;
-          const parts = dep.split("-");
-          if (parts.length >= 3) {
-            const version = parts.pop()!;
-            const name = parts.pop()!;
-            const namespace = parts.join("-");
-            acc.push({ namespace, name, version });
-          }
-          return acc;
-        }, [] as { namespace: string; name: string; version: string }[]);
+        const parsedDependencies = manifest.dependencies.reduce(
+          (acc, dep) => {
+            if (typeof dep !== "string") return acc;
+            const parts = dep.split("-");
+            if (parts.length >= 3) {
+              const version = parts.pop()!;
+              const name = parts.pop()!;
+              const namespace = parts.join("-");
+              acc.push({ namespace, name, version });
+            }
+            return acc;
+          },
+          [] as { namespace: string; name: string; version: string }[]
+        );
         setDependencies(parsedDependencies);
       }
       if (iconPreviewUrl) setIconPreviewUrl(iconPreviewUrl);
@@ -206,6 +214,7 @@ export function useUploadActions({
           newIconFile,
           packageName,
           versionNumber,
+          websiteUrl,
           packageDescription,
           dependencies,
           authorName: formInputs.author_name || "",
@@ -238,6 +247,7 @@ export function useUploadActions({
         (readmeContent ||
           changelogContent ||
           versionNumber ||
+          websiteUrl ||
           newIconFile ||
           virtualFiles.length > 0 ||
           dependencies.length > 0 ||
@@ -252,6 +262,7 @@ export function useUploadActions({
             changelogContent,
             newIconFile,
             packageName,
+            websiteUrl,
             versionNumber,
             packageDescription,
             dependencies,
@@ -314,6 +325,7 @@ export function useUploadActions({
     readmeContent,
     changelogContent,
     versionNumber,
+    websiteUrl,
     newIconFile,
     packageName,
     formInputs.author_name,
