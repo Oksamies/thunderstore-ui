@@ -8,11 +8,33 @@
   }
 
   @font-face {
+    font-weight: 200;
+    font-family: Hubot-Sans;
+    font-style: normal;
+    src: url("HubotSans-ExtraLight-latin.woff2") format("woff2");
+    font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+      U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122,
+      U+2191, U+2193, U+2212, U+2215, U+2764, U+FE0F, U+FEFF, U+FFFD;
+  }
+
+  @font-face {
     font-weight: 300;
     font-family: Hubot-Sans;
     font-style: normal;
     src: url("HubotSans-Light.woff2") format("woff2");
     font-display: swap;
+  }
+
+  @font-face {
+    font-weight: 300;
+    font-family: Hubot-Sans;
+    font-style: normal;
+    src: url("HubotSans-Light-latin.woff2") format("woff2");
+    font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+      U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122,
+      U+2191, U+2193, U+2212, U+2215, U+2764, U+FE0F, U+FEFF, U+FFFD;
   }
 
   @font-face {
@@ -24,11 +46,33 @@
   }
 
   @font-face {
+    font-weight: 900;
+    font-family: Hubot-Sans;
+    font-style: normal;
+    src: url("HubotSans-Black-latin.woff2") format("woff2");
+    font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+      U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122,
+      U+2191, U+2193, U+2212, U+2215, U+2764, U+FE0F, U+FEFF, U+FFFD;
+  }
+
+  @font-face {
     font-weight: 200;
     font-family: Hubot-Sans;
     font-style: italic;
     src: url("HubotSans-ExtraLightItalic.woff2") format("woff2");
     font-display: swap;
+  }
+
+  @font-face {
+    font-weight: 200;
+    font-family: Hubot-Sans;
+    font-style: italic;
+    src: url("HubotSans-ExtraLightItalic-latin.woff2") format("woff2");
+    font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+      U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122,
+      U+2191, U+2193, U+2212, U+2215, U+2764, U+FE0F, U+FEFF, U+FFFD;
   }
 
   @font-face {
@@ -40,10 +84,32 @@
   }
 
   @font-face {
+    font-weight: 300;
+    font-family: Hubot-Sans;
+    font-style: italic;
+    src: url("HubotSans-LightItalic-latin.woff2") format("woff2");
+    font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+      U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122,
+      U+2191, U+2193, U+2212, U+2215, U+2764, U+FE0F, U+FEFF, U+FFFD;
+  }
+
+  @font-face {
     font-weight: 900;
     font-family: Hubot-Sans;
     font-style: italic;
     src: url("HubotSans-BlackItalic.woff2") format("woff2");
     font-display: swap;
+  }
+
+  @font-face {
+    font-weight: 900;
+    font-family: Hubot-Sans;
+    font-style: italic;
+    src: url("HubotSans-BlackItalic-latin.woff2") format("woff2");
+    font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+      U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122,
+      U+2191, U+2193, U+2212, U+2215, U+2764, U+FE0F, U+FEFF, U+FFFD;
   }
 }
