@@ -141,6 +141,41 @@
     min-width: 14rem;
   }
 
+  /* Teams submenu: cap the height so a user in many teams gets a scrollable
+     list instead of one that runs off the bottom of the screen. The filter box
+     and "All Teams" link stay pinned; only the team list scrolls. */
+  .navigation-header__teams-dropdown {
+    min-width: 14rem;
+    max-height: min(
+      24rem,
+      var(--radix-dropdown-menu-content-available-height, 24rem)
+    );
+  }
+
+  /* The cap above turns every child into a shrinkable flex item, so once the
+     teams overflowed it, flexbox squeezed the filter box and "All Teams" too —
+     and .dropdown's overflow:hidden clipped rather than revealed the result,
+     leaving a half-height search field tucked under "All Teams". The list is
+     the only child that should absorb the cap; pin the rest. */
+  .navigation-header__teams-dropdown > *:not(.navigation-header__teams-list) {
+    flex-shrink: 0;
+  }
+
+  .navigation-header__teams-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dropdown-gap);
+
+    /* min-height:0 lets this flex child shrink below its content height, so the
+       overflow (and its scrollbar) actually engages inside the capped parent. */
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .navigation-header__teams-filter {
+    padding-bottom: var(--space-4);
+  }
+
   .navigation-header__externalLink {
     display: flex;
     align-items: center;
