@@ -630,15 +630,21 @@ export { RouteErrorBoundary as ErrorBoundary } from "app/commonComponents/ErrorB
 // Upper bound on how long idle-waiting may delay ad work, used for both the
 // script injection and the slot creation below, so a page that never goes idle
 // still loads ads within a bounded, predictable window.
-//
-// Deliberately small, and deliberately not a fixed delay. Holding the script
-// back on a timer to push the auction past the TTI quiet window moves the lab
-// metric without reducing any work — the main thread blocks for exactly as long,
-// just later — and it costs real impressions: a short visit ends before the
-// first render, and every 30-60s slot refresh shifts by the same amount. Ad
-// revenue is the constrained resource here, so idle-gating is as far as this
-// goes: off hydration's back, still inside the visit.
 const AD_IDLE_TIMEOUT_MS = 2000;
+
+// A flat hold on the ad stack, measured from `load`, before the idle wait above
+// even begins — so the script lands no sooner than this, whatever the page is
+// doing. The whole auction stack (GPT, prebid, Confiant, Amazon) is ~1.7s of
+// script execution, and keeping it out of the first seconds is the only lever
+// that moves the page's headline metrics.
+//
+// Be aware of what it costs, because it is not free: the main thread blocks for
+// exactly as long, just later, so this buys a better *measurement* rather than
+// less work. It also costs real impressions — a visit that ends inside the hold
+// never renders an ad at all, and every 30-60s refresh cycle shifts with it. If
+// ad revenue drops after this ships, this constant is the first thing to look
+// at.
+const AD_START_DELAY_MS = 7000;
 
 // Temporary solution for implementing ads
 // REMIX TODO: Move to dynamic html
@@ -698,15 +704,21 @@ function AdsInit({ createAds }: { createAds: boolean }) {
       }
     };
 
-    // Inject during main-thread idle rather than the instant `load` fires, so
-    // the auction never starts midway through hydration work. See
-    // scheduleWhenIdle for why, and AD_IDLE_TIMEOUT_MS for what this
-    // deliberately does *not* do (hold the script back on a flat timer).
+    // Hold the ad stack back for AD_START_DELAY_MS after `load`, then inject on
+    // the next main-thread idle so it still never starts midway through other
+    // work. The delay sets the floor and the idle wait only picks the moment
+    // (bounded by AD_IDLE_TIMEOUT_MS, so a page that never goes idle still gets
+    // ads); on-idle alone would fire within a second or so of hydration, which
+    // is exactly what the delay exists to avoid.
     let cancelIdle: (() => void) | undefined;
+    let holdTimer: ReturnType<typeof setTimeout> | undefined;
 
     const startAdLoad = () => {
       if (cancelled) return;
-      cancelIdle = scheduleWhenIdle(loadAds, AD_IDLE_TIMEOUT_MS);
+      holdTimer = setTimeout(() => {
+        if (cancelled) return;
+        cancelIdle = scheduleWhenIdle(loadAds, AD_IDLE_TIMEOUT_MS);
+      }, AD_START_DELAY_MS);
     };
 
     if (document.readyState === "complete") {
@@ -718,6 +730,9 @@ function AdsInit({ createAds }: { createAds: boolean }) {
     return () => {
       cancelled = true;
       window.removeEventListener("load", startAdLoad);
+      if (holdTimer !== undefined) {
+        clearTimeout(holdTimer);
+      }
       cancelIdle?.();
       if ($script) {
         $script.onload = null;
