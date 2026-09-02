@@ -9,6 +9,15 @@
     align-items: center;
     align-self: stretch;
     width: 100%;
+
+    /* The promo is a grid item on the community page, so it would otherwise take
+       `min-width: auto` — an automatic minimum of its own min-content width. The
+       copy is `white-space: nowrap`, so that minimum is the whole untruncated
+       sentence plus the tag, and the grid column (and with it the page) grew to
+       fit rather than the copy ellipsising. That pushed the document past the
+       viewport on phones. The ellipsis below is the intended way to lose the
+       overflow; this is what lets it happen. */
+    min-width: 0;
     padding: var(--space-12) var(--space-16) var(--space-12) var(--space-48);
     border: 2px solid var(--color-accent-purple-4);
     border-radius: var(--radius-md);
@@ -69,8 +78,20 @@
      stylesheet could never beat the width above.) */
   @media (width <= 48rem) {
     .community-promo--bar {
+      /* Too narrow for the copy and the deal tag to share a line: the tag never
+         shrinks, so the copy would ellipsise down to a few characters. Let the
+         tag drop below instead, and give the copy the full width to wrap into —
+         a promo worth reading beats one clipped to "DatHo…". */
+      flex-wrap: wrap;
       width: auto;
       margin: 0 var(--gap-md);
+      row-gap: var(--gap-xs);
+    }
+
+    .community-promo--bar .community-promo__copy {
+      flex: 1 1 100%;
+      overflow: visible;
+      white-space: normal;
     }
   }
 }
