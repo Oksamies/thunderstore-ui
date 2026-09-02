@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router";
 
 import { AdContainer } from "@thunderstore/cyberstorm";
 
@@ -10,6 +11,7 @@ import {
   removePageScopedAd,
   whenNitroAdsReady,
 } from "./nitroAds";
+import { staticAdForSlot } from "./staticAds";
 
 /**
  * A page-scoped 300×250 sidebar ad — mounted by the community filter sidebar and
@@ -18,9 +20,25 @@ import {
  * only exists on its page, so it's created here on mount — once the NitroPay
  * script is ready — and freed on unmount. The AdContainer reserves the box and
  * shows the house fallback while unfilled.
+ *
+ * On a directly-sold takeover path (staticAds.ts) the slot skips NitroPay
+ * entirely and paints the supplied creative instead. These pages keep the same
+ * component mounted across a community switch (only the route params change), so
+ * the takeover state is both an effect dependency — to create/free the network
+ * slot as it flips — and part of the container's key, so React replaces the
+ * container div rather than leaving a live NitroPay creative inside it.
  */
 export function SidebarAd({ slot }: { slot: RenderedAdSlot }) {
+  const { pathname } = useLocation();
+  const staticAd = staticAdForSlot(slot, pathname);
+  const isStatic = staticAd !== undefined;
+
   useEffect(() => {
+    if (isStatic) {
+      // The container paints a supplied creative; no auction for this slot.
+      return;
+    }
+
     let cancelled = false;
     let idleHandle: number | undefined;
     let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
@@ -59,13 +77,15 @@ export function SidebarAd({ slot }: { slot: RenderedAdSlot }) {
       // frees the div itself).
       removePageScopedAd(slot);
     };
-  }, [slot]);
+  }, [slot, isStatic]);
 
   return (
     <AdErrorBoundary placement={adPlacementKey(slot.containerId)}>
       <AdContainer
+        key={isStatic ? "static" : "nitro"}
         containerId={slot.containerId}
         sizeVariant={slot.sizeVariant}
+        staticAd={staticAd}
       />
     </AdErrorBoundary>
   );

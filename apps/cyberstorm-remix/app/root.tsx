@@ -63,6 +63,10 @@ import {
   teardownNimbusAds,
 } from "./commonComponents/Ads/nitroAds";
 import { scheduleWhenIdle } from "./commonComponents/Ads/scheduleWhenIdle";
+import {
+  isStaticAdPath,
+  staticAdForSlot,
+} from "./commonComponents/Ads/staticAds";
 import { Footer } from "./commonComponents/Footer/Footer";
 import { Island, IslandContainer } from "./commonComponents/Island/Island";
 import { NavigationWrapper } from "./commonComponents/Navigation/NavigationWrapper";
@@ -72,6 +76,16 @@ config.autoAddCss = false;
 
 // Single full-width bottom banner between content and footer.
 const BOTTOM_ADS_ENABLED = true;
+
+// React key for a layout ad slot. It encodes whether the slot is network-served
+// or a directly-sold takeover, so navigating between the two REPLACES the
+// container div instead of reusing it. That matters in both directions: a
+// NitroPay creative already mounted in the div is only freed when NitroPay sees
+// the div removed (see teardownNimbusAds), and a fresh div is what
+// createAllNimbusAds needs to find when the session navigates back out.
+function adSlotKey(containerId: string, isStatic: boolean): string {
+  return isStatic ? `${containerId}--static` : containerId;
+}
 
 // REMIX TODO: https://remix.run/docs/en/main/route/links
 // export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
@@ -271,10 +285,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const isLandingPage =
     location.pathname === "/" || location.pathname.startsWith("/communities");
 
-  // Load the NitroPay script (consent banner) wherever ads are allowed, but only
-  // CREATE ad slots off the landing pages.
-  const shouldLoadConsent = adsAllowedOnRoute;
-  const shouldCreateAds = adsAllowedOnRoute && !isLandingPage;
+  // Whether the ad SURFACE (the rail + bottom containers) is rendered at all.
+  const shouldShowAds = adsAllowedOnRoute && !isLandingPage;
+
+  // Routes sold directly to an advertiser: the containers still render, but they
+  // paint a supplied creative instead of calling NitroPay, and the floating video
+  // is not anchored (see staticAds.ts).
+  const isStaticAdRoute = isStaticAdPath(location.pathname);
+
+  // Load the NitroPay script (which is what raises the consent banner) wherever
+  // ads are allowed, but only CREATE ad slots off the landing pages.
+  //
+  // A takeover route wants neither: nothing on it is network-served, so pulling
+  // in the whole auction stack would cost its ~1.7s of script execution to serve
+  // no ad at all. Entering one from a community that already loaded the script
+  // can't unload it — nothing is created there either way — but a session that
+  // starts on a takeover route never fetches it, and one that leaves for a
+  // network-served community loads it then.
+  const shouldLoadConsent = adsAllowedOnRoute && !isStaticAdRoute;
+  const shouldCreateAds = shouldShowAds && !isStaticAdRoute;
 
   // Package-search pages all render the shared PackageSearch (a community's
   // landing, a team's packages, a package's dependants) and get the same
@@ -392,8 +421,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   tabIndex={-1}
                   rootClasses={classnames(
                     "layout__main",
-                    shouldCreateAds ? "layout__main--ads" : undefined,
-                    shouldCreateAds &&
+                    shouldShowAds ? "layout__main--ads" : undefined,
+                    shouldShowAds &&
                       isPackageDetailPage &&
                       !isPackageListingWithSidebar &&
                       !isPackageSearchPage
@@ -421,7 +450,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                       {children}
                     </Container>
                   )}
-                  {shouldCreateAds && (
+                  {shouldShowAds && (
                     <div className="layout__ads">
                       {/* Both routes' rail tiers live here; layout.css shows only
                           the active route's fitting-height tier (data-rail-active-
@@ -439,18 +468,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
                         <AdErrorBoundary placement="rail">
                           {COMMUNITY_RAIL_SLOTS.map((slot) => (
                             <AdContainer
-                              key={slot.containerId}
+                              key={adSlotKey(slot.containerId, isStaticAdRoute)}
                               containerId={slot.containerId}
                               sizeVariant={slot.sizeVariant}
                               railPage="community"
+                              staticAd={staticAdForSlot(
+                                slot,
+                                location.pathname
+                              )}
                             />
                           ))}
                           {PACKAGE_RAIL_SLOTS.map((slot) => (
                             <AdContainer
-                              key={slot.containerId}
+                              key={adSlotKey(slot.containerId, isStaticAdRoute)}
                               containerId={slot.containerId}
                               sizeVariant={slot.sizeVariant}
                               railPage="package"
+                              staticAd={staticAdForSlot(
+                                slot,
+                                location.pathname
+                              )}
                             />
                           ))}
                         </AdErrorBoundary>
@@ -458,14 +495,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     </div>
                   )}
                 </Island>
-                {shouldCreateAds && BOTTOM_ADS_ENABLED ? (
+                {shouldShowAds && BOTTOM_ADS_ENABLED ? (
                   <Island rootClasses="layout__bottom-ads">
                     <AdErrorBoundary placement="content-bottom">
                       {BOTTOM_AD_SLOTS.map((slot) => (
                         <AdContainer
-                          key={slot.containerId}
+                          key={adSlotKey(slot.containerId, isStaticAdRoute)}
                           containerId={slot.containerId}
                           sizeVariant={slot.sizeVariant}
+                          staticAd={staticAdForSlot(slot, location.pathname)}
                         />
                       ))}
                     </AdErrorBoundary>
@@ -476,7 +514,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   /* Anchor for the single page-level floating video; NitroPay
                      floats the player out of this empty div to a viewport corner
                      (see FLOATING_VIDEO_* in nitroAds.ts). Taken out of flow so
-                     it adds no gap to the layout column. */
+                     it adds no gap to the layout column. Absent on takeover
+                     routes (shouldCreateAds is false there), which both stops the
+                     player being created and — since unmounting the anchor is
+                     what frees it — tears down one already floating when the
+                     session navigates in. */
                   <div
                     id={FLOATING_VIDEO_ID}
                     className="layout__floating-video-anchor"
@@ -484,7 +526,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 ) : null}
                 {/* Load the NitroPay script (consent banner) wherever ads are
                     allowed; AdsInit only CREATES ad slots when createAds is set,
-                    so the landing pages get consent but no ads. */}
+                    so the landing pages get consent but no ads. The takeover
+                    routes get neither — they paint their own creative, so
+                    unmounting this is what keeps the auction stack off them.
+                    Unmounting also runs AdsInit's teardown, dropping the slot
+                    refs the previous route left in the registry. */}
                 {shouldLoadConsent ? (
                   <AdsInit createAds={shouldCreateAds} />
                 ) : null}
