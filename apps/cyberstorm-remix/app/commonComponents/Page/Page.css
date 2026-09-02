@@ -1,5 +1,13 @@
 @layer nimbus-layout {
-  .page {
+  /* :where() so this contributes NO specificity. <Page rootClasses="community">
+     renders `class="page community"`, so the route's own class competes with
+     this one at equal specificity in the same layer — and which of them wins
+     then comes down to the order their files happen to land in the bundle. That
+     is not something a route should have to think about, and it changes under
+     CSS code splitting (Vite emits the chunks in dependency order, not import
+     order). At zero specificity a route modifier always wins, whatever the
+     order. Same idiom, and same reason, as the reset in app/styles/reset.css. */
+  :where(.page) {
     display: flex;
     flex-direction: column;
     gap: var(--gap-xl);
@@ -8,7 +16,7 @@
   }
 
   @container (width <= 48rem) {
-    .page {
+    :where(.page) {
       gap: var(--gap-md);
     }
   }

@@ -4,7 +4,13 @@
     container-type: inline-size;
   }
 
-  .island {
+  /* :where() for the same reason as .page above: <Island rootClasses="..."> puts
+     a feature's own class on the same element, and it should win without
+     depending on which file the bundler emitted first (e.g.
+     .team-profile__island overrides both of these). The [data-variant] rule
+     below keeps its specificity — it is a variant of the island itself, not
+     something a caller overrides. */
+  :where(.island) {
     border-radius: var(--radius-sm);
     background-color: var(--color-surface-2);
   }

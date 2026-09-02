@@ -60,7 +60,24 @@ export default defineConfig((config) => {
       // them — it only long-caches the "/assets" path. (Previously "__remix",
       // which missed that rule and left hashed assets at Cache-Control:
       // max-age=0.)
-      cssCodeSplit: false,
+
+      // Per-route CSS chunks rather than one stylesheet for the whole app.
+      // Bundled, every page blocked on all 230KB of it — a community page was
+      // downloading the settings, upload and team styles before it could render.
+      //
+      // This is only safe while no two rules depend on the order their files
+      // land in the bundle, because Vite emits chunks in dependency order rather
+      // than import order. root.tsx declares the whole @layer order inline at the
+      // top of <head> so layers can't be reshuffled, but that does NOT settle
+      // rules of equal specificity within the SAME layer — those are decided by
+      // source order alone. The base layout primitives are therefore written as
+      // :where(.page) / :where(.island), which drops them to zero specificity so
+      // a route's own class always wins (see Page.css and Island.css).
+      //
+      // If you add a base class that routes override, use :where() for it too. A
+      // computed-style diff across every route, bundled vs split, is what catches
+      // the ones that don't.
+      cssCodeSplit: true,
     },
   };
 });
