@@ -36,6 +36,10 @@ import {
   ToastProvider,
   classnames,
 } from "@thunderstore/cyberstorm";
+// Hashed URLs for the two faces that render above the fold, so they can be
+// preloaded — see the <link rel="preload"> tags in <head>.
+import hubotSansBold from "@thunderstore/cyberstorm-theme/styles/fonts/hubot-sans/HubotSans-Bold.woff2?url";
+import interRegular from "@thunderstore/cyberstorm-theme/styles/fonts/inter/Inter-Regular.woff2?url";
 import { DapperTs } from "@thunderstore/dapper-ts";
 import { type CurrentUser } from "@thunderstore/dapper/types";
 import { type RequestConfig } from "@thunderstore/thunderstore-api";
@@ -363,6 +367,31 @@ export function Layout({ children }: { children: React.ReactNode }) {
             __html:
               "try{if(localStorage.getItem('nimbus-content-width')==='wide')document.documentElement.dataset.contentWidth='wide';if(localStorage.getItem('nimbus-card-layout')==='list')document.documentElement.dataset.cardLayout='list';}catch(e){}",
           }}
+        />
+        {/* The @font-face rules that reference these live in the stylesheet, so
+            the browser can't discover them until it has downloaded and parsed
+            all of it — measured locally, the CSS finished at 395ms and every
+            font request started at 400ms, one behind the other. Preloading the
+            two faces that render above the fold (body copy in Inter, headings in
+            Hubot Sans) takes them off the end of that chain and fetches them
+            alongside the CSS instead. Deliberately just these two: a preload is
+            a high-priority request, so the heavier and rarer weights are left to
+            be found the usual way. font-display: swap already keeps text
+            visible throughout, so this shortens the swap rather than a blank
+            screen. */}
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href={interRegular}
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href={hubotSansBold}
+          crossOrigin="anonymous"
         />
         <Seo />
         <Meta />
