@@ -320,9 +320,6 @@
   }
 
   .layout__ads-stack {
-    /* Query THIS stack's own height to hide the rail when it's too short — see
-       the @container rule below. */
-    container: nimbus-ad-rail / size;
     position: sticky;
 
     /* Rest below the header with a gap-md of breathing room (more than the
@@ -354,10 +351,21 @@
        this box (see fittingSizes in nitroAds.ts). */
     width: calc(120px + 2px);
 
-    /* Fill the viewport height minus the header, the top offset above and a
-       gap below, AND the floating video's reserve, so no rail ad sits behind the
-       docked player. */
-    height: calc(
+    /* Only as tall as the one tier on show (the height cascade below hides the
+       rest), which is what makes `position: sticky` above do anything: a sticky
+       box travels through the difference between its own height and its
+       containing block's, so a stack filling the viewport had nothing to travel
+       through unless the page's content column was itself taller than a screen.
+       Package pages often aren't — the rail was the tallest thing in the grid
+       row, sizing the very box it was trying to stick inside, and so never
+       stuck at all.
+
+       Safety cap only: the media queries below already guarantee the revealed
+       tier fits the space between the header and the docked floating video, so
+       this never binds. It keeps that budget expressed in the same variables the
+       thresholds are derived from, and stops a mis-served creative from
+       reaching over the player. */
+    max-height: calc(
       100dvh - var(--header-height) - var(--gap-md) - var(--gap-2xs) -
         var(--floating-video-height)
     );
@@ -388,7 +396,6 @@
   @container nimbus-ad-gutter (min-width: calc(120px + 2px)) {
     .layout__ads-stack {
       display: flex;
-      justify-content: flex-end;
       width: calc(120px + 2px);
     }
   }
@@ -419,18 +426,33 @@
     display: none;
   }
 
-  /* Reveal the tallest tier the rail height (this stack's own height, queried via
-     nimbus-ad-rail) can fully show. Ascending source order: each taller band
-     hides the shorter tier and shows its own, so the largest fitting tier wins;
-     below the shortest tier's height nothing shows. Page-agnostic — it reveals
-     the tier for BOTH route sets; the route gate below hides the inactive one. */
-  @container nimbus-ad-rail (height >= calc(100px + 2px)) {
+  /* Reveal the tallest tier that fully fits the rail's available height.
+     Ascending source order: each taller band hides the shorter tier and shows its
+     own, so the largest fitting tier wins; below the shortest tier's height
+     nothing shows. Page-agnostic — it reveals the tier for BOTH route sets; the
+     route gate below hides the inactive one.
+
+     Keyed on the VIEWPORT, not on the stack, which is what lets the stack be
+     tier-height and therefore actually sticky (see .layout__ads-stack). The rail
+     has never been able to grow past the viewport anyway — its budget is the
+     screen minus the header, the sticky top offset, a bottom gap and the docked
+     floating video's reserve — so the two are the same test, asked of the thing
+     that decides the answer rather than of the box that reports it:
+
+       tier + 2px borders <= 100dvh - 56 (header) - 16 (gap-md) - 4 (gap-2xs)
+                                   - 200 (floating video)
+
+     which puts the bands at tier + 278px. Keep these in step with
+     --header-height / --gap-md / --gap-2xs / --floating-video-height above —
+     media conditions can't read custom properties, so this is the one place the
+     budget is spelled out in numbers (as the width breakpoints already are). */
+  @media (height >= 378px) {
     .layout__ads-stack .ad-container[data-size="rail-300x100"] {
       display: flex;
     }
   }
 
-  @container nimbus-ad-rail (height >= calc(250px + 2px)) {
+  @media (height >= 528px) {
     .layout__ads-stack .ad-container[data-size="rail-300x100"] {
       display: none;
     }
@@ -440,7 +462,7 @@
     }
   }
 
-  @container nimbus-ad-rail (height >= calc(600px + 2px)) {
+  @media (height >= 878px) {
     .layout__ads-stack .ad-container[data-size="rail-300x250"] {
       display: none;
     }
